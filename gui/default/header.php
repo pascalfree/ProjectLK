@@ -1,0 +1,14 @@
+<?php
+  require_once(GUI.'php/utility.php');
+  require_once(GUI.'php/load.php');
+  require_once(GUI.'php/dropdown.php');
+  require_once(GUI.'php/link.php');
+  require_once(GUI.'php/form.php');
+  require_once(GUI.'php/list.php');
+  require_once(GUI.'php/write_one.php');
+  require_once(GUI.'php/menu.php');
+  require_once(GUI.'php/tab.php');
+  require_once(GUI.'php/status.php');
+  require_once(GUI.'php/verbtable.php');
+  require_once(GUI.'php/wordtable.php');
+?>

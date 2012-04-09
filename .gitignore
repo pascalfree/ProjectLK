@@ -1,0 +1,6 @@
+release/*
+config.php
+compiler/*
+config_files/*
+upload/*
+!.gitignore

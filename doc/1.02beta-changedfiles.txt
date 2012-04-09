@@ -1,0 +1,18 @@
+/core/javascript/query.js
+/core/javascript/functions.js
+/core/database/get_query.php
+/core/database/create_active.php
+/language/de.ini
+/language/en.ini
+/gui/default/ (Alle Seiten, wegen $here->page)
+/gui/default/import.php
+/gui/default/options.php
+/gui/default/query.php
+/gui/default/verb/addverb.php
+/gui/default/themes/_basic.css
+/gui/default/themes/_basic_ie.css
+/gui/default/themes/modern.css
+/gui/default/themes/modern_ie.css
+/gui/default/functions/guifunctions.js
+/gui/default/functions/guifunctions.php
+/gui/mobile_default/..

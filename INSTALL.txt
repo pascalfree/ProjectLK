@@ -1,0 +1,61 @@
+- English
+- Deutsch
+
+English
+-----------------
+INSTALL PROJECTLK
+-----------------
+
+1. MYSQL
+- Setup an empty MySQL-database on your server
+- Import the install.sql file to your database
+- Delete the install.sql file.
+
+2. CONFIG
+- Open config.php
+- Fill the Information needed for setup
+- DIRNAME is the Path where you want to upload projectLK.
+  http://www.hostname.com/DIRNAME
+
+- Open .htaccess
+- replace "projectlk/" by the DIRNAME from above.
+
+3. UPLOAD
+- Upload ProjectLK to your server
+- Change the permissions of the folder 'upload' to 777
+
+4. LOGIN
+- You can now login with:
+  Username: admin
+  Password: admin
+- There's no admin control panel!
+
+
+Deutsch
+-----------------
+PROJECTLK INSTALLIEREN
+-----------------
+
+1. MYSQL
+- Erstelle eine leere MySQL-Datenbank auf dem Server
+- Importiere die Datei install.sql in die Datenbank
+- Lösche die Datei install.sql
+
+2. CONFIG
+- Öffne config.php
+- Füge die Zugangsdaten für die Datenbank ein
+- DIRNAME ist der Pfad, wo ProjectLK hochgeladen werden soll
+  http://www.hostname.com/DIRNAME
+
+- Öffne .htaccess
+- Ersetze "projectlk/" mit dem DIRNAME von zuvor. zwei Mal!
+
+3. UPLOAD
+- Lade alles hoch
+- Setze die Berechtigungen des Ordners 'upload' auf 777
+
+4. LOGIN
+- Du kannst dich nun anmelden mit:
+  Benutzername: admin
+  Passwort: admin
+- Es gibt keinen Admin-Controlpanel!

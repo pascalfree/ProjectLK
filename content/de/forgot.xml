@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="forgot" language="de">
+  <links>
+    <link dest="home">Startseite</link>
+    <link dest="login">Login</link>
+    <link dest="help">Hilfe</link>
+  </links>
+  <body>
+    <section title="forgot">
+      <title>Passwort vergessen</title>
+      <text><![CDATA[
+        <form id="forgot_form" action="" method="POST">
+          Benutzername: <input type="text" name="username"/><br>
+          oder E-Mail: <input type="text" name="email"/><br>
+          <input type="hidden" name="forgot" value="1"/>
+          <input type="submit" value="Senden"/>
+        </form>
+      ]]></text>
+
+    </section>
+  </body>
+</content>

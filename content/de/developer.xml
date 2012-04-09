@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="developer" language="de">
+  <links>
+    <link dest="home">Startseite</link>
+    <link dest="login">Anmelden</link>
+    <link dest="help">Hilfe</link>
+  </links>
+  <body>
+    <section title="main">
+      <title>Für Entwickler</title>
+      <text><![CDATA[ProjectLK wurde so aufgebaut, dass es zu einem hohen Grad veränderbar ist, ohne dass das ganze Projekt umgebaut werden muss. Diese Flexibilität ermöglicht es, das Projekt an bestimmten stellen mit Leichtigkeit zu erweitern. Wie dieser Aufbau aussieht wird unten grob erklärt.]]></text>
+    </section>
+    <section title="contribute">
+      <title>Mitwirken</title>
+      <text><![CDATA[Da dieses Projekt als Freizeitprojekt begann und immernoch weitergeführt wird, beschränkt sich die Anzahl der Entwickler zurzeit auf 1. Die Dokumentation beschränkt sich auf eine kleine Einführung in die Entwicklung von GUIs und bisher existiert keine Plattform für dieses Projekt. Trotzdem, steht der dokumentierte Code unter der GPL zum Download bereit. Es steht also jedem frei das Projekt selbst fortzuführen. Ich würde mich in diesem Fall auch über Rückmeldungen freuen.]]></text>
+    </section>
+    <section title="structure">
+      <title>Aufbau</title>
+      <text><![CDATA[<a href="<<img>>/lkdiagramm_de.png"><img src="<<img>>/lkdiagramm_de_small.png" alt="Aufbau" style="width:100%"></a>]]></text>
+    </section>
+    <section title="core">
+      <title>Core</title>
+      <text><![CDATA[
+        Der Core (engl. Kern) ist, wie der Name sagt, der Kern des Projekts. Dieser Teil erzeugt keine Ausgaben, sondern kümmert sich um das Laden der beteiligten Dateien und um die Informationsabfragen aus der Datenbank.<br><br>
+        Immer wenn eine neue Seite geladen wird, wird die URL zum Server gesendet und vom Core abgefangen. Dieser nimmt die URL auseinander und prüft zu jedem Abschnitt, ob ein entsprechender Eintrag existiert und ob die nötige Berechtigung gegeben ist. Die Sprachdatei wird geladen und die Verbindung zur Datenbank wird hergestellt. Alle informationen aus der URL werden in eine Variable gespeichert, welche auch in der GUI verfügbar ist, in PHP und Javascript. Zuletzt lädt der Core die entsprechende Datei der GUI.<br><br>
+        Für seine zweite Aufgabe stellt der Core Funktionen zur Verfügung, über welche Daten in die Datenbank geschrieben und daraus gelesen werden können. Diese Funktionen stehen in PHP und in Javascript (AJAX) zur Verfügung mit kleinen Unterschieden.
+        Zusätzlich verfügt der Core über einige allgemeine Funktionen.
+      ]]></text>
+    </section>
+    <section title="GUI">
+      <title>GUI</title>
+      <text><![CDATA[
+        GUI (engl. <i>Graphical User Interface</i>) steht für grafische Benutzeroberfläche. Oft wird dieser Teil eines Scripts auch als Template bezeichnet. Die GUI von ProjectLK ist aber mehr als eine Schablone. Die GUI lädt Daten via Core aus der Datenbank und zeigt diese an. Jegliche Verlinkungen werden von der GUI ausgelegt. Überhaupt wird alles, was für den Benutzer sichtbar ist, von der GUI dargestellt und animiert. Es ist auch möglich verschiedene GUIs zur Verfügung zu stellen, dieser werden in Ordnern organisiert und automatisch erkannt. Zur Zeit existiert jedoch nur eine einzige GUI.<br>
+      ]]></text>
+    </section>
+    <section title="Content">
+      <title>Content</title>
+      <text><![CDATA[
+        Der Content (engl. Inhalt) ist der Teil, der auch für nicht-registrierte Besucher zugänglich ist. Es besteht aus *.xml-Dateien, welche von der GUI ausgelesen werden. Diese Seiten enthalten grundsätzlich nur statische Inhalte.
+      ]]></text>
+    </section>
+    <section title="Style">
+      <title>Style</title>
+      <text><![CDATA[
+        Styles sind *.css-Dateien, welche die GUI gestalten. Während die GUI den Aufbau bestimmt, bestimmen die Styles das Aussehen. Die Möglichkeiten von CSS dürfen nicht unterschätzt werden. Welcher Style verwendet wir, bestimmt der Benutzer selbst und für Gäste wird ein Style in der config-Datei festgelegt.
+      ]]></text>
+    </section>
+  </body>
+</content>

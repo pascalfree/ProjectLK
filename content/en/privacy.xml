@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="privacy" language="en">
+  <links>
+    <link dest="home">Home</link>
+  </links>
+  <body>
+    <section title="privacy">
+      <title>Privacy Policy</title>
+      <text><![CDATA[
+        The operator of this site (hereinafter referred to as <<pname>>), and third parties have no rights to use and/or modify the users data without his/her consent. It is yet up to <<pname>>, removing data from the database without justification. This includes the deletion of the account.<br>
+        With the registration to the service the user agrees that his/her email address may be used for contacting.
+      ]]></text>
+
+    </section>
+  </body>
+</content>

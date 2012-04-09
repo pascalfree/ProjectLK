@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="privacy" language="de">
+  <links>
+    <link dest="home">Startseite</link>
+  </links>
+  <body>
+    <section title="privacy">
+      <title>Datenschutzerklärung</title>
+      <text><![CDATA[
+        Der/Die BetreiberIn dieser Seite (im Folgenden als <<pname>> bezeichnet) und dritte Personen haben keine Berechtigung von Benutzern hinzugefügte Daten, ohne dessen Einwilligung zu verwenden, weiterzugeben und/oder zu verändern. Es ist jedoch <<pname>> überlassen, Daten ohne Rechtfertigung von der Datenbank zu entfernen. Dazu gehört auch die Löschung des Benutzerkontos.<br><br>
+        Benutzer erklären sich mit der Registrierung zu diesem Dienst damit einverstanden, dass die angegebene Email-Adresse zur Kontaktierung verwendet werden darf.
+      ]]></text>
+
+    </section>
+  </body>
+</content>

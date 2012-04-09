@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="register" language="en">
+  <links>
+    <link dest="home">Home</link>
+    <link dest="help">Help</link>
+  </links>
+  <body>
+    <section title="register">
+      <title>Register</title>
+      <text><![CDATA[
+        <form id="nregister_form" action="" method="POST">
+          Username: <input type="text" value="<<username>>" name="username"/><br>
+          E-mail: <input type="text" value="<<email>>" name="email"/><br>
+          Password: <input type="password" name="password"/><br>
+          Repeat password: <input type="password" name="passwordrepeat"/><br>
+          <input type="checkbox" id="accept" name="accept" value="1"/>
+          <label for="accept">I read the <a href="privacy">privacy policy</a> and accept it.</label><br>
+          <input type="hidden" name="nregister" value="1"/>
+          <input type="submit" value="Register"/>
+        </form>
+      ]]></text>
+    </section>
+  </body>
+</content>

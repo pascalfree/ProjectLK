@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="login" language="de">
+  <links>
+    <link dest="home">Startseite</link>
+    <link dest="help">Hilfe</link>
+  </links>
+  <body>
+    <section title="login">
+      <title>Anmelden</title>
+      <text><![CDATA[
+        <form id="login_form" action="" method="POST">
+          Benutzername: <input type="text" name="username"/><br>
+          Passwort: <input type="password" name="password"/><br>
+          <input type="hidden" name="login" value="1"/>
+          <input type="submit" value="Anmelden"/>
+        </form>
+        <a href="nregister">Registrieren</a><br>
+        <a href="forgot">Passwort vergessen</a>
+      ]]></text>
+
+    </section>
+  </body>
+</content>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="developer" language="en">
+  <links>
+    <link dest="home">Home</link>
+    <link dest="login">Login</link>
+    <link dest="help">Help</link>
+  </links>
+  <body>
+    <section title="main">
+      <title>For Developers</title>
+      <text><![CDATA[ProjectLK is intended to be highly flexible, which makes it easy to change things without changing the whole project. The graph below is roughly showing how this flexibility is achieved.]]></text>
+    </section>
+    <section title="contribute">
+      <title>Contribute</title>
+      <text><![CDATA[ProjectLK has no platform for contribution. But as it's open source everybody can take it and develop it. In this case I would be pleased for feedback.]]></text>
+    </section>
+    <section title="structure">
+      <title>Structure</title>
+      <text><![CDATA[<a href="<<img>>/lkdiagramm_en.png"><img src="<<img>>/lkdiagramm_en_small.png" alt="Structure" style="width:100%"></a>]]></text>
+    </section>
+  </body>
+</content>

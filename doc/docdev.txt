@@ -1,0 +1,658 @@
+#### ProjectLK Dokumentation für Entwickler von GUIs ####
+
+//////////////////////////////
+//Autor: David Glenck
+//www.ihdg.ch
+//////////////////////////////
+
+### Vorwort ###
+
+## Was ist das? ##
+
+Diese Datei ist eine Dokumentation des "ProjectLK". Sie soll Entwicklern von GUIs, also Benutzeroberflächen, helfen.
+Die GUI gefindet sich im Ordner 'gui' im Hauptverzeichnis. Jeder darin enthaltene Ordner stellt eine eigene GUI dar. Aufgabe einer GUI ist es, das Aussehen der Seite festzulegen. Einfach gesagt: Alles was der Benutzer sehen kann, wird von der GUI gemacht.
+Über der GUI befindet sich der 'core'. Der Core stellt die Grundlage, den Kern, des "ProjectLK" dar. Es enthält diverse Funktionen, über welche die GUI Inhalte aus der Datenbank lesen und schreiben kann. Genauer wird dies aber noch später erklärt.
+
+## Aktueller Stand ##
+
+Dieses Dokument ist noch in Arbeit und soll später also Vorlage für eine saubere Dokumentation dienen.
+Da ProjectLK noch in Entwicklung ist, verändert sich dieses Dokument stetig mit jeder Version.
+
+## Was fehlt noch? ##
+- Core Javascript Funktionen
+- Core PHP Funktionen 
+- Englische Übersetzung
+
+--------------
+### Seiten ###
+
+Eine GUI verfügt über mehrere Dateien, welche die Seiten darstellen. ProjectLK funktioniert so, dass je nach Standort eine Seite geladen wird. 
+
+## Standort ##
+Der Standort wird über die URL bestimmt. Diese hat folgendes Schema:
+
+#Öffentlicher Bereich:#
+http://HOST/Ordner/Seite
+HOST: der eigene Host - www.meineseite.com
+Ordner: Ordner in welchem sich ProjectLK befindet (wird in der config.php festgelegt)
+Seite: Dateiname ohne Endung.
+Die Seite die in diesem Fall geladen wird, befindet sich im Ordner 'content' und ist eine *.xml Datei.
+Zum Aufbau dieser Datei siehe weiter unten.
+
+#Angemeldeter Benutzer:#
+http://HOST/Ordner/User/Kartei/Fach
+User: Benutzername oder ID des Benutzers.
+Kartei: Name oder ID einer existierenden Kartei (optional)
+Fach: Name oder ID eines Fachs in der Kartei (optional)
+
+#Zudem gibt es Schlüsselwörter, welche die URL ergänzen können:#
+Schema: /Schlüsselwort/ID oder Name
+/tag/tagname
+/save/savename
+/...
+Diese Schlüsselwörter können beliebig kombiniert werden.
+
+Hingegen gibt es definierende Schlüsselwörter, von welchen nur eines in der URL gültig ist.
+Schema: /definierendes Schlüsselwort
+/show
+/overview
+/...
+
+Diese Schlüsselwörter bestimmen, welche Seite der GUI geladen werden. Dabei gelten folgende prioritäten:
+1.letztes definierendes Schlüsselwort
+2.letztes Schlüsselwort
+3.Fach -> group
+4.Kartei -> register
+5.User -> dashboard
+6.404
+die Schlüsselwörter entsprechen den Dateinamen der Seite, die sie laden (ohne Endung).
+Diese Dateien kommen in den GUI-Ordner und können die Endung .html oder .php haben.
+
+-------------------------
+### Globale Variablen ###
+
+## HERE ##
+
+$here bzw here ist ein Objekt das in PHP und in Javascript definiert ist.
+Es enthält wesentliche Informationen zum aktuellen Standort.
+
+# Inhalt #
+// Benutzer
+username: Name des aktuellen Benutzers
+userid: ID des aktuellen Benutzers
+// IDs
+registerid: Aktuelle Kartei (ID)
+groupid: Fach
+tagid
+saveid: Speicherplatz
+wordclassid: Wortart
+wordid
+formid: ID der Form in der Verbtabelle
+personid: ID der Person in der Verbtabelle
+withoutid: Ohne Tag oder Speicherplatz (tag/save)
+queryid: ID der aktuellen Abfrage
+searchid: Suchbegriff
+searchtext: Suchbegriff modifiziert
+keyoption: definierendes Schlüsselword
+page: Die Seite die geladen wird (ohne Endung)
+// weitere
+style: verwendeter CSS Style des Benutzers
+hints: 1 Falls Hinweise aktiviert sind
+language: Sprache (de/en)
+statuscount: Anzahl nicht beendeter Abfragen
+browser: Browser des Benutzers
+    ff: Firefox
+    gc: Google Chrome / Chromium
+    ie: Internet Explorer
+    sa: Safari
+    op: Opera
+    sm: SeaMonkey
+mobile: 1 Falls der Benutzer ein Mobiles Gerät verwendet
+url: Die aktuelle Adresse ohne den Host
+login: Fehlercode, bei login. 1 falls erfolgreich
+nregerr: Fehlercode, bei Registration. 1 falls erfolgreich
+forgot: Fehlercode, bei Passwort vergessen. 1 falls erfolgreich
+
+# Zugriff
+php: $here->username
+js: here.username
+
+# Funktionen
+In Javascript gibt es Funktionen, um die Inhalte von here zu bearbeiten. Auch wenn sich die Inhalte direkt bearbeiten lassen, sollten die Funktionen verwendet werden, weil dabei gleich einige Spezialfälle berücksichtigt werden.
+
+update_here({key:value, key:value, ..}); //ändere Inhalt
+Führt anschliessend gui_refresh_here(key); aus, falls diese Funktion existiert.
+
+clear_here([key, key, ...]); //lösche Inhalt
+
+## Sprache ##
+
+la - enthält alle Ausdrücke in der gewählten Sprache als Objekt.
+Bsp: $la['username'] gibt auf Deutsch "Benutzernamen" aus.
+Im Ordner /language befindet sich eine Datei für jede Sprache. Dort stehen alle Ausdrücke die man verwenden kann.
+Die Sprachdatei ist im besten Fall eine Javascript Datei. Kann aber auch .ini oder .php sein.
+
+-----------------------
+### Hilfsfunktionen ###
+
+Im Core sind einige Hilfsfunktionen definiert, die für die GUI hilfreich sein können.
+
+## PHP ##
+
+$here->path(level);
+Gibt URL bis zu level zurück. $here->path(); gibt die ganze URL aus.
+
+getlanguages();
+Gibt alle verfügbaren Sprachen als Array zurück.
+
+getgui();
+Gibt verfügbare GUIs als Array zurück.
+
+gettheme();
+Gibt verfügbare Styles als Array zurück.
+
+getlangkey(expr);
+Sucht nach expr in der Sprachdatei und gibt den entsprechenden Schlüssel zurück.
+
+q(id, add);
+Gibt ein Feld züruck. Wird für die Abfrageseite benötigt. In das Feld wird je nach id ein Inhalt gesetzt. Siehe dazu Abschnitt: Abfrage
+add ist eine zusätzliche css Klasse für das Element.
+
+Weitere Funktionen: Siehe core/php/functions.php und dbfunctions.php
+
+## Javascript ##
+
+path(level, params);
+oder
+path(params); //ganze URL
+Erzeugt URL bis zu level.
+params: {key: value, key: value} //Zu überarbeitende Einträge.
+
+validstr(str);
+Prüft str auf Klammerfehler. Gibt 0 zurück, falls Fehlerfrei und 1-6 für einen Fehler.
+
+errorpos(str);
+Gibt die Position des ersten Klammerfehlers zurück
+-1 falls kein Fehler gefunden wurde.
+
+Weitere Funktionen: core/javascript/functions.js
+
+--------------------------
+### Core-Schnittstelle ###
+
+Im Core werden einige Events (Javascript) ausgeführt, die an die GUI weitergeleitet werden können. Dazu muss man diese Funktionen im GUI definieren.
+
+gui_error(out);
+Wird aufgerufen, wenn im Core ein Fehler passiert. Falls diese Funktion nicht definiert ist, erscheint ein Alert.
+
+gui_request_error(info);
+Wird ausgeführt, wenn ein Fehler auftritt beim Ausführen eines Requests.
+info enthält dabei:
+  errnum: Fehlercode
+  errname: Fehlerbezeichung
+  lastquery: Zuletzt ausgeführt SQL-Anfrage
+  errloc: Ort des Fehlers (Funktion)
+Falls diese Funktion nicht existiert, wird gui_error() ausgeführt, oder ein Alert angezeigt.
+
+gui_ajaxcatch(num);
+Wird während eines Requests Mehrmals aufgerufen, wobei num dem aktuellen Status entspricht:
+0: Sofort nach dem Aufruf von req(...)
+1: Created
+2: Uninitialized
+3: Loading
+4: Loaded
+5: Interactive
+6: Complete
+7: Success
+8: Nach Aufruf der angegebenen Funktion nach dem Request
+Die Stadien 1-7 entsprechen jenen des Ajax.Responders vom Prototype Framework
+
+------------
+### HASH ###
+
+In Javascript ist es möglich via Ajax Seiten dynamisch zu laden.
+Hierzu gibt es einige Funktionen, die es ermöglichen, den URL hash zu bearbeiten, damit die Zurück Funktion des Browsers weiterhin korrekt funktioniert.
+ 
+onHashChange();
+Sollte einmal beim Laden der Seite aufgerufen werden um die Funktion zu aktivieren.
+Dadurch wird die URL jede Sekunde auf eine Veränderung geprüft.
+Wenn sich der Hash ändert wird HERE überarbeitet und gui_load_hash(); aufgerufen, falls diese Funktion definiert wurde.
+
+update_hash();
+Schreibt den Inhalt von HERE in den Hash. Diese Funktion sollte aufgerufen werden, nachdem man here bearbeitet hat und will, dass durch Klicken auf Zurück der vorherige Zustand wiederhergestellt wird.
+onHashChange() wird nicht ausgeführt, wenn der Hash so geändert wird!
+
+-------------------
+### Datenaufruf ###
+
+Daten können per Javascript oder in php aus der Datenbank geladen werden. Dazu stehen einige Funktionen zur Verfügung
+
+## in Javascript ##
+
+#Function:#
+req(function, parameter, action, passthrough)
+function: Name der Datenbankfunktion (s. Funktionen und Parameter)
+parameter: Parameter
+action: Aktion die vor/nach dem funktionsaufruf ausgeführt wird. Als String oder als Funktion. Falls es eine Funktion ist, wird diese mit den Parametern (info, params, passsthrough) aufgerufen.
+passthrough: Dieses Objekt wird direkt and die funktion von 'action' weitergegeben, jedoch nicht an den Server gesendet.
+
+#Parameter:#
+also Objekt: {varname:"value",varname2:"value2"}### Datenaufruf ###
+als String: "varname=value&varname2=value2"
+
+#Aktionen:#
+"action" - Aktion wird nach dem Funktionsaufruf ausgeführt
+["action"] - Aktion wird vor dem Funktionsaufruf ausgeführt
+["vor","nach"] - Aktion vor und nach aktionsaufruf
+
+Die Variable info enthält alle Rückgabewerte:
+info.wert1
+info.wert2 usw.
+
+Die Variable params enthält die gesendeten Parameter:
+params.wert1
+
+info und params können in den Aktionen als Argumente verwendet werden.
+info kann nur bei den Aktionen nach dem Funktionsaufruf verwendet werden, da es vorher leer ist.
+
+# Aufruf präparieren #
+
+Aufrufe können definiert werden und erst später ausgeführt werden
+
+rvar.create(storename[,functionname[,params[,action]]])
+storename ist der Variable des zwischengespeicherten Aufrufs. Weitere Parameter wie bei req() (optional).
+
+rvar.storename.addparams(params)
+Fügt Parameter (params) zum gespeicherten storename hinzu.
+
+rvar.storename.sendreq([params])
+Sendet den Aufruf ab und fügt params zu den Parametern hinzu (optional)
+
+rvar.storename.funct
+Beinhaltet functionname.
+
+rvar.storename.action
+Beinhaltet action.
+
+## in PHP ##
+
+request(function,parameter)
+function: Name der Datenbankfunktion (s. Funktionen und Parameter)
+parameter: Parameter
+
+Parameter:
+als Array: array('variablenname1'=>varibleninhalt1,'v2'=>1)
+
+Rückgabewerte können gespeichert werden:
+$result=request(function,parameter);
+Der Rückgabewert ist immer ein Array.
+
+--------------------------------
+### Funktionen und Parameter ###
+
+Folgende Funktionen können über request() bzw req() aufgerufen werden.
+
+#Karteien#
+function: get_reg
+parameter: [tregisterid], [tregistername], [gettime]
+return: id, name, count, [time]
+
+function: get_reg_info
+parameter: registerid
+return: groupcount, grouplock, language
+
+function: create_reg
+parameter: [newregister], [groupcount], [grouplock], [language]
+return: newregisterid, newregister
+
+function: edit_reg
+parameter: registerid, newregistername, newgroupcount, languageid, grouplock
+return: count, registername
+
+function: delete_reg
+parameter: registerid
+return: count
+
+#Wörter#
+function: get_word
+parameter: /global/, fromlim, tolim, timerange, nolimit, orderby
+return: registerid, wordfirst, wordfore, group, sentence, tagslist, wordclass, id, count, time_created
+
+function: create_word
+parameter: newwordfirst, newwordfore, newgroup, newsentence, newwordclass, newtags, registerid, force
+return: wordfirst, wordfore, sentence, group, wordclass, tagslist, id, count, words, similar
+
+function: edit_word
+parameter: twordid, newwordfirst, newwordfore, newgroup, newsentence, newwordclass, registerid
+return: count
+
+function: edit_multiword
+parameter: (wordid or (allmarked=1, /global/)) [,movetoreg] [,movetogroup]
+return: count
+
+function: delete_word
+parameter: wordid or (allmarked=1, /global/)
+return: count, deltags, delsave
+
+#Tags#
+function: get_tags
+parameter: registerid, [wordid], [limit]
+return: id, name, count
+
+function: add_tag
+parameter: registerid, newtag, (wordid or (allmarked=1, /global/))
+return: count - Anzahl hinzugefügte Tags
+        countrow - Anzahl hinzugefügte Spalten (Tags*Wörter)
+        tags - hinzugefügte Tagnamen
+        tagid - hinzugefügte Tag-IDs
+Beschreibung: fügt einen Tag zu einem oder mehrern Wörtern hinzu
+
+function: delete_tag
+parameter: tagid, (wordid or (allmarked=1, /global/))
+return: count
+
+#Speicherplätze#
+
+function: get_save
+parameter: registerid [,wordid]
+return: id, name, count
+
+function: create_save
+parameter: newsave, registerid, (wordid or (allmarked=1 ,/global/))
+return: wordid, savedid, count
+
+function: delete_save
+parameter: saveid
+return: count
+
+function: add_tosave
+parameter: newsaveid, (wordid or (allmarked=1, /global/))
+return: count
+
+function: delete_fromsave
+parameter: saveid, (wordid or (allmarked=1, /global/))
+return: count
+
+#Verben#
+function: get_verblist
+parameter: registerid
+return: verbfirst, verbfore, group, sentence, wordclass, id, count
+
+function: get_verb
+parameter: [wordid], [formid], [personid], [struc]
+return: struc==1: wordid, formid, personid, kword, id, count
+        else: verb-array*
+
+function: create_verb
+parameter: newverb, registerid, formid, personid, wordid
+return: count
+
+function: add_verb
+parameter: newkword, wordid, personid, formid
+return: verbid
+
+function: edit_verb
+parameter: verbid, newkword
+
+function: get_form
+parameter: registerid [,formid]
+return: formid, formname, count, info
+
+function: create_form
+parameter: newform, registerid
+return: form, formid, count
+
+function: edit_form
+parameter: formid, newform, newinfo
+return: count
+
+function: delete_form
+parameter: formid
+return: count
+
+function: get_person
+parameter: registerid [,personid]
+return: personid, personname, count, order
+
+function: create_person
+parameter: newperson, registerid
+return: person, personid, count
+
+function: edit_person
+parameter: personid, newperson, neworder
+return: count
+
+function: delete_person
+parameter: personid
+return: count
+
+#Benutzer#
+function: get_option
+parameter: -
+return: id, name, email, hints, theme, csstheme, language, headpic, time_created
+
+function: change_options
+parameter: newemail, newgui, newtheme, nnewhints, newlang
+return: -
+
+function: change_password
+parameter: newpassword, oldpassword
+return: -
+
+function: import
+parameter:[in Arbeit]
+return: count, erraff
+
+function: delete_import
+parameter: -
+return: success
+
+function: user_login
+parameter: username, password
+return: login, userid
+
+function: user_logout
+parameter: -
+
+#Abfrage#
+function: get_active
+parameter: -
+return: [in Arbeit]
+
+function: create_active
+parameter: wordid or (allmarked=1, /global/) [,activename]
+
+function: create_active_verb
+parameter: forms, persons, verbs, allforms, allpersons, allverbs, registerid [,name]
+return: name, id, savedid, count
+
+function: update_active
+parameter: queryid, wordid, result, nextid, answer, uncorr
+return: word, mode, oldgroup
+
+Die folgenden Funktionen sollten in der GUI kaum vorkommen, da die Abfrage über die query.js im core ausgeführt wird.
+
+function: get_query
+parameter: queryid
+return: registerid, total, done, correct, word, mode, wrong
+
+function: query_cancel
+parameter: queryid
+return: -
+
+function: query_restart
+parameter: queryid, wrong
+return: -
+
+function: query_save
+parameter: newsavename, registerid, queryid, wrong
+return: savedid, count
+
+function: change_mode
+parameter: queryid, chwhat
+return: chmode
+chwhat: 0 - Fachmodus ändern
+        1 - Richtung ändern
+
+function: correction
+parameter: queryid, corrid, ngroup
+return: -
+
+## Globale Parameter ##
+
+zu /global/ gehören alle Variablen, welche den Standort ausdrücken, also:
+register
+group
+save
+tag
+wordclass
+search
+form
+person
+word
+
+id - suffix für ids
+new - präfix für namen neue Objekte
+
+## Fehler ##
+Eine Liste der Fehler die allgemein Auftreten.
+errors: 100 - No Permission
+        101 - Function Not Found
+        102 - Entry Not Found
+        103 - Entry Not Created
+        104 - Duplicate Entry
+        105 - Importfile Not Found
+        200 - Missing Parameter
+        300 - MySQL Error
+        400 - Other Error
+
+---------------------
+### Query/Abfrage ###
+
+## Query-Engine ##
+
+Abfragen laufen über die /Query-Engine/ in JavaScript. Diese kann mit qe aufgerufen werden.
+
+# Funktionen #
+
+qe.start() - lädt eine Abfrage aus der Datenbank (erneut). Wird automatisch aufgerufen, wenn das /keyword/ 'query' geladen wird.
+qe.send() - prüft und sendet eine Antwort. Lädt die nächste Frage und zeigt sie an. Gibt immer 'false' zurück.
+qe.skip() - Überspringt eine Frage. Lädt die nächste Frage und zeigt sie an.
+qe.correction() - Setzt das Ergebnis der zuletzt beantworteten Frage auf 'Richtig'.
+
+## Modi ## (mode,modus)
+
+Es existieren diese Abfragemodi:
+0 Abgefragte Wörter bleiben im ursprünglichen Fach.  Deutsch > Fremdsprache
+1 Abgefragte Wörter bleiben im ursprünglichen Fach.  Fremdsprache > Deutsch
+2 Abgefragte Wörter werden ins nächste bzw. erste Fach gelegt.  Deutsch > Fremdsprache
+3 Abgefragte Wörter werden ins nächste bzw. erste Fach gelegt.  Fremdsprache > Deutsch
+4 Verben
+
+## Oberfläche gestalten ##
+
+Zur gestaltung der Oberfläche in query.php gibt es zwei wesentliche Funktionen.
+
+# Variablenfeld # // q(id) 
+
+Variablenfelder sind Felder in welchen bestimmte Variablen angezeigt werden können. Diese Felder werden in php mit der Funktion q(id) erzeugt. Bsp: <?=q('done'); ?>
+
+Dabei sind folgende ids möglich:
+done - Zeigt wieviele Fragen bereits beantwortet wurden.
+total - Zeigt wieviele Fragen gesamthaft in dieser Abfrage enthalten sind.
+correct - Zeigt wieviele Fragen bisher richtig beantwortet wurden.
+wrong - Zeigt einen Link, über welchen alle falschen Antworten dieser Abfrage angezeigt werden.
+percent - Zeigt wieviel Prozent biser richtige beantwortet wurde.
+thisword - Zeigt die aktuelle Frage.
+lastword - Zeigt die vorherige Frage.
+lastresult - Zeigt die vorherige richtige Antwort.
+lastanswer - Zeigt, welche Antwort zuletzt eingegeben wurde.
+qquestion - Zeigt den Label für die Frage, entsprechend dem Modus.
+qanswer - Zeigt den Label für die Antwort, entsprechend dem Modus.
+modeinfo - Zeigt an ob das Wort im gleichen Fach bleibt oder verschoben wird und gibt einen Link um dies zu ändern*.
+modeinfodir - Zeigt an in welche Richtung die Abfrage läuft und gibt einen Link um dies zu ändern*.
+
+*Der Link funktioniert nur, solange noch keine Antwort abgesendet wurde.
+
+# Spezielle Klassen #
+
+Mit bestimmten Klassen (class) kann die Sichbarkeit eines Elements gesteuert werden. Diese Klassen sind folgende:
+
+q_fin - Wird angezeigt, we-------------------------nn die Abfrage beendet wurde und die Resultate verlangt werden.
+q_run - Wird angezeigt, solange die Abfrage noch läuft.
+
+-mx - wird unsichtbar wenn der Abfragemodus x ist. Anstelle von x muss die entsprechende Zahl stehen.
+-w - wird unsichtbar, wenn alle Fragen richtig beantwortet wurden.
+r - wird sichtbar, wenn letzte Frage richtig beantwortet wurde.
+-r - wird unsichtbar, wenn letzte Frage richtig beantwortet wurde.
+f - wird sichtbar, wenn alle Fragen beantwortet wurden.
+-f - wird unsichtbar, wenn alle Fragen beantwortet wurden.
+s - ist nur sichtbar, wenn noch keine Frage beantwortet wurde.
+
+Bsp:
+<div class="-w">Alles Richtig!</div>
+
+-------------------
+### XML-Formate ###
+
+## Im-/Export ##
+
+Für im- und Export wird eine XML Datei mit folgendem Aufbau verwendet.
+
+# Aufbau #
+
+<xmlexport name="" version="">
+  <user id="" name="" password="(md5)" email="" gui="" theme="" time=""/>
+  <registerlist>
+    <register id="" name="" groupcount="" grouplock="" language="" time=""/>
+    ...
+  </registerlist>
+  <wordlist>
+    <word id="" registerid="" groupid="" wordfirst="" wordfore="" sentence="" wordclassid="" time=""/>
+    ...
+  </wordlist>
+  <taglist>
+    <tag id="" name="" registerid=""/>
+    ...
+  </taglist>
+  <tags>
+    <tag wordid="" tagid=""/>
+    ...
+  </tags>
+  <savelist>
+    <save id="" name="" registerid=""/>
+    ...
+  </savelist>
+  <saves>
+    <save wordid="" saveid=""/>
+    ...
+  </saves>
+  <formlist>
+    <form id="" registerid="" name="" info=""/>
+    ...
+  </formlist>
+  <personlist>
+    <person id="" registerid="" name="" order=""/>
+    ...
+  </personlist>  
+  <verblist>
+    <verb id="" wordid="" personid="" formid="" kword="" regular="" time=""/>
+  </verblist>
+</xmlexport>
+
+
+## Content ##
+
+# Aufbau #
+
+<content title="" language="">
+  <links>
+    <link dest=""></link>
+  </links>
+  <body>
+    <section title="">
+      <title></title>
+      <text></text>
+    </section>
+  </body>
+</content>

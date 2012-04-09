@@ -1,0 +1,1 @@
+java -jar compiler.jar --js=gui_functions.js  --js=gui_search.js --js=gui_help.js --js=../localjs/import.js --js=../localjs/show.js --js=../localjs/verblist.js --js=../localjs/verbshow.js --js=../localjs/queryl.js --js=../localjs/settings.js --js=../localjs/content.js --js_output_file=gui.js

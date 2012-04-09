@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content title="about" language="de">
+  <links>
+    <link dest="home">Startseite</link>
+  </links>
+  <body>
+    <section title="projectLK">
+      <title>Über ProjectLK</title>
+      <text><![CDATA[
+        ProjectLK ist die Weiterführung von LKO - Lernkartei Online.<br>
+        Die Idee ist es, das Konzept der <a href="http://de.wikipedia.org/wiki/Lernkartei">Lernkartei nach Sebastian Leitner</a> als Webanwendung verfügbar zu machen. Nachdem die alte Version über alle grundlegenden Funktionen verfügte, entschied ich, das Projekt nochmal sauber aufzubauen. Daraus entstand dann ProjectLK.<br>
+        Da ich an diesem Projekt nur gelegentlich arbeite(te) (wenn ich gerade Lust dazu habe) ging das Projekt nur langsam voran, aber es kam voran und ist nun so weit fertig, dass man es im Rahmen einer "Private Beta" testen kann.
+        ProjectLK basiert auf den Programmiersprachen PHP und Javascript und verwendet MySQL als Datenbank. Die einzigen Kosten, welche ProjectLK mit sich bringt sind die Kosten für den Server. Ansonsten wurden keine kommerziellen Technologien verwendet. Aus diesem Grund wird das Projekt als ganzes als Open-Source zur Verfügung gestellt, sobald die Beta-Phase abgeschlossen ist.
+      ]]></text>
+    </section>
+    <section title="me">
+      <title>Über Mich</title>
+      <text><![CDATA[
+        Das Projekt wurde von mir, David Glenck, geplant und entwickelt. Ich habe keine Kurse zu <i>Webdevelopping</i> belegt. Was ich über dieses Thema weiss, habe ich im Internet gesucht und gelernt.<br><br>
+        Name: David Glenck<br>
+        E-mail: pascal.free@gmail.com<br>
+        Homepage: <a href="http://www.ihdg.ch">www.ihdg.ch</a>
+      ]]></text>
+    </section>
+  </body>
+</content>
