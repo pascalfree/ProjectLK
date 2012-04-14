@@ -1633,8 +1633,16 @@ function position_dropdown() {
   var view = document.viewport.getDimensions();
   var ddim = dropdown.getDimensions();
   //position (stay in window)
+  var top = 0;
+  if(view.height >= local.mouseY + ddim.height) { //under mouse
+    top = local.mouseY;
+  } else if(0 < local.mouseY - ddim.height) { //over mouse
+    top = local.mouseY-ddim.height;
+  }else { //20120409 - fix : on top of the page because its very large
+    top = 5;
+  }
   dropdown.setStyle({ 
-    top : (view.height<local.mouseY+ddim.height ? local.mouseY-ddim.height : local.mouseY)+'px' ,
+    top : top+'px' ,
     left : (view.width<local.mouseX+ddim.width ? local.mouseX-ddim.width : local.mouseX)+'px' 
   });
 }

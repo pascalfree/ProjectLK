@@ -196,7 +196,6 @@ CREATE TABLE IF NOT EXISTS `lk_user` (
   `gui` varchar(24) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'default',
   `theme` varchar(24) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'modern',
   `language` varchar(5) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'de',
-  `hpic` text COLLATE utf8_unicode_ci NOT NULL,
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),

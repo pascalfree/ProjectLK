@@ -5,6 +5,8 @@ English
 -----------------
 INSTALL PROJECTLK
 -----------------
+0. REQUIREMENTS
+- "allow override" and "mod_rewrite" for .htaccess
 
 1. MYSQL
 - Setup an empty MySQL-database on your server

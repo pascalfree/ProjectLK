@@ -1,0 +1,56 @@
+==========
+| README |
+==========
+
+About ProjectLK
+===============
+ProjectLK is a web based open source application for managing digital text based flash cards with the focus on vocabulary.
+It's designed after the Leitner System [http://en.wikipedia.org/wiki/Leitner_System], but it also offers the possibility to review the cards in any way you want.
+Additionally verbs can be listed in tables of conjugations and also be reviewed.
+It uses MySQL, PHP and Javascript.
+
+---
+
+Demo
+====
+coming soon
+
+---
+
+Insallation
+===========
+see INSTALL.txt
+
+---
+
+Documentation
+=============
+Wiki: coming soon
+see doc/docdev.txt
+
+---
+
+Authors
+=============
+David Glenck - dev@ihdg.ch
+prototype.js : http://prototypejs.org/
+closure compiler : https://developers.google.com/closure/compiler/
+
+---
+
+License
+=======
+Copyright (C) 2012  David Glenck
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>

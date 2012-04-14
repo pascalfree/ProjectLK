@@ -23,11 +23,11 @@
 
     //every word is marked: get them by global parameters
     if($allmarked) { 
-       $wordid=NULL;
-       $params=getglobal();
-       $params['nolimit']=1;
-       $words=request('get_word', $params);
-       if( $words['errnum']!=0 ) { $go->error(400,$words['errnum'].': '.$words['errname']); } //Error 400
+       $wordid = NULL;
+       $params = getglobal();
+       $params['nolimit'] = 1;
+       $words = request('get_word', $params);
+       if( $words['errnum'] != 0 ) { $go -> error(400, $words['errnum'].': '.$words['errname']); } //Error 400
        $wordid=$words['id'];
     }
   }

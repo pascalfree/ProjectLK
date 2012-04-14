@@ -118,7 +118,7 @@ $here = new place($url);
 if( $_REQUEST['login'] == 1 ) {
   $login = request( 'user_login',
     array('username' => $_REQUEST['username'], 
-          'password'=>$_REQUEST['password'])
+          'password'=> $_REQUEST['password'])
   );
   $here -> login = $login['login'];
 //logout user
@@ -140,8 +140,8 @@ if( $_REQUEST['login'] == 1 ) {
 //forgot password
 } else if($_REQUEST['forgot'] == 1) {
   $forgot = request( 'user_forgot',
-      array( 'username'=>$_REQUEST['username'], 
-      'email'=>$_REQUEST['email'])
+      array( 'username' => $_REQUEST['username'], 
+             'email' => $_REQUEST['email'])
   );
 
   if( $forgot['found'] == 0 ) { $here -> forgot = 102; } //if nothing found

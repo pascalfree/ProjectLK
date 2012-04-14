@@ -344,7 +344,7 @@ class place{
     }
 
     //get username
-    if( 0 < $level ) {
+    if( 0 < $level && $this -> user -> id !== NULL ) {
       $path[] = $this -> user -> name .'/';
     }
     //go through and fill

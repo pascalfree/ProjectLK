@@ -217,6 +217,9 @@ table#wordlist tr {
   padding: 5px;
   z-index: 99;
   background-color:white;
+  /*20120409 - fix : too hight to show*/
+  max-height: 95%;
+  overflow-y: auto;
 }
 
 #popup {
@@ -232,7 +235,7 @@ table#wordlist tr {
   border: 1px solid black; 
   padding: 5px;
   background-color:white;
-  z-index: 99;
+  z-index: 50;
 }
 
 .popup_inner {

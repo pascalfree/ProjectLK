@@ -3,7 +3,7 @@
 
 function change_settings() {
   //shutter
-  do_shutter();
+  do_shutter(1);
 
   //serialize
   var settings = $('settings_form').serialize(true);
@@ -18,8 +18,8 @@ function change_settings() {
       location.reload();
     } else {
       //error occured
-      if( la[ 'err_'+info.errnum ] ) {
-        do_info( la[ 'err_'+info.errnum ] );
+      if( la[ 'err_' + info.errnum ] ) {
+        do_info( la[ 'err_' + info.errnum ] );
       }
     }
 
@@ -29,7 +29,7 @@ function change_settings() {
 
 function change_password() {
   //shutter
-  do_shutter();
+  do_shutter(1);
 
   //serialize
   var password = $('password_form').serialize(true);

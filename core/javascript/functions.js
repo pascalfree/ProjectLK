@@ -357,7 +357,7 @@ function path(setlevel, params) {
 
   var pathval='';
   //add username
-  if( 0 < pathparams.type.length ) {
+  if( 0 < pathparams.type.length && you.id !== null) {
     pathval += you['name'] + '/';
   }
   //go through an fill

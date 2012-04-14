@@ -53,7 +53,7 @@ class managerr{
   private $sqlnum=0;
 
   //Constructor: with functionname and params
-  function __construct($function,$params=NULL) {
+  function __construct($function, $params = NULL) {
     $this->errloc=$function;
     if(is_array($params)) {
       foreach($params as $name => $val) { 
@@ -132,7 +132,8 @@ class managerr{
 
   //returns true if no error occured yet.
   public function good() {
-    if($this->errnum==0) { return 1; } else { return 0; }
+    return $this -> errnum == 0 ? true : false;
+    //if($this->errnum==0) { return 1; } else { return 0; }
   }
 
   //does a mysql query. errnumber is to specify a query, making debuging easier.
@@ -167,7 +168,7 @@ class managerr{
 
   //adds a custom error with errorcode ($num) and custom or default errormessage ($name)
   public function error($num, $name=NULL) {
-    $this->errnum=$num;
+    $this -> errnum=$num;
     switch($num) {
       case 100: $this->errname='No Permission.'; break;
       case 101: $this->errname='Function Not Found.'; break;
@@ -190,7 +191,7 @@ class managerr{
   }
 
   //Put out the error info as an array
-  public function geterr($ret=NULL) {
+  public function geterr( $ret = NULL ) {
     $ret['errnum']=$this->errnum;
     if($this->errnum!=0) {
       $ret['errname']=$this->errname;

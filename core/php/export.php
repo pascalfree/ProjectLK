@@ -35,9 +35,9 @@ else {
   $verblist=request('get_verb',array('wordid'=>$wordlist['id'],'struc'=>1));
 
   //Write XML
-  echo '<xmlexport name="'.P_NAME.'" version="'.P_VERSION.'">';
+  echo '<xmlexport name="'.P_NAME.'" version="'.P_VERSION.'">\n';
     //User
-    echo '<user id="'.$user['id'].'" name="'.u($user['name']).'" password="'.$_SESSION['lk_userpwmd5'].'" email="'.u($user['email']).'" theme="'.$user['theme'].'" gui="'.$user['gui'].'" time="'.$user['time_created'].'"/>';
+    echo '<user id="'.$user['id'].'" name="'.u($user['name']).'" email="'.u($user['email']).'" theme="'.$user['theme'].'" gui="'.$user['gui'].'" time="'.$user['time_created'].'"/>';
     //register
     echo '<registerlist>';
       for($i=0;$i<$register['count'];$i++) {
@@ -88,7 +88,7 @@ else {
     //formlist
     echo '<formlist>';
     for($i=0;$i<$register['count'];$i++) {
-      $formlist=request('get_form',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
+      $formlist = request('get_form',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
       for($j=0;$j<$formlist['count'];$j++) {
         echo '<form id="'.$formlist['formid'][$j].'" name="'.u($formlist['formname'][$j]).'" registerid="'.$register['id'][$i].'" info="'.$formlist['info'][$j].'"/>';
       }
@@ -96,8 +96,8 @@ else {
     echo '</formlist>';
     //personlist
     echo '<personlist>';
-    for($i=0;$i<$register['count'];$i++) {
-      $personlist=request('get_person',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
+    for($i=0;$i < $register['count'];$i++) {
+      $personlist = request('get_person',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
       for($j=0;$j<$personlist['count'];$j++) {
         echo '<person id="'.$personlist['personid'][$j].'" name="'.u($personlist['personname'][$j]).'" registerid="'.$register['id'][$i].'" order="'.$personlist['order'][$j].'"/>';
       }
@@ -105,10 +105,11 @@ else {
     echo '</personlist>';
     //verblist
     echo '<verblist>';
-      for($i=0;$i<$verblist['count'];$i++) {
+      for($i=0;$i < $verblist['count'];$i++) {
         echo '<verb id="'.$verblist['id'][$i].'" wordid="'.$verblist['wordid'][$i].'" personid="'.$verblist['personid'][$i].'" formid="'.$verblist['formid'][$i].'" kword="'.u($verblist['kword'][$i]).'" regular="'.$verblist['regular'][$i].'" time="'.$verblist['time_created'][$i].'"/>';
       }
     echo '</verblist>';
   echo '</xmlexport>';
 }
+die;
 ?>

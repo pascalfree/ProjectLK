@@ -19,7 +19,7 @@ function after_send_add_0_form_showverb(info,params) {
       nparams['json'] = 1;
 
       //add title first for each added form //form is always a column
-      for(var j=0; j<info.count; j++) {
+      for(var j = 0; j < info.count; j++) {
         nparams['parameters'] = '['+info.newid[j]+',"'+info.newname[j]+'","form",null,"form_'+info.newid[j]+'_remove",["show","hr","edit","delete"]]';
         req('get_function',nparams, function(info) {
           appender(info.output, 'form', $$(".tabhead")[0], "bottom");
@@ -29,11 +29,11 @@ function after_send_add_0_form_showverb(info,params) {
       //determine location. table of person and of verbs have form as column
       if(here.wordid != null) { //wordid is king
         //count lines and get personid from <tr> id
-        var person=read_count_id('[id^="tr_person_"]', 10);
+        var person = read_count_id('[id^="tr_person_"]', 10);
         //each added form
-        for(var j=0; j<info.count; j++) {
+        for(var j = 0; j < info.count; j++) {
           //walk through lines
-          for(var i=0; i<person['count']; i++) {
+          for(var i = 0; i < person['count']; i++) {
             nparams['parameters'] = '["v'+here.wordid+'_p'+person.id[i]+'_f'+info.newid[j]+'","","kword",['+here.wordid+','+person.id[i]+','+info.newid[j]+'],"form_'+info.newid[j]+'_remove",["edit"]]';
             //load html and append at the end of every line
             req('get_function',nparams,function(info,p,s) {
@@ -44,14 +44,14 @@ function after_send_add_0_form_showverb(info,params) {
 
       } else if(here.personid != null) { //personid is king
         //count lines and get personid from <tr> id
-        var verb=read_count_id('[id^="tr_verb_"]', 8);
+        var verb = read_count_id('[id^="tr_verb_"]', 8);
         //walk through lines
-        for(var i=0; i<verb['count']; i++) {
+        for(var i = 0; i < verb['count']; i++) {
           nparams['parameters'] = '["v'+verb.id[i]+'_p'+here.personid+'_f'+info.newid+'","","kword",['+verb.id[i]+','+here.personid+','+info.newid+'],"form_'+info.newid+'_remove",["edit"]]';
           //load html and append at the end of every line
           req('get_function',nparams, function(info,p,s) {
             appender(info.output, 'kword', $$("[id^='tr_verb']")[ s ], "bottom");
-          });
+          }, i);
         }
       }
 

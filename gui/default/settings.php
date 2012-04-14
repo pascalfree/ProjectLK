@@ -26,7 +26,7 @@ echo $la['gui'],': <select size=1 name="newgui">';
 $len=count($guis);
 for($i=0;$i<$len;$i++) {
   echo '<option ';
-  if($guis[$i]==$options['gui']) { echo 'selected'; }
+  if($guis[$i] == $options['gui']) { echo 'selected'; }
   echo '>'.$guis[$i].'</option>';
 }
 echo '</select><br>';
@@ -35,7 +35,7 @@ echo $la['theme'],': <select size=1 name="newtheme">';
 $len=count($subthemes);
 for($i=0;$i<$len;$i++) {
   echo '<option ';
-  if($subthemes[$i]==$options['theme']) { echo 'selected'; }
+  if($subthemes[$i] == $options['theme']) { echo 'selected'; }
   echo '>'.$subthemes[$i].'</option>';
 }
 echo '</select><br>';
@@ -44,10 +44,11 @@ echo $la['language'],': <select size=1 name="newlang">';
 $len=count($languages);
 for($i=0;$i<$len;$i++) {
   echo '<option ';
-  if($languages[$i]==$options['language']) { echo 'selected'; }
+  if($languages[$i] == LANG) { echo 'selected'; } //20120409 fix : use LANG constant (visible language)
   echo '>'.$languages[$i].'</option>';
 }
 echo '</select><br>';
+echo LANG;
 echo '<input type="submit" value="'.$la['save'].'">';
 echo '<input type="reset" value="'.$la['reset'].'">';
 

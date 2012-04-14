@@ -1,18 +1,12 @@
-# DATABASE CHANGE
-- none
-
-# Current
-- local.current wurden zu grossen Teilen entfernt -> testen!!
-- Testen!
+TODO
 
 # Release
-%Automatisch (make_release.sh)
-- javascript kompilieren
+- Alles kopieren
+- javascript kompilieren (make)
 - (php: alle kommentare entfernen)
 - ordner löschen: compiler, release, doc
-- Dateien löschen: unkompilierte js, compiler
+- Dateien löschen: unkompilierte js
 - bilder "leeren" (.xcf)
-%Manuell
 - release = 1
 - debug = 0
 - content "leeren"
@@ -20,8 +14,7 @@
 - .htaccess "leeren"
 
 # Todo
-- update modern.css
-- modern_ie.css überarbeiten
+- _basic_ie.css überarbeiten
 - Veröffentlichen
 
 # Bugs - 07.04.2012
@@ -29,8 +22,6 @@ DATE - Description
 
 # Papercuts
 - Übersicht macht kein automatisches Update (wenn neuer Tag hinzugefügt wird)
-- Komma entfernen falls keine Wörter ohne Tag.
-- bei erster änderung der Einstellungen: Sprache Englisch
 - Link zu "Wort hinzufügen", steht erneut, falls Seite Wort hinzufügen neu geladen wird
 
 # Grundsätze
@@ -66,6 +57,7 @@ DATE - Description
 - install file
 
 # fixed
+- bei erster änderung der Einstellungen: Sprache Englisch
 20120408 - ähnliche Wörter vergleichen
 20120407.3 - show error, when storage with the same name already exists. In query.
 20120407.2 - too many options when searching everywhere (e.g. overview)

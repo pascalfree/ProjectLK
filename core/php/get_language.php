@@ -24,7 +24,7 @@ if($tla == NULL) {
   if( $cc == 0 ) { //if language came from url -> save to session
      $_SESSION['lk_language'] = $tla[0];
      unset($url_l[count($url_l)-1]);
-     unset($url_l[count($url_l)-2]);
+     unset($url_l[count($url_l)-1]); //yes twice.
      $url = implode('/', $url_l); //cut from $url
   }
   //define language globaly

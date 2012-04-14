@@ -287,5 +287,6 @@ err_234: "Kein Passwort eingegeben. ",
 err_236: "Bitte Passwort wiederholen. ",
 err_237: "Bitte gib einen Benutzernamen ein. ",
 err_238: "Bitte gib deine E-Mail ein. ",
-err_250: "Für die gewählte kombination wurden keine Verben gefunden. "
+err_250: "Für die gewählte kombination wurden keine Verben gefunden. ",
+err_404: "Seite nicht gefunden. "
 }
