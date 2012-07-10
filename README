@@ -17,6 +17,20 @@ coming soon
 
 ---
 
+Release & Developer Version
+===========================
+There are 2 versions of this code. The first version, the developer version, provides all code and files in a readable and uncompressed format. In the release version the javascript part of the code is compressed with the closure compiler and unused .xcf image files are removed. Also the javascript compiler is removed. 
+Both versions can be installed in the same way as described in INSTALL.txt.
+In order to convert a developer version into a release version these steps must be followed:
+
+1. copy everything into a seperate folder
+2. inside that folder compile javascript by using the make command in the terminal.
+3. delete the folder "compiler"
+4. delete all uncompiled javascript files
+5. delete all .xcf image files
+6. inside config.php set release = 1 and debug = 0.
+A more detailed description can be found in the wiki
+
 Insallation
 ===========
 see INSTALL.txt
@@ -33,13 +47,15 @@ see doc/docdev.txt
 Authors
 =============
 David Glenck - dev@ihdg.ch
-prototype.js : http://prototypejs.org/
+prototype.js : Sam Stephenson - http://prototypejs.org/
 closure compiler : https://developers.google.com/closure/compiler/
 
 ---
 
 License
 =======
+All parts of the code, except for those mentioned below, are licenced under the GNU GPL v3.
+
 Copyright (C) 2012  David Glenck
 
     This program is free software: you can redistribute it and/or modify
@@ -54,3 +70,15 @@ Copyright (C) 2012  David Glenck
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+--
+closure compiler:
+In folder: /compiler/
+Licence: Apache License, Version 2.0
+
+--
+prototype.js
+In folder: /core/javascript/library/
+Licence: MIT
+
+---

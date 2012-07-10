@@ -3,7 +3,7 @@ load_head(link_back());
   
   if($here->formid!=NULL) {
     //Form
-    $forminfo=request('get_form',(array) $here);
+    $forminfo = request('get_form',(array) $here);
     ?>
 	  <div class="middlebox">
       <span class="title"><?=$la['edit']; ?></span>
@@ -11,7 +11,7 @@ load_head(link_back());
 	      <table style="float:right;">
 		      <tr>
 		        <td><label for="newform"><?=$la['name'] ?>:</label></td>     
-            <td><input type="text" name="newform" value="<?=$here->formname ?>"></td> 
+            <td><input type="text" name="newform" value="<?=$forminfo['name'][0] ?>"></td> 
 			    </tr>	
 			    <tr>
 		        <td class="satzlabel"><label for="newinfo"><?=$la['info'] ?>:</label></td> 
@@ -26,13 +26,13 @@ load_head(link_back());
     <?php
 	} elseif($here->registerid!=NULL) {
 	  //Edit register
-    $reginfo=request('get_reg_info',array('registerid' => $here->registerid));
-    $grouplock=explode('?', $reginfo['grouplock']);
+    $reginfo = request('get_reg_info',array('registerid' => $here->registerid));
+    $grouplock = explode('?', $reginfo['grouplock']);
     ?>
       
     <div class="middlebox">
       <span class="title"><?=$la['edit']; ?></span>
-	    <form id="edit_reg_form" name="edit_reg_form" method="POST" action="<?=$here->path(2); ?>" onsubmit="javascript: return req('edit_register',this.serialize(true), [function(){ do_shutter(1); } ,function() {location.reload();}])">
+	    <form id="edit_reg_form" name="edit_reg_form" method="POST" action="<?=$here->path(2); ?>" onsubmit="return req('edit_register',$(this).serialize(true), [function(){ do_shutter(1); } ,function() {location.reload();}])">
 	      <table>
 		      <tr>
 			      <td><?=$la['name'] ?>: </td>

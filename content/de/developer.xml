@@ -12,7 +12,7 @@
     </section>
     <section title="contribute">
       <title>Mitwirken</title>
-      <text><![CDATA[Da dieses Projekt als Freizeitprojekt begann und immernoch weitergeführt wird, beschränkt sich die Anzahl der Entwickler zurzeit auf 1. Die Dokumentation beschränkt sich auf eine kleine Einführung in die Entwicklung von GUIs und bisher existiert keine Plattform für dieses Projekt. Trotzdem, steht der dokumentierte Code unter der GPL zum Download bereit. Es steht also jedem frei das Projekt selbst fortzuführen. Ich würde mich in diesem Fall auch über Rückmeldungen freuen.]]></text>
+      <text><![CDATA[Der Quellcode von ProjectLK ist auf <a href="https://github.com/pascalfree/ProjectLK/">github</a> verfügbar. Alle nötigen informationen für die Mitarbeit an ProjectLK finden sich ebenfalls dort.]]></text>
     </section>
     <section title="structure">
       <title>Aufbau</title>

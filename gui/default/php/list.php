@@ -62,8 +62,8 @@ function list_generic($type, $options='', $list=0) {
 //////////
 //GROUP
 
-function ajax_list_group($r,$h) { return list_group($r,$h); }
-function list_group($registerid, $hints) {
+function ajax_list_group($r) { return list_group($r); }
+function list_group($registerid) {
   global $la;
 ?>
   <div class="contentbox" id="group_content">
@@ -94,9 +94,14 @@ function list_group($registerid, $hints) {
           elseif( $j-$groupcount==2 ) { $i='ar'; $text=$la['ar']; } //ar
           else { $i=$j; $text=$la['group'].' '.$i; } //number
 
-          $index = array_search($i, $wordnum['groupid']);          
+          if( NULL !== $wordnum['groupid'] ) {
+            $index = array_search($i, $wordnum['groupid']);  
+          } else {
+            $index = false;
+          }
+        
           if( $index===false ) { $fullcount = 0; }
-          else { $fullcount=$wordnum['wordcount'][$index]; }
+          else { $fullcount = $wordnum['wordcount'][ $index ]; }
           $c = $fullcount > 0;
           if($i>1) { //show grouplock
             $plus='/<span id="grouplock_'.$i.'" class="grouplock_'.$i.'">'.$grouplock[$i-2].'</span>'; 
@@ -112,7 +117,7 @@ function list_group($registerid, $hints) {
 
           //help link for grouplock
           if($i == 2) {
-            echo link_help('grouplock', $hints);
+            echo link_help('grouplock');
           }
 
           //options

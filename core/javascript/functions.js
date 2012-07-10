@@ -178,15 +178,15 @@ function clear_here( ids ) {
 // Tools for database interaction, espacially requests
 
 //Requests information from DB
-function req(functionname,params,action,passthrough) {
+function req( functionname, params, action, passthrough ) {
   try {
     //Prepare parameters
     ajaxcatch(0);
     if( typeof params === 'string' ) {
       params=params.toQueryParams();
     }
-    params.req = 1; //Add req=1 to parameters
-    params.response = 1; //Add respopnse=1 to parameters
+    params.req = 1; //Add req = 1 to parameters
+    params.response = 1; //Add response = 1 to parameters
 
     //check if a ante-function is defined and execute
     if( typeof action === 'object' ) {
@@ -461,7 +461,7 @@ function fill_array(value, len) {
 //DEBUGGING
 var debug = {
   warning: function(msg) {
-    if(DEBUG) {
+    if(DEBUG && typeof console !== 'undefined') { //FIX: IE != 'undefined'
       console.log('WARNING in Function "'+arguments.callee.caller.name+'":\n'+msg);    
     }
   }

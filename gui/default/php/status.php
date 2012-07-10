@@ -17,7 +17,11 @@
 
 function status_info() {
   global $here, $you, $la;
-  $active = request('get_active');
+
+  if( $here->page == 'query' ) {
+    $param = array( 'nodelete' => 1 ); //fix: don't delete any active query if this is active
+  }
+  $active = request('get_active', $param);
   $len = $active['count'];
   $qrs = '<ul class="statuslist">';
   for ( $i = 0; $i < $active['count']; $i++) {

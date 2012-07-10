@@ -6,7 +6,7 @@
 //core
 //description: global functions that are also availible in the databasefunction files.
 //Author: David Glenck
-//Licence: GNU General Public Licence (see licence.txt in Mainfolder)
+//Licence: GNU General Public Licence v3 (see licence.txt in Mainfolder)
 //////////////////////////////
 
 ///////////
@@ -17,12 +17,13 @@
 ////////////
 //REQUEST
 //Loads information from DB
-function request($function,$params=NULL) {
+function request( $function, $params = NULL ) {
 
   //Parse Params
   if(is_array($params)) {
     foreach($params as $name => $val) { 
-      $$name=mres($val);
+      //--$$name = mres($val); //TODO: remove that
+      ${'arg_' . $name} = mres( $val );
     }
   }
 
@@ -58,7 +59,7 @@ class managerr{
     if(is_array($params)) {
       foreach($params as $name => $val) { 
         if($val!=NULL AND $val!='') {
-          $this->params[$name]=1;
+          $this->params[ $name ]=1;
         }
       }
     }
@@ -102,14 +103,14 @@ class managerr{
 
   //Checks for necessary parameters. Give Error if missing.
   public function necessary() {
-    $params=func_get_args();
+    $params = func_get_args();
     foreach($params as $val) { 
       if(is_array($val)) { //OR-function. one of some parameters is necessary
         foreach($val as $orval) { 
-          global $$orval;   
-          $isgiven=0;
+          global ${'arg_' . $orval};   
+          $isgiven = 0;
           //First is for javascript and second for php requests!!
-          if(($$orval!=NULL AND $$orval!='') OR $this->params[$orval]==1 ) { 
+          if((${'arg_' . $orval} != NULL AND ${'arg_' . $orval} != '') OR $this->params[$orval] == 1 ) { 
             $isgiven=1; break;
           }    
         }
@@ -119,9 +120,9 @@ class managerr{
           break;
         }
       } else {  //normal case
-        global $$val;
+        global ${'arg_' . $val};
         //First is for javascript and second for php requests!!
-        if(($$val==NULL OR $$val=='') AND $this->params[$val]!=1 ) { 
+        if((${'arg_' . $val} == NULL OR ${'arg_' . $val} == '') AND $this->params[ $val ] != 1 ) { 
           $this->errname='Missing: '.$val;
           $this->errnum=$this->getmisscode($val);
           break;
@@ -203,8 +204,8 @@ class managerr{
   }
 
   //Put out the error info as text (for debuging in php)  
-  public function debug() {
-    if($this->errnum!=0) {
+  public function debug( $force = 0 ) {
+    if($this->errnum!=0 || $force) {
       echo "DEBUG ERROR @ ",$this->errloc,'-',$this->errnum,':',$this->errname,'|',$this->lastquery;
     }
   }

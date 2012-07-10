@@ -230,16 +230,16 @@ var qe={
     } catch(err) { errg('[query-05.0]'+err); }
     try {
       //Fix: hide skipbutton when useless.
-      if(this.total<=this.done+1) { $('queryform').skipbutton.disable(); }
-      else { $('queryform').skipbutton.enable(); }
+      if(this.total<=this.done+1) { $($('queryform').skipbutton).disable(); }
+      else { $($('queryform').skipbutton).enable(); }
 
       //delete-11-04-14: if(this.total>this.done) { write('thisword',this.that.word); }
 
       //resultdiv
       if (showres==1) {
         if(this.result) { write('result',la.corr); } else { write('result',la.wrong); }
-        $('resultdiv').style.display="block";
-      } else { $('resultdiv').style.display="none"; }
+        $('resultdiv').style.display = "block";
+      } else { $('resultdiv').style.display = "none"; }
     } catch(err) { errg('[query-05.1]'+err); }
   },
 
@@ -341,7 +341,7 @@ var qe={
   save: function(what, info) {
     this[what+'names'] = {};
     for(i=0;i<info.count;i++) {
-      this[what+'names'][info[what+'id'][i]]=info[what+'name'][i];
+      this[what+'names'][info['id'][i]]=info['name'][i];
     }
   },  
 

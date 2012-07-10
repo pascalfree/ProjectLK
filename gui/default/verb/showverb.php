@@ -12,8 +12,8 @@ load_head($toolbar);
     echo $error;
   } else {
 
-    $formlist=request('get_form',array('registerid' => $here->registerid));
-    $personlist=request('get_person',array('registerid' => $here->registerid));
+    $formlist = request('get_form',array('registerid' => $here->registerid));
+    $personlist = request('get_person',array('registerid' => $here->registerid));
 
     if($here->wordid!=NULL) {
       if( is_array( $verblist['id'] ) ) {
@@ -25,27 +25,27 @@ load_head($toolbar);
         $key = array_search( $here->wordid, $verblist['id'] ); 
       }
 
-      if( $key === false && DEBUG ) { echo 'This should never happen. ERROR in showverb.php'; }
+      //if( $key === false && DEBUG ) { echo 'This should never happen. ERROR in showverb.php'; }
       $t_head=array('what'=>'verb', 'id'=>$verblist['id'][$key], 'name'=>$verblist['wordfore'][$key]);
-      $t_top=array('what'=>'form', 'id'=>$formlist['formid'], 'name'=>$formlist['formname'],'count'=>$formlist['count']);
-      $t_left=array('what'=>'person', 'id'=>$personlist['personid'], 'name'=>$personlist['personname'],'count'=>$personlist['count']);
-      $loadverbs=request('get_verb',array('wordid' => $verblist['id'][$key], 'formid' => $formlist['formid'], 'personid' => $personlist['personid']));
+      $t_top=array('what'=>'form', 'id'=>$formlist['id'], 'name'=>$formlist['name'],'count'=>$formlist['count']);
+      $t_left=array('what'=>'person', 'id'=>$personlist['id'], 'name'=>$personlist['name'],'count'=>$personlist['count']);
+      $loadverbs = request('get_verb',array('wordid' => $verblist['id'][$key], 'formid' => $formlist['id'], 'personid' => $personlist['id']));
 
     } elseif($here->formid!=NULL) {
 
-      $key=array_search($here->formid,$formlist['formid']);
-      $t_head=array('what'=>'form', 'id'=>$formlist['formid'][$key], 'name'=>$formlist['formname'][$key]);
-      $t_top=array('what'=>'person', 'id'=>$personlist['personid'], 'name'=>$personlist['personname'],'count'=>$personlist['count']);
+      $key=array_search($here->formid,$formlist['id']);
+      $t_head=array('what'=>'form', 'id'=>$formlist['id'][$key], 'name'=>$formlist['name'][$key]);
+      $t_top=array('what'=>'person', 'id'=>$personlist['id'], 'name'=>$personlist['name'],'count'=>$personlist['count']);
       $t_left=array('what'=>'verb', 'id'=>$verblist['id'], 'name'=>$verblist['wordfore'],'count'=>$verblist['count']);
-      $loadverbs=request('get_verb',array('wordid' => $verblist['id'], 'formid' => $here->formid, 'personid' => $personlist['personid']));
+      $loadverbs=request('get_verb',array('wordid' => $verblist['id'], 'formid' => $here->formid, 'personid' => $personlist['id']));
 
     } elseif($here->personid!=NULL) {
 
-      $key=array_search($here->personid,$personlist['personid']);
-      $t_head=array('what'=>'person', 'id'=>$personlist['personid'][$key], 'name'=>$personlist['personname'][$key]);
-      $t_top=array('what'=>'form', 'id'=>$formlist['formid'], 'name'=>$formlist['formname'],'count'=>$formlist['count']);
+      $key=array_search($here->personid,$personlist['id']);
+      $t_head=array('what'=>'person', 'id'=>$personlist['id'][$key], 'name'=>$personlist['name'][$key]);
+      $t_top=array('what'=>'form', 'id'=>$formlist['id'], 'name'=>$formlist['name'],'count'=>$formlist['count']);
       $t_left=array('what'=>'verb', 'id'=>$verblist['id'], 'name'=>$verblist['wordfore'],'count'=>$verblist['count']);
-      $loadverbs=request('get_verb',array('wordid' => $verblist['id'], 'formid' => $formlist['formid'], 'personid' => $here->personid));
+      $loadverbs = request('get_verb',array('wordid' => $verblist['id'], 'formid' => $formlist['id'], 'personid' => $here->personid));
 
     }
   ?>
@@ -60,7 +60,7 @@ load_head($toolbar);
     }
     echo '</tr>';
 
-    for($i=0;$i<$t_left['count'];$i++) {
+    for( $i = 0; $i < $t_left['count']; $i++ ) {
       vt_line($i, $t_head, $t_top, $t_left, $loadverbs);
     }
     ?>

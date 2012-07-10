@@ -167,16 +167,23 @@ function get_name($type, $id) {
 }
 
 //load the global location parameters. creates an array like the global $here
-function getglobal() {
-  global $registerid,$groupid,$saveid,$tagid,$wordclassid,$searchid,$wordid,$withoutid;
-  $ret=array('registerid'=>$registerid,
-             'groupid'=>$groupid,
-             'saveid'=>$saveid,
-             'tagid'=>$tagid,
-             'wordclassid'=>$wordclassid,
-             'searchid'=>$searchid,
-             'wordid'=>$wordid,
-             'withoutid'=>$withoutid); //fix: get without tag or save
+function getglobal( $pre = '' ) {
+  global  ${$pre.'registerid'},
+          ${$pre.'groupid'},
+          ${$pre.'saveid'},
+          ${$pre.'tagid'},
+          ${$pre.'wordclassid'},
+          ${$pre.'searchid'},
+          ${$pre.'wordid'},
+          ${$pre.'withoutid'};
+  $ret=array('registerid' => ${$pre.'registerid'},
+             'groupid' => ${$pre.'groupid'},
+             'saveid' => ${$pre.'saveid'},
+             'tagid' => ${$pre.'tagid'},
+             'wordclassid' => ${$pre.'wordclassid'},
+             'searchid' => ${$pre.'searchid'},
+             'wordid' => ${$pre.'wordid'},
+             'withoutid' => ${$pre.'withoutid'}); //fix: get without tag or save
   return $ret;
 }
 
@@ -209,6 +216,56 @@ function passgen($len) {
     $passw .= substr($chars, $r, 1);
   }
   return $passw;
+}
+
+//trim with parameter by reference
+function trim_ref(&$value)
+{
+ $value = trim($value);
+}
+
+// get comma separated, trimmed values
+function comma_array( $string ) {
+  $arr = explode(",", $string);
+  array_walk( $arr, 'trim_ref' );
+  return $arr;
+}
+
+// remove forbidden characters
+function remove_forbidden( &$string, $forbidden = array('\\"', '#', '+') ) {
+	$string = str_replace($forbidden, '', $string);
+  return $string; //needed to walk array
+}
+
+// if parameter isn't an array make a single value array of it. return if it was array
+function make_array( &$param ) {
+  if ( !is_array( $param ) ) {
+    $param = array(
+       $param
+    );
+    return 1;
+  }
+  return 0;
+}
+
+// loads wordids assuming the location is defined by $arg_.. variables
+// returns wordids as array.
+function load_wordid( &$go ) {
+  $params              = getglobal( 'arg_' );
+  $params[ 'nolimit' ] = 1;
+  $params[ 'select' ]  = 'id';
+  $params[ 'wordid' ]  = NULL;
+  $getwordid           = request( 'get_word', $params );
+
+  if ( 0 != $getwordid[ 'errnum' ] ) {
+    $go->error( 400, $getwordid[ 'errnum' ] . ': ' . $getwordid[ 'errname' ] );
+  }
+
+  if ( 0 == $getwordid['count'] ) {
+    $go->missing( 'wordid' );
+  }
+
+  return $getwordid[ 'id' ];
 }
 
 ?>

@@ -6,7 +6,7 @@
 //theme: default
 //description: functions to write the menu on top
 //Author: David Glenck
-//Licence: GNU General Public Licence (see licence.txt in Mainfolder)
+//Licence: GNU General Public Licence v3 (see licence.txt in Mainfolder)
 //UPDATES :
 //////////////////////////////
 
@@ -100,10 +100,10 @@ function menu_navigator($here) {
     $path[] = create_menu('name='.$la['query'].'&nolink=1'); 
   }	
 
-  if($here['keyoption']=='show') { $addpath=($here['hints']?'&help=show':''); } //pass force for ajax
+  if($here['keyoption']=='show') { $addpath=($you->hints?'&help=show':''); } //pass force for ajax
 
   if($here['keyoption']=='verb') { 
-    $path[] = create_menu('type=keyoption&id=verb&name='. $la['verb'] .($here['hints']?'&help=verb':''));
+    $path[] = create_menu('type=keyoption&id=verb&name='. $la['verb'] .($you->hints?'&help=verb':''));
   } elseif($here['keyoption']!=NULL) { 
     $path[] = create_menu('type=keyoption&id='.$here['keyoption'].'&name='.urlencode($la[$here['keyoption']]).'&nolink=1'. $addpath); 
   }
@@ -117,7 +117,7 @@ function menu_navigator($here) {
   if($path!=NULL) {
     foreach($path as &$val) { $val=urldecode($val); }
     $outpath = implode('/', $path).'/';
-    echo link_help('menu', $you -> hints), $outpath;
+    echo link_help('menu'), $outpath;
   }
 }
 ?>

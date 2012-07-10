@@ -405,7 +405,7 @@ function update_overview() {
       var param = { 'location': 'php/tab.php', 
                     'function': 'overview',
                     'json': 1,
-                    'parameters': Object.toJSON([ here.registerid, null, you.hints ]) }
+                    'parameters': Object.toJSON([ here.registerid ]) }
       req('get_function', param, function(info) {
         var content = $('content_tab_overview');
         if( !content ) { throw 'could not find HTML Element with id tab_overview_content in update_overview'; }
@@ -1176,9 +1176,9 @@ function update_add() {
   clear_here('wordid');
 
   var addw=$('addword');
-  var regsel = addw.newregister.select('option[value="'+here.registerid+'"]')[0];
+  var regsel = $(addw.newregister).select('option[value="'+here.registerid+'"]')[0]; //FIX: IE $(...)
   if( regsel ) regsel.selected = true;
-  var groupsel = addw.newgroup.select('option[value="'+here.groupid+'"]')[0];
+  var groupsel = $(addw.newgroup).select('option[value="'+here.groupid+'"]')[0];
   if( groupsel ) groupsel.selected = true;
   addw.newwordclass.selectedIndex=here.wordclassid;
 

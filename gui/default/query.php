@@ -18,7 +18,7 @@ load_head();
   <?=link_querysave('querysave',0) ?>
   <span class="link -w block query_options" onclick="req('query_restart',{queryid: here.queryid, wrong: 1}, function() { qe.start(1);})"><?=$la['queryrepeatwrong'] ?></span>
   <?=link_querysave('querysavewrong',1) ?>
-  <?php if($here->registerid!=NULL) { //for some rare cases (query directly from dashboard) ?>
+  <?php if($here->registerid != NULL) { //for some rare cases (query directly from dashboard) ?>
   <a class="block query_options" href="<?=$here->path(2) ?>"><?=$la['gotoregister'] ?></a>
   <?php } ?>
   <a class="block query_options" href="<?=$here->path(1) ?>"><?=$la['gohome'] ?></a>

@@ -36,7 +36,7 @@ function link_generic($p) {
 }
 
 //Creates a link to the help page
-function link_help($anchor, $force=0, $text='') {
+function link_help($anchor, $force = 0, $text = '') {
   global $you;
   if($you -> hints==1 || $force==1) {
     return '<span class="link helplink h_'.$anchor.'" onmouseover="help_load(\''.$anchor.'\')" onclick="help_toggle();">'.$text.'</span>';

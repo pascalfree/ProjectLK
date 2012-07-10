@@ -1,5 +1,7 @@
 #### ProjectLK Dokumentation für Entwickler von GUIs ####
 
+!!! Diese Dokumentation ist möglicherweise veraltet
+
 //////////////////////////////
 //Autor: David Glenck
 //www.ihdg.ch
@@ -166,7 +168,7 @@ path(level, params);
 oder
 path(params); //ganze URL
 Erzeugt URL bis zu level.
-params: {key: value, key: value} //Zu überarbeitende Einträge.
+params: {key: value, key: value} //Zu überschreibende Einträge.
 
 validstr(str);
 Prüft str auf Klammerfehler. Gibt 0 zurück, falls Fehlerfrei und 1-6 für einen Fehler.
@@ -291,6 +293,7 @@ Der Rückgabewert ist immer ein Array.
 ### Funktionen und Parameter ###
 
 Folgende Funktionen können über request() bzw req() aufgerufen werden.
+Eine liste der Funktionen findet sich in core/database/. Funktionsname ist der Dateiname ohne .php Endung. Eine Beschreibung findet sich jeweils am Anfang jeder Datei.
 
 #Karteien#
 function: get_reg
@@ -399,7 +402,7 @@ parameter: registerid [,formid]
 return: formid, formname, count, info
 
 function: create_form
-parameter: newform, registerid
+parameter: newform, registerid, newinfo
 return: form, formid, count
 
 function: edit_form
@@ -525,6 +528,16 @@ errors: 100 - No Permission
         200 - Missing Parameter
         300 - MySQL Error
         400 - Other Error
+
+## spezifische Parameter ##
+
+# languageid #
+id der Sprache einer Kartei:
+0 : unbekannt
+1 : Englisch
+2 : Französisch
+3 : Spanisch
+4 : Deutsch
 
 ---------------------
 ### Query/Abfrage ###

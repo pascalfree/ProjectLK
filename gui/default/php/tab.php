@@ -36,7 +36,7 @@ function tabs($tabnames,$activetab) {
 
 //tab overview
 //$here is an array
-function ajax_overview($registerid, $count=NULL, $hints=0) {
+function ajax_overview($registerid, $count=NULL) {
   //count words if not counted
   if($count == NULL) { 
     $count=request('get_word',array('count'=>'1' ,'registerid' => $registerid));
@@ -44,13 +44,13 @@ function ajax_overview($registerid, $count=NULL, $hints=0) {
   }
 
   // write content
-  list_group($registerid, $hints);
+  list_group( $registerid );
 
-  if( $count>0 ) { //especially for writewordclass
-    list_tag($registerid);
-    list_save($registerid);
-    list_wordclass($registerid);
-    list_verb('nocheckbox=1&registerid='.$registerid);
+  if( $count > 0 ) { //especially for writewordclass
+    list_tag( $registerid );
+    list_save( $registerid );
+    list_wordclass( $registerid );
+    list_verb('nocheckbox=1&registerid=' . $registerid);
   }
 }
 ?>

@@ -106,7 +106,7 @@ function eventloader(where) {
     item.observe('mouseover', function() { this.lastChild.removeClassName('hidden'); });
     item.observe('mouseout', function() { this.lastChild.addClassName('hidden'); });
     //and hide it now
-    item.lastChild.addClassName('hidden');
+    $(item.lastChild).addClassName('hidden');     //FIX: IE needs $(...)
   } );
 
   //show firstchild on mouseover
@@ -114,7 +114,7 @@ function eventloader(where) {
     item.observe('mouseover', function() { this.firstChild.removeClassName('hidden'); });
     item.observe('mouseout', function() { this.firstChild.addClassName('hidden'); }); 
     //and hide it now
-    item.firstChild.addClassName('hidden');
+    $(item.firstChild).addClassName('hidden');
   } );
 
   //hover effect for browser that doesn't support .class:hover
@@ -163,7 +163,7 @@ function gui_ajaxcatch(num) {
   var jxl=$('ajaxloader');
   if(num===0) { jxl.show(); }
   else if(num===8) { jxl.hide(); }
-  hid = window.setTimeout("$('ajaxloader').hide()", 5000);
+  hid = window.setTimeout(function() { $('ajaxloader').hide() }, 5000);
 }
 
 //Output: Request errors
@@ -501,10 +501,10 @@ function appender(input, type, where, dlocate) {
 //HTML Class! type_id will be edited. type_id_remove will be removed when deleted
 function g_dropdown(type, id, cont, where, atelement) {
   try {
-    //save this to local
-    //local.current.type=type;
-    //local.current.id=id;
-    //local.current.where=where;
+    //--save this to local
+    //--local.current.type=type;
+    //--local.current.id=id;
+    //--local.current.where=where;
     //print links
     var li='';
     var list=0;
@@ -548,12 +548,12 @@ function do_action(id, type, action, where) {
     //call the destructor of this action for cleanup
     close_action(action, type);
     //save this to local
-    //if( type !== false ) { local.current.type=type; }
-    //if( id !== false ) { local.current.id=id; }
-    //local.current.action=action;
-    //if( where !== undefined) { //this may already be defined before. only change if wanted
-    //  local.current.where=where;
-    //}
+    //--if( type !== false ) { local.current.type=type; }
+    //--if( id !== false ) { local.current.id=id; }
+    //--local.current.action=action;
+    //--if( where !== undefined) { //this may already be defined before. only change if wanted
+    //--  local.current.where=where;
+    //--}
     //find right function
     var func = switcher('action_'+action, type);
     if( !func ) { throw '[0] no function found for: '+action; }
@@ -582,7 +582,7 @@ function load_data_generic(filltype, fillwhere, type) {
       if(!local.data[type]) { 
         var params=Object.clone( get_here() );
         params.count = 1;
-        params[type+'id']=null;
+        params[type+'id'] = null;
         //load data from server
         req('get_'+type,params, function(i,p,s) { 
             local.data[ s[1] ]=i; //save local
@@ -703,6 +703,11 @@ function action_goto_generic(id, type, params) {
   if( type != 'word' ) {
     clear_here('wordid');
   }
+  //remove taglist
+  if( type == 'tag' ) {
+    clear_here('keyoption');
+  }
+
   //goto location
   if( params === undefined ) {
     var params = {};
@@ -710,6 +715,8 @@ function action_goto_generic(id, type, params) {
   }
   location.href = path(params);
 }
+
+
 
 //for keyoptions
 action_force_goto_keyoption =
@@ -822,7 +829,7 @@ action_edit_generic = function(id, type, where, input, content) { //input and co
   //get current content
   if( !input ) {
     if( content == null ) { content = $$('.'+type+'_'+firstelement(id))[0].innerHTML; }
-    input='<input id="input_edit" class="close_edit input_'+type+'" onkeyup="input_keyup(['+id+'], \''+type+'\', \'edit\', event)" onkeydown="input_keydown(['+id+'], \''+type+'\', \'edit\', event)" onblur="close_action(\'edit\',\''+type+'\',200)" type="text" name="new'+type+'" value="'+content+'"></input>';
+    input='<input id="input_edit" class="close_edit input_'+type+'" onkeyup="input_keyup(['+id+'], \''+type+'\', \'edit\', event)" onkeydown="input_keydown(['+id+'], \''+type+'\', \'edit\', event)" onblur="close_action(\'edit\',\''+type+'\',200)" type="text" name="new'+type+'" value="'+content+'"/>'; //fix: not </input>
   }
   //hide element and show input instead and focus it
   if( !Object.isElement(where) ) { debug.warning('where is not defined as an Element in action_edit_generic'); }
@@ -841,7 +848,7 @@ function action_edit_kword(id, type, where) {
 //edit wordclass
 function action_edit_wordclass(id, type, where) {
   //get current content
-  content=$$('.wordclass_'+firstelement(id))[0].innerHTML;
+  var content = $$('.wordclass_'+firstelement(id))[0].innerHTML; //fix var
   //write input
   //close_input has problems without this span here
   var input='<span class="close_edit"><select id="input_edit" onkeyup="input_keyup(['+id+'], \'wordclass\', \'edit\', event)" onkeydown="input_keydown(['+id+'], \'wordclass\', \'edit\', event)" name="newwordclass" size=1 onblur="close_action(\'edit\',\''+type+'\',200)" onchange="send_input(['+id+'], \'wordclass\',\'edit\',13)">';
@@ -860,7 +867,7 @@ function action_edit_group(id, type, where) {
   if( !id ) { debug.warning('id is not defined in action_edit_group'); }
   if( !type ) { debug.warning('type is not defined in action_edit_group'); }
   //get current content
-  content=$$('.'+type+'_'+firstelement(id))[0].innerHTML;
+  var content = $($$('.'+type+'_'+firstelement(id))[0]).innerHTML; //FIX: var
   //create select
   var input='<span class="close_edit"><select id="input_edit" name="newgroup" size=1 onkeyup="input_keyup(\''+id+'\', \'group\', \'edit\', event)" onkeydown="input_keydown(\''+id+'\', \'group\', \'edit\', event)" onblur="close_action(\'edit\',\''+type+'\',200)" onchange="send_input(\''+id+'\',\'group\',\'edit\',13)">';
   //af and ar are special
@@ -924,7 +931,7 @@ function action_more_group( id, type, inc ) {
     var param = { location:'php/list.php',
                   'function': 'list_group',
                   'json': 1,
-                  'parameters': Object.toJSON([params.registerid, you.hints]) };
+                  'parameters': Object.toJSON([params.registerid]) };
     req('get_function',param,function(info) {
       var groupc = $('group_content');
       if ( !groupc ) { throw 'HTML Element with id group_content not found.'; }
@@ -948,7 +955,9 @@ function action_less_group(i, t) {
 //directly to show page
 function action_show_generic(i, t) {
   update_here( { page:'show' } );
-  do_action(i, t, 'goto');
+  // fix: otherwise would call action_goto_generic_show
+  //do_action(i, t, 'goto');
+  action_goto_generic(i, t)
 }
 
 //directly to verb page
@@ -974,7 +983,10 @@ function action_query_generic(id, type) {
   var iswordform = formfield2id(id , 'wordid[]');
   if( iswordform === false ) { //no wordform: just query here
     var params = {allmarked: 1};
-    params[type+'id']=firstelement(id);   
+    params[type+'id'] = firstelement(id);
+    if( type == 'register' ) { // 20120422 - Fix : starting query from dashboard
+      here.registerid = id; //update_here() may mess up
+    }
   } else if( iswordform === null ) { return false; }  //wordform is empty 
   else {                                          //wordform has checked words
     //check if all words are checked with the allmarked checkbock //fix - 04.04.2012
@@ -987,7 +999,7 @@ function action_query_generic(id, type) {
 
   //prepare request
   rvar.create('cract','create_active', here, function(info) {
-    document.location.href = path(2,{ queryid: info.savedid });
+    document.location.href = path(2, { queryid: info.savedid });
   }); 
   //append params from above and send
   rvar.cract.sendreq(params);
@@ -1044,7 +1056,6 @@ send_edit_sentence =
 send_edit_wordclass = function(id, type, key) {
   var input=$('input_edit'); //this field should contain the new name
   if(input) {
-
     //validate string
     if( type == 'wordfirst' || type == 'wordfore' ) {
       if( validstr( input.value ) ) { do_info( la.err_invalidsyntax ); return false; }
@@ -1115,9 +1126,9 @@ function after_send_edit_13_register(info,p,id,t) {
 function after_send_edit_13_kword(info,params,id,type) {
   try {
     //update all elements with this item
-    $$('.'+type+'_v'+id[0]+'_p'+id[1]+'_f'+id[2]).each( function(item) { item.update(params.newkword) } );
+    $$('.'+type+'_v'+id[0]+'_p'+id[1]+'_f'+id[2]).each( function(item) { item.update(info.newkword) } );
     //hide input and restore replaced element
-    close_action('edit',type);    
+    close_action('edit',type);
     //delete local data
     clear_data(type);
   }catch(err) { msg('[end_edit_after_13_kword]:'+err); errnum=1; }
@@ -1197,23 +1208,23 @@ function send_add_tag(id,type) {
 //AFTER SEND ADD
 
 //update after adding tag
-function after_send_add_13_tag(info,params, id) {
+function after_send_add_13_tag(info, params, id) {
   try {
     //id is wordid
     //hide input and restore replaced element
     close_action('add','tag');
     //remove each tag from list, that allready is there
-    for(var i=info.tagid.length-1; i>=0; i--) {
-      if( $('tag_span_'+id+'_'+info.tagid[i]) ) {
-        info.tagid.splice(i,1);
-        info.tags.splice(i,1);
+    for(var i = info.id.length-1; i>=0; i--) {
+      if( $('tag_span_'+id+'_'+info.id[i]) ) {
+        info.id.splice(i,1);
+        info['name'].splice(i,1);
       }
     }
-    if( info.tagid.length == 0 ) { return false; } //if nothing is left
+    if( info.id.length == 0 ) { return false; } //if nothing is left
     //load html element for tag
     var nparams = get_function_writeone('tag');
     nparams['json']=1;
-    nparams['parameters'] = Object.toJSON([id, info.tagid, info.tags]); 
+    nparams['parameters'] = Object.toJSON([id, info.id, info['name']]); 
     req('get_function', nparams, function(i) { appender(i.output, 'tag', $('tag_'+id), 'top') }); //append each tag
   } catch(err) { msg('[after_send_add_13_tag]:'+err); errnum=1; }
 }

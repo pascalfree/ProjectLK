@@ -71,6 +71,8 @@ if($wordlist['count']>0) { //query
 //verbtable link
 $toolbar.=link_generic('action=force_goto&type=keyoption&id=\'verb\'&text='.$la['verbs']);
 $toolbar.=link_more_options($here->page=='show'); //show only if this is show
+//register options
+$toolbar.=link_generic('action=goto&type=keyoption&id=\'edit\'&class=intab_overview&text='.urlencode($la['options']));
 
 //create tabs
 $tabs=array('show','overview');

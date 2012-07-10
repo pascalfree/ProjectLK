@@ -43,10 +43,10 @@ function action_query_verb() {
   });
 }
 
-function action_checkall_generic() {
+function action_checkall_generic(id, type) {
   //id is true or false -> check or uncheck
-  $$('input[name="'+local.current.type+'id[]"]').each(function(item) {
-    item.checked = local.current.id != 0;
+  $$('input[name="'+type+'id[]"]').each(function(item) {
+    item.checked = id != 0;
   });
 }
 

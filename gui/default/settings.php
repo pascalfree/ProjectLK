@@ -48,7 +48,6 @@ for($i=0;$i<$len;$i++) {
   echo '>'.$languages[$i].'</option>';
 }
 echo '</select><br>';
-echo LANG;
 echo '<input type="submit" value="'.$la['save'].'">';
 echo '<input type="reset" value="'.$la['reset'].'">';
 

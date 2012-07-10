@@ -1,5 +1,9 @@
 TODO
 
+# FINISH:
+set release to 1 online
+upload to github
+
 # Release
 - Alles kopieren
 - javascript kompilieren (make)
@@ -14,15 +18,13 @@ TODO
 - .htaccess "leeren"
 
 # Todo
-- _basic_ie.css überarbeiten
 - Veröffentlichen
 
-# Bugs - 07.04.2012
+# Bugs - 22.04.2012
 DATE - Description
 
 # Papercuts
 - Übersicht macht kein automatisches Update (wenn neuer Tag hinzugefügt wird)
-- Link zu "Wort hinzufügen", steht erneut, falls Seite Wort hinzufügen neu geladen wird
 
 # Grundsätze
 - core von GUI trennen
@@ -57,6 +59,10 @@ DATE - Description
 - install file
 
 # fixed
+- Link zu "Wort hinzufügen", steht erneut, falls Seite Wort hinzufügen neu geladen wird
+20120416 - Verbtabelle: alle markieren soll alle markieren
+20120422 - Taglist links don't work
+20120416 - Abfrage Speichern, wenn ganze Kartei abgefragt wurde.
 - bei erster änderung der Einstellungen: Sprache Englisch
 20120408 - ähnliche Wörter vergleichen
 20120407.3 - show error, when storage with the same name already exists. In query.
@@ -114,6 +120,7 @@ Bei erstellen von Form bei hinzufügen von neuem verb in die Verbtabelle.
 - rvar: Wiederholungen führen zu gleichen parametern.
 
 # Done
+- _basic_ie.css überarbeiten
 20120408 - Tags alphabetisch sortieren
 - möglichst viel in gui.js packen (alles)
 - überschüssige bilder löschen

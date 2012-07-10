@@ -53,11 +53,15 @@ if( $_REQUEST['req'] == 1 ) {
     header('Content-Type: application/json  charset=UTF-8');
     if( $response === NULL ) { $response = $_REQUEST['response']; } 
 
+    $return['locat'] = $location;
+
     foreach($_REQUEST as $name => $val) {  //Load all variables
       //secure
-      if( !isset( $$name ) ) { $$name = mres( $val );}
-      else { $$name = mres( $$name ); } //Fix. 
-      if( $$name=='' || $$name=='null' ) { $$name=NULL; }
+      // don't overwrite existing variable
+      if( !isset( ${'arg_' . $name} ) ) { ${'arg_' . $name} = mres( $val );}
+      //else { $$nname = mres( $$nname ); }
+      //null or empty == NULL 
+      if( ${'arg_' . $name} == '' || ${'arg_' . $name} == 'null' ) { ${'arg_' . $name} = NULL; }
     }
 
     //userid & pwd (secure)
@@ -66,7 +70,7 @@ if( $_REQUEST['req'] == 1 ) {
 
     $func = explode('.', $last);
     $func = $func[0];
-    $go = new managerr($func);
+    $go = new managerr( $func );
     if( file_exists(DBFUNCTIONS.$last) ) {  //Load requested function
       require_once(DBFUNCTIONS.$last);
       $return = $go -> geterr($return); //add error msg to return
@@ -80,7 +84,7 @@ if( $_REQUEST['req'] == 1 ) {
         echo json_encode( $return );
       } else { 
         //on error
-        echo json_encode( $go -> geterr() ); 
+        echo json_encode( $go -> geterr() );
       }
     } else {  
       //error function not found
@@ -103,7 +107,7 @@ if( $_REQUEST['req'] == 1 ) {
 header('Content-Type: text/html; charset=UTF-8');
 //some global variables
 define("P_NAME", 'ProjectLK');
-define("P_VERSION", '1.2beta');
+define("P_VERSION", '1.2RC1');
 define("P_AUTHOR", 'David Glenck'); //comma separated
 
 //global content functions

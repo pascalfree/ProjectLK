@@ -435,7 +435,7 @@ span.helplink:hover {
 
 /*--------CSS3---------*/
 /*------Animations-----*/
-
+/*
 * {
   -webkit-transition: background-color 0.1s ease-in;
 }
@@ -455,3 +455,4 @@ span.helplink:hover {
 .options, .hidden {
   -webkit-transition: visibility 300ms linear, opacity 300ms ease-in;
 }
+*/
