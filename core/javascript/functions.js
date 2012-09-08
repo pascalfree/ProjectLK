@@ -61,8 +61,14 @@ function ajaxcatch(num) {
 
 //check for changes in the url hash
 function onHashChange() {
-  //recheck in a second
-  window.setTimeout('onHashChange()', 1000);
+  //if browser supports onhashchange listen to event
+  var dmode = document.documentMode;
+  if( 'onhashchange' in window && ( dmode === undefined || dmode > 7 ) ) {
+    window.onhashchange = onHashChange;
+  } else { //else recheck in a second
+    window.setTimeout('onHashChange()', 1000);
+  }
+
   //first load hash if empty
   if(local.hash === undefined) {
     update_hash(); 
