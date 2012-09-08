@@ -52,7 +52,7 @@ function show_search() {
   $('searchclick').hide(); 
   //show form to search
   var searchform = $('searchform');
-  searchform.setStyle({ display:'inline-block'});
+  searchform.setStyle({ display:'inline'});
   searchform.searchtext.focus();
 }
 
@@ -60,7 +60,11 @@ function show_search() {
 function hide_search(delay) {
   if(!$('searchform')) { return false; }
   if( delay==null ) { delay=400; } //default delay is 400ms
-  local.close_search_timer = window.setTimeout("$('searchform').hide(); $('searchclick').setStyle({ display:'inline-block'}); hide_autosearch();",delay);
+  local.close_search_timer = window.setTimeout(function() {
+    $('searchform').hide(); 
+    $('searchclick').setStyle({ display:'inline'}); 
+    hide_autosearch();
+  },delay);
 }
 
 //stops closing dropdown

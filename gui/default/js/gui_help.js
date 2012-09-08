@@ -83,6 +83,7 @@ function help_show(info,ttitle) {
 
 function help_toggle() {
   var body=$('helper_body');
+  if( !body ) { return 0; } //helper_body not found
   if(body.hasClassName('hide')) {
     body.removeClassName('hide');
     $('helper').setStyle({ 'opacity' : 1 });

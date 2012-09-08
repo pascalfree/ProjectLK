@@ -76,7 +76,7 @@ th {
   margin: 0px; 
   padding: 0px;
   border: 1px solid black;
-  position:fixed;
+  position:absolute; /*++*/
   top:0px;
   left:0px;
   width:100%;
@@ -99,17 +99,16 @@ th {
   vertical-align:top;
   display:none;
   margin:0;
-	width:200px;
 }
 
 #searchclick{
   display: inline-block; 
   width: 200px; 
-  height: 12pt;"
+  height: 12pt;
 }
 
 #searchtext{
-  width: 100%;
+  width:200px;
 }
 
 /*Word Table*/
@@ -152,7 +151,7 @@ table#wordlist tr {
   padding: 0px 10px; 
   border-width: 0px;
   overflow: auto;
-  position: fixed;
+  position: absolute; /*++*/
   top: 66px;
   right: 0;
   left: 0;
@@ -160,7 +159,7 @@ table#wordlist tr {
 }
 
 #shutter {
-  position: fixed;
+  position: absolute; /*++*/
   width: 100%;
   height: 100%;
   z-index: 150;
@@ -257,11 +256,6 @@ table#wordlist tr {
 }
 
 /*buttons*/
-/*
-.whitedrop, .columnbutton_0, .blackdrop {
-  background-color: black;
-}*/
-
 .icon { /*only have background image*/
   display: inline-block;
   background-position: center center;
@@ -271,20 +265,6 @@ table#wordlist tr {
   margin: 0 2px;
 }
 
-/*
-.icon_text {
-  background-position: left center;
-  padding-left: 1em !important;
-  background-repeat: no-repeat;  
-}
-*/
-/*
-.text_icon {
-  background-position: right center;
-  padding-right: 1em !important;
-  background-repeat: no-repeat;  
-}
-*/
 
 /*querying*/
 #lastresult, #result {

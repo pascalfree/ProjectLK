@@ -1,11 +1,6 @@
 <IfModule mod_rewrite.c>
-RewriteEngine on
-
-# EDIT this path if necessary
-# must be same as DIRNAME in config.php, with / at the beginning.
-RewriteBase /projectlk1.2/
-
 # DON'T CHANGE
+RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . core.php [L]
 </IfModule>

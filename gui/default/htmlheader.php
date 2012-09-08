@@ -43,7 +43,7 @@
        <?=menu_navigator((array) $here) ?>
 	  </div>
     <?php if( $you -> id ) { ?>
-    <div id="searchclick" class="link" onclick="show_search()"><?=$la['search'] ?></div>
+    <span id="searchclick" class="link" onclick="show_search()"><?=$la['search'] ?></span>
     <?php } ?>
     <?=form_search() ?>
     <span id="ajaxloader"></span>

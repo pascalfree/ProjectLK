@@ -19,9 +19,6 @@ INSTALL PROJECTLK
 - DIRNAME is the Path where you want to upload projectLK.
   http://www.hostname.com/DIRNAME
 
-- Open .htaccess
-- replace "projectlk/" by the DIRNAME from above.
-
 3. UPLOAD
 - Upload ProjectLK to your server
 - Change the permissions of the folder 'upload' to 777
@@ -48,9 +45,6 @@ PROJECTLK INSTALLIEREN
 - Füge die Zugangsdaten für die Datenbank ein
 - DIRNAME ist der Pfad, wo ProjectLK hochgeladen werden soll
   http://www.hostname.com/DIRNAME
-
-- Öffne .htaccess
-- Ersetze "projectlk/" mit dem DIRNAME von zuvor. zwei Mal!
 
 3. UPLOAD
 - Lade alles hoch

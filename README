@@ -17,6 +17,25 @@ coming soon
 
 ---
 
+Browser Support
+===============
+Please report bugs in any of these browsers:
+Mozilla Firefox - 3.6 or newer
+Google Chrome
+Opera - 10 or newer
+Apple Safari - 4 or newer
+Internet Explorer - 8 or newer
+
+Partial Support:
+ProjectLK is mostly usable in the following browsers, but may look ugly.
+Please only report serious usability issues for these browsers:
+Internet Explorer 7
+
+known issues in IE7:
+Some inputs cannot be submitted with the enter key. Use the tab key instead.
+
+---
+
 Release & Developer Version
 ===========================
 There are 2 versions of this code. The first version, the developer version, provides all code and files in a readable and uncompressed format. In the release version the javascript part of the code is compressed with the closure compiler and unused .xcf image files are removed. Also the javascript compiler is removed. 

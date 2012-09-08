@@ -63,6 +63,7 @@ hr {
   color: #4F4F4F;
   background-color: #4F4F4F;
   margin: 2px 0px;
+  width: auto; /*IE7 Fix*/
 }
 
 .highlighted_element, .highlighted_element * {
@@ -181,7 +182,7 @@ div.page_show, div.page_add, div.page_showverb, div.page_addverb, div.page_searc
   color: black;
   background-color: white;
   border-color: #4F4F4F;
-  width: auto;
+  /*width: auto;*/
   height: auto;
   opacity: 1;
 }

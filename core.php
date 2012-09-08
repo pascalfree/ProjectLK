@@ -107,7 +107,7 @@ if( $_REQUEST['req'] == 1 ) {
 header('Content-Type: text/html; charset=UTF-8');
 //some global variables
 define("P_NAME", 'ProjectLK');
-define("P_VERSION", '1.2RC1');
+define("P_VERSION", '1.2RC2');
 define("P_AUTHOR", 'David Glenck'); //comma separated
 
 //global content functions

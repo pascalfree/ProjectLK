@@ -1375,9 +1375,10 @@ function close_input_generic(delay, action) {
     local.current.close_input_delay = setTimeout(function() { close_input_generic(null, action) }, delay);
   } else {
     //define element
-    where = input.next();
+    where = input.next('span, div');
     //remove element
-    Element.show(where).previous().addClassName('input_closed').remove();
+    Element.show(where);
+    input.addClassName('input_closed').remove();
     //stop timeout
     clearTimeout(local.current.close_input_delay);
   }
