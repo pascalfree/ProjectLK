@@ -34,7 +34,7 @@ if ( $go->good() ) {
 
 if ( $go->good() ) {
   //forbidden
-  $arg_newverb = array_map( "remove_forbidden", $arg_newverb );
+  $arg_newverb = array_map( "plk_util_removeForbidden", $arg_newverb );
 }
 
 if ( $go->good() ) {

@@ -18,7 +18,7 @@
 $go->necessary( 'saveid', 'registerid', array( 'wordid', 'allmarked' ) );
 
 if ( $go->good() ) {
-  make_array( $arg_wordid );
+  plk_util_makeArray( $arg_wordid );
 
   // load if allmarked
   if ( $arg_allmarked ) {

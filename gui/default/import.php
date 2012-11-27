@@ -1,17 +1,18 @@
 <?php
+$errors='';
+
 //Import File
 if($_REQUEST['startimport']!=NULL) {
-  $import = request('import',$_POST);
+  $import = plk_request('import',$_POST);
 }
 //Save File
 if($_FILES['newimport']!=NULL) {
-  $errors = '';
   $filename = basename($_FILES['newimport']['name']);
   $ext = explode('.',$filename); $ext=$ext[count($ext)-1];
-  if($ext != 'xml') { $errors=$la['err_invalidfile']; }
+  if($ext != 'xml') { $errors=$plk_la['err_invalidfile']; }
   else {
-    if(!move_uploaded_file($_FILES['newimport']['tmp_name'], UPDIR . $you -> id.'import.xml')) {
-      $errors=$la['err_upload'];
+    if(!move_uploaded_file($_FILES['newimport']['tmp_name'], UPDIR . $plk_you -> id.'import.xml')) {
+      $errors=$plk_la['err_upload'];
     }
   }
   //Cleaning Job
@@ -26,33 +27,31 @@ if($_FILES['newimport']!=NULL) {
 }
 
 //header
-$importfile = UPDIR . $you -> id.'import.xml';
+$importfile = UPDIR . $plk_you -> id.'import.xml';
 $toolbar = link_back();
 if(file_exists($importfile)) { 
-  $toolbar .= ' <a href="javascript: void(0)" onclick="req(\'delete_import\',\'\',[function(){ do_shutter(1); },function() {location.href = path();}])">'.$la['otherfile'].'</a>';  
+  $toolbar .= ' <a href="javascript: void(0)" onclick="plk.req(\'delete_import\',\'\',[function(){ do_shutter(1); },function() {location.href = plk.here.path();}])">'.$plk_la['otherfile'].'</a>';  
 }
 load_head($toolbar);
-
-$errors='';
 
 if($_REQUEST['startimport'] != NULL) {  //Import done
 ?>
   <div class="contentbox">
-    <span class="title"><?=$la['import'] ?></span><br>
+    <span class="title"><?=$plk_la['import'] ?></span><br>
     <?php
-      if($import['errors']!='') { echo $import['errors']; } 
+      if($import['errnum']) { echo $plk_la['err_import'],'<br><br>'; } 
     ?>
-    <?=$la['registers']?>: <?=$import['count']['register']?><br>
-    <?=$la['savepoints']?>: <?=$import['count']['save']?><br>
-    <?=$la['words']?>: <?=$import['count']['word']?><br>
-    <?=$la['forms']?>: <?=$import['count']['form']?><br>
-    <?=$la['persons']?>: <?=$import['count']['person']?><br>
-    <?=$la['sverbs']?>: <?=$import['count']['verb']?><br>
-    <a href=""><?=$la['moreimport'] ?></a>
+    <?=$plk_la['registers']?>: <?=$import['count']['register']?><br>
+    <?=$plk_la['savepoints']?>: <?=$import['count']['save']?><br>
+    <?=$plk_la['words']?>: <?=$import['count']['word']?><br>
+    <?=$plk_la['forms']?>: <?=$import['count']['form']?><br>
+    <?=$plk_la['persons']?>: <?=$import['count']['person']?><br>
+    <?=$plk_la['sverbs']?>: <?=$import['count']['verb']?><br>
+    <a href=""><?=$plk_la['moreimport'] ?></a>
   </div>
 <?php
 } elseif(file_exists($importfile)) {  //Select what to import
-  $importing = getimport($importfile);
+  $importing = plk_util_getImport($importfile);
 
   echo '<form action="" method="POST" style="text-align:left">';
   if($importing['registerlist']) {
@@ -62,31 +61,31 @@ if($_REQUEST['startimport'] != NULL) {  //Import done
     }
     $list_reg = implode('',$list_reg);
 
-    $disable = $here->registerid!=NULL?'':' disabled="disabled" ';
-    $existingreg = request('get_register');  
+    $disable = $plk_here->registerid!=NULL?'':' disabled="disabled" ';
+    $existingreg = plk_request('get_register');  
     if($existingreg['count']>0) {
       for($i = 0; $i < $existingreg['count']; $i++) {
-        $ch = $here -> registerid == $existingreg['id'][$i] ? ' checked="checked" ' : '';
+        $ch = $plk_here -> registerid == $existingreg['id'][$i] ? ' checked="checked" ' : '';
         $list_realreg[] = '<input type="radio" '. $ch . $disable .' class="im_realreg" id="real_reg_'. $existingreg['id'][$i] .'" name="registerid" value="'. $existingreg['id'][$i]. '"/><label for="real_reg_'. $existingreg['id'][$i] .'">'. $existingreg['name'][$i] .'</label><br>';
       }
       $list_realreg = implode('',$list_realreg);
     }
 
-    if($here -> registerid != NULL) { $check = array(' checked="checked" ', ''); }
+    if($plk_here -> registerid != NULL) { $check = array(' checked="checked" ', ''); }
     else { $check = array('', ' checked="checked" '); }
     ?>
     <div class="contentbox">
     <?php
-      echo '<span class="title">'.$la['registers'].'</span><br>';
+      echo '<span class="title">'.$plk_la['registers'].'</span><br>';
       if($existingreg['count'] > 0) {
       echo '<fieldset>';
       echo '<legend><input type="checkbox" name="intoregister" value="1" id="intoregister" '. $check[0] .' onclick="javascript: ableall(\'realreg\',this.checked);">';
-      echo '<label for="intoregister">'. $la['importtoreg'] .'</label></legend>';
+      echo '<label for="intoregister">'. $plk_la['importtoreg'] .'</label></legend>';
       echo $list_realreg;
       echo '</fieldset>';
       }
       echo '<fieldset>';
-      echo '<legend>'. $la['importregs'] .'</legend>';  
+      echo '<legend>'. $plk_la['importregs'] .'</legend>';  
       echo $list_reg;
       echo '</fieldset>';
     ?>
@@ -102,10 +101,10 @@ if($_REQUEST['startimport'] != NULL) {  //Import done
   }
   //20120409 - fix: always show
   foreach($importing['registerlist'] as $reglist) { //without tag
-    $list_tag[$reglist['id']][] = '<input type="checkbox" checked="checked" id="check_tag_without" name="withouttag[]" value="'.$reglist['id'].'" class="im_reg_'.$reglist['id'].'"/><label for="check_tag_without">'.$la['withouttag'].'</label><br>';
+    $list_tag[$reglist['id']][] = '<input type="checkbox" checked="checked" id="check_tag_without" name="withouttag[]" value="'.$reglist['id'].'" class="im_reg_'.$reglist['id'].'"/><label for="check_tag_without">'.$plk_la['withouttag'].'</label><br>';
   }
   echo '<div class="contentbox">';
-    echo '<span class="title">'.$la['tags'].'</span><br>';
+    echo '<span class="title">'.$plk_la['tags'].'</span><br>';
     foreach($importing['registerlist'] as $reglist) {
       if($list_tag[$reglist['id']]) { //if has tags
         echo '<fieldset class="im_reg_'.$reglist['id'].'">';
@@ -124,10 +123,10 @@ if($_REQUEST['startimport'] != NULL) {  //Import done
     }
   }
   foreach($importing['registerlist'] as $reglist) { //20120409 - fix: always show
-    $list_save[$reglist['id']][]='<input type="checkbox" checked="checked" id="check_save_without" name="withoutsave[]" value="'.$reglist['id'].'" class="im_reg_'.$reglist['id'].'"/><label for="check_save_without">'.$la['withoutsave'].'</label><br>';
+    $list_save[$reglist['id']][]='<input type="checkbox" checked="checked" id="check_save_without" name="withoutsave[]" value="'.$reglist['id'].'" class="im_reg_'.$reglist['id'].'"/><label for="check_save_without">'.$plk_la['withoutsave'].'</label><br>';
   }
   echo '<div class="contentbox">';
-    echo '<span class="title">'.$la['savepoints'].'</span><br>';
+    echo '<span class="title">'.$plk_la['savepoints'].'</span><br>';
     foreach($importing['registerlist'] as $reglist) {
       if($list_save[$reglist['id']]) { //if has saves
         echo '<fieldset class="im_reg_'.$reglist['id'].'">';
@@ -145,7 +144,7 @@ if($_REQUEST['startimport'] != NULL) {  //Import done
       $list_person[$personlist['registerid']][]='<input type="checkbox" checked="checked" id="check_person_'.$personlist['id'].'" name="personlist[]" value="'.$personlist['id'].'" class="im_reg_'.$personlist['registerid'].'"/><label for="check_person_'.$personlist['id'].'">'.$personlist['name'].'</label><br>';
     }
     echo '<div class="contentbox">';
-      echo '<span class="title">'.$la['persons'].'</span><br>';
+      echo '<span class="title">'.$plk_la['persons'].'</span><br>';
       foreach($importing['registerlist'] as $reglist) {
         if($list_person[$reglist['id']]) { //if has persons
           echo '<fieldset class="im_reg_'.$reglist['id'].'">';
@@ -162,7 +161,7 @@ if($_REQUEST['startimport'] != NULL) {  //Import done
       $list_form[$formlist['registerid']][]='<input type="checkbox" checked="checked" id="check_form_'.$formlist['id'].'" name="formlist[]" value="'.$formlist['id'].'" class="im_reg_'.$formlist['registerid'].'"/><label for="check_form_'.$formlist['id'].'">'.$formlist['name'].'</label><br>';
     }
     echo '<div class="contentbox">';
-      echo '<span class="title">'.$la['forms'].'</span><br>';
+      echo '<span class="title">'.$plk_la['forms'].'</span><br>';
       foreach($importing['registerlist'] as $reglist) {
         if($list_form[$reglist['id']]) { //if has forms
           echo '<fieldset class="im_reg_'.$reglist['id'].'">';
@@ -176,7 +175,7 @@ if($_REQUEST['startimport'] != NULL) {  //Import done
   ?>
   <div class="contentbox">
     <input type="hidden" name="startimport" value="1"/>
-    <input type="submit" value="<?=$la['import'] ?>"/>
+    <input type="submit" value="<?=$plk_la['import'] ?>"/>
   </div>
   <?php
   echo '</form>';
@@ -185,10 +184,10 @@ if($_REQUEST['startimport'] != NULL) {  //Import done
   ?>
 
   <div class="middlebox">
-    <span class="title"><?=$la['import'] ?></span>
+    <span class="title"><?=$plk_la['import'] ?></span>
     <form id="importfile_form" enctype="multipart/form-data" action="" method="POST">
       <input type="file" name="newimport"/><br>
-      <input type="submit" value="<?=$la['upload']?>"/>
+      <input type="submit" value="<?=$plk_la['upload']?>"/>
     </form>
   </div>
 

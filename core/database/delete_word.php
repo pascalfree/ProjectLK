@@ -24,11 +24,11 @@ $go->necessary( array(
 
 if ( $go->good() ) {
   // make word an array
-  make_array( $arg_wordid );
+  plk_util_makeArray( $arg_wordid );
   
   // load words from location
   if ( $arg_allmarked ) {
-    $arg_wordid = load_wordid( $go );
+    $arg_wordid = plk_util_loadWordId( $go );
   }
 }
 

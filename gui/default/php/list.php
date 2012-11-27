@@ -24,7 +24,7 @@ require_once( GUI.'php/write_one.php' );
 //options: registerid, nocheckbox, addnew, class
 //just make a frame. Let write_one_<type>(id, name, $options) do the work
 function list_generic($type, $options='', $list=0) {
-  global $la;
+  global $plk_la;
 
   //load options
   $options = u_param($options);
@@ -36,17 +36,17 @@ function list_generic($type, $options='', $list=0) {
     if( $options['registerid'] ) {
       $params['registerid'] = $options['registerid'];
     }
-    $list=request('get_'.$type, $params);
+    $list=plk_request('get_'.$type, $params);
   }
 
   echo '<div class="contentbox ', $options['class'] ,'" id="', $type ,'_content">';
     if($options['nocheckbox'] != 1) { 
       echo '<input type="checkbox" value="1" name="all', $type ,'">'; 
     }
-    echo '<span class="title ', $type ,'title">',$la[$options['title']],"</span>"; 
+    echo '<span class="title ', $type ,'title">',$plk_la[$options['title']],"</span>"; 
     if( $options['help'] ) { echo link_help($options['help']); } //show help link
     echo '<ul class="', $type ,'_list" id="', $type ,'list">';
-      if( $options['loading']==1 ) { echo $la['loading']; } 
+      if( $options['loading']==1 ) { echo $plk_la['loading']; } 
       //call write_one_<type>
       else {
         call_user_func('write_one_'.$type, $list, $options);
@@ -54,7 +54,7 @@ function list_generic($type, $options='', $list=0) {
     echo '</ul>';
     //add new link
     if( $options['addnew'] == 1 ) {
-      echo "<span class='link icon_text' onclick='do_action(0,\"", $type ,"\",\"add\",this)'><span class='icon iconplus'></span>",$la['new'.$type],"</span>";
+      echo "<span class='link icon_text' onclick='do_action(0,\"", $type ,"\",\"add\",this)'><span class='icon iconplus'></span>",$plk_la['new'.$type],"</span>";
     }  
   echo '</div>';
 }
@@ -64,10 +64,10 @@ function list_generic($type, $options='', $list=0) {
 
 function ajax_list_group($r) { return list_group($r); }
 function list_group($registerid) {
-  global $la;
+  global $plk_la;
 ?>
   <div class="contentbox" id="group_content">
-    <span class="title grouptitle event_hidelast"><?=$la['groups'] ?>
+    <span class="title grouptitle event_hidelast"><?=$plk_la['groups'] ?>
       <span class="hidden">
       <?php
         //more/less groups
@@ -77,7 +77,7 @@ function list_group($registerid) {
       </span></span>
     <ul class="grouplist">
       <?php   
-        $getgroup=request('get_reg_info',array('registerid' => $registerid));
+        $getgroup=plk_request('get_reg_info',array('registerid' => $registerid));
         $groupcount=$getgroup['groupcount'];
         $grouplock=explode('?',$getgroup['grouplock']);
 
@@ -86,13 +86,13 @@ function list_group($registerid) {
           'registerid' => $registerid,
           'count' => 'group'
         );
-        $wordnum=request('get_word', $params);
+        $wordnum=plk_request('get_word', $params);
 
         //iterate groups
 	      for($j=1; $j<=$groupcount+2; $j++) {
-          if( $j-$groupcount==1 ) { $i='af'; $text=$la['af']; } //af
-          elseif( $j-$groupcount==2 ) { $i='ar'; $text=$la['ar']; } //ar
-          else { $i=$j; $text=$la['group'].' '.$i; } //number
+          if( $j-$groupcount==1 ) { $i='af'; $text=$plk_la['af']; } //af
+          elseif( $j-$groupcount==2 ) { $i='ar'; $text=$plk_la['ar']; } //ar
+          else { $i=$j; $text=$plk_la['group'].' '.$i; } //number
 
           if( NULL !== $wordnum['groupid'] ) {
             $index = array_search($i, $wordnum['groupid']);  
@@ -108,7 +108,7 @@ function list_group($registerid) {
           } else { $plus=''; }
           echo '<li class="group_', $i ,' count_', $fullcount ,' event_hidelast">';
 	        echo '<span ';
-          if($c) { echo ' class="link" title="', $la['show'] ,'" onclick="do_action(\'',$i,'\',\'group\',\'goto\')" ';  //make link if not empty
+          if($c) { echo ' class="link" title="', $plk_la['show'] ,'" onclick="do_action(\'',$i,'\',\'group\',\'goto\')" ';  //make link if not empty
           }
           echo '>';
             echo $text;
@@ -145,19 +145,19 @@ function list_group($registerid) {
 //SAVE
 
 function list_save($registerid) {
-  global $la;
-  $savelist=request('get_save',array('count'=>1, 'registerid' => $registerid));
+  global $plk_la;
+  $savelist=plk_request('get_save',array('count'=>1, 'registerid' => $registerid));
   if($savelist['count']>0) {
   ?>
   <div class="contentbox">
-    <span class="title savetitle"><?=$la['savepoints'] ?></span>
+    <span class="title savetitle"><?=$plk_la['savepoints'] ?></span>
     <ul class="grouplist">
       <?php  
       //without save
-      $wordnum=request('get_word',array('count'=>'1','registerid'=>$registerid, 'withoutid'=>'save'));
+      $wordnum=plk_request('get_word',array('count'=>'1','registerid'=>$registerid, 'withoutid'=>'save'));
       if($wordnum['wordnum'][0]>0) {
         echo '<li class="link without_save" onclick="do_action(\'save\',\'without\',\'goto\')">';
-          echo $la['withoutsave'];
+          echo $plk_la['withoutsave'];
           u_param('without', 'save', $wordnum['wordnum'][0]);
         echo '</li>';
       } 
@@ -187,15 +187,15 @@ function list_save($registerid) {
 //WORDCLASS
 
 function list_wordclass($registerid) {
-  global $la;
+  global $plk_la;
   ?>
   <div class="contentbox">
-    <span class="title wordclasstitle"><?=$la['wordclass'] ?></span>
+    <span class="title wordclasstitle"><?=$plk_la['wordclass'] ?></span>
     <ul class="wordclasslist">
       <?php 
-      $len = count( $la['classname'] );
+      $len = count( $plk_la['classname'] );
 
-      $wordnum = request('get_word',array('count'=>'wordclass', 'registerid' => $registerid));
+      $wordnum = plk_request('get_word',array('count'=>'wordclass', 'registerid' => $registerid));
 
 	    for($i=0; $i<$len; $i++) {
         $index = array_search($i, $wordnum['wordclassid']);          
@@ -203,7 +203,7 @@ function list_wordclass($registerid) {
         else { $fullcount=$wordnum['wordcount'][$index]; }
         if($fullcount>0) {
           echo '<li class="wordclass_', $i ,' link" onclick="do_action(\'', $i ,'\',\'wordclass\',\'goto\')">';
-          echo $la['classname'][$i];
+          echo $plk_la['classname'][$i];
           u_counter('wordclass', $i, $fullcount);
           echo '</li>';
         }
@@ -217,22 +217,22 @@ function list_wordclass($registerid) {
 //////////
 //TAG
 function list_tag($registerid, $taglimit=NULL) {
-  global $la;
-  $taglist=request('get_tag',array('count'=>1,'registerid' => $registerid, 'limit' => $taglimit));
+  global $plk_la;
+  $taglist=plk_request('get_tag',array('count'=>1,'registerid' => $registerid, 'limit' => $taglimit));
   if ($taglist['count']>0):
     ?>
     <div class="contentbox">
-      <span class="title tagtitle"><?=$la['tags'] ?></span>
+      <span class="title tagtitle"><?=$plk_la['tags'] ?></span>
       <ul class="taglist">
         <?php
           //without tag
-          $wordnum=request('get_word',array('count'=>'1','registerid'=>$registerid, 'withoutid'=>'tag'));
+          $wordnum=plk_request('get_word',array('count'=>'1','registerid'=>$registerid, 'withoutid'=>'tag'));
           $wordnum=$wordnum['wordcount'][0];
 
           //show list if there are words
           if($wordnum>0) {
             echo '<li class="without_tag link nowrap" onclick="do_action(\'tag\',\'without\',\'goto\')">';
-              echo $la['withouttag'];
+              echo $plk_la['withouttag'];
               u_counter('without', 'tag', $wordnum);
             echo '</li>, ';
           }
@@ -261,7 +261,7 @@ function list_tag($registerid, $taglimit=NULL) {
 //Writes a list of verbs. With given verblist, or load new ($verblist=0)
 //options: registerid, title, nocheckbox
 function list_verb($options=NULL, $verblist=0) {
-  global $la;
+  global $plk_la;
   if( is_string($options) ) { parse_str($options); }
   elseif( DEBUG ) { 
     echo 'DEBUG ERROR: First parameter must be a string in write_verb_list.'; 
@@ -273,7 +273,7 @@ function list_verb($options=NULL, $verblist=0) {
   //Load Verbs;
   if($verblist==0) {
     if( $registerid ) {
-      $verblist=request('get_verblist',array('registerid' => $registerid));
+      $verblist=plk_request('get_verblist',array('registerid' => $registerid));
     } elseif( DEBUG ) { 
       echo 'DEBUG ERROR: verblist or registerid must be given in write_verb_list.';
       return false;
@@ -285,7 +285,7 @@ function list_verb($options=NULL, $verblist=0) {
 
     echo '<div id="verblist" class="contentbox">'; 
     if($nocheckbox != 1) { echo '<input type="checkbox" value="1" name="allverb">'; }
-    echo '<span class="title verbtitle">'.$la[$title]."</span>"; 
+    echo '<span class="title verbtitle">'.$plk_la[$title]."</span>"; 
     echo '<ul class="verblist">';
     for($i=0;$i<$verblist['count'];$i++) { 
       $id = & $verblist['id'][$i]; //shortcut

@@ -26,9 +26,9 @@ $go->necessary( 'registerid', 'newsave', array(
 //every word is marked: get them by global parameters
 if ( $go->good() ) {
   if ( 1 == $arg_allmarked ) {
-    $params              = getglobal('arg_');
+    $params              = plk_util_getGlobal('arg_');
     $params[ 'nolimit' ] = 1;
-    $words               = request( 'get_word', $params );
+    $words               = plk_request( 'get_word', $params );
     if ( $words[ 'errnum' ] != 0 ) {
       $go->error( 400, $words[ 'errnum' ] . ': ' . $words[ 'errname' ] );
     }

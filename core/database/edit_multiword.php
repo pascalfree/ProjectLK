@@ -22,7 +22,7 @@
 $go->necessary( array( 'wordid', 'allmarked' ), 'movetogroup' );
 
 if ( $go->good() ) {
-  make_array( $arg_wordid );
+  plk_util_makeArray( $arg_wordid );
 
   //every word is marked: get them by global parameters
   if ( $arg_allmarked ) {

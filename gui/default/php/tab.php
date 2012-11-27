@@ -18,7 +18,7 @@ require_once( GUI.'php/list.php' );
 
 //makes tabs of an array with tabnames
 function tabs($tabnames,$activetab) {
-  global $la;
+  global $plk_la;
   //quit if no tabnames
   if( $tabnames == NULL ) { return false; }
   //make array
@@ -30,16 +30,15 @@ function tabs($tabnames,$activetab) {
     if($tabnames[$i] == $activetab) { $class = "tab_active"; }
     else { $class="tab_inactive"; }
     //print html
-    echo '<div class="', $class ,' link" id="tab_', $tabnames[$i] ,'">', $la[$tabnames[$i]] ,'</div>';
+    echo '<div class="', $class ,' link" id="tab_', $tabnames[$i] ,'">', $plk_la[$tabnames[$i]] ,'</div>';
   }
 }
 
 //tab overview
-//$here is an array
 function ajax_overview($registerid, $count=NULL) {
   //count words if not counted
   if($count == NULL) { 
-    $count=request('get_word',array('count'=>'1' ,'registerid' => $registerid));
+    $count=plk_request('get_word',array('count'=>'1' ,'registerid' => $registerid));
     $count=$count['wordcount'][0];
   }
 

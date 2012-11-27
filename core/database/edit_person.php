@@ -18,7 +18,7 @@ $go->necessary( 'personid' );
 
 if ( $go->good() ) {
   //forbidden characters / Verbotene Zeichen
-  remove_forbidden( $arg_newperson );
+  plk_util_removeForbidden( $arg_newperson );
   
   //update / überarbeiten
   $edits = NULL;

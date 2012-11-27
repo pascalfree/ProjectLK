@@ -23,11 +23,11 @@ require_once( GUI.'php/link.php' );
 //type, id, name, dropdown [array], showall [1/0]
 //$name, $id, $type, $dropdown=NULL
 function create_menu($p) {
-  global $la;
+  global $plk_la;
   
   $p = u_param($p);
   //defaults
-  if( !$p['name'] ) { $p['name'] = get_name($p['type'], $p['id']); }
+  if( !$p['name'] ) { $p['name'] = plk_util_getName($p['type'], $p['id']); }
 
   //Print   
   $out = '<span class="path_container event_hidelast';
@@ -40,7 +40,7 @@ function create_menu($p) {
     //print name
     $out .= '<span id="mn_'.$p['type'].'"'; 
     if($nolink != 1) { $out .= 'class="link '.$p['type'].'_'.$p['id'].'" onclick="do_action(\''.$p['id'].'\',\''.$p['type'].'\',\'force_goto\')"'; }
-    $out .= 'title="'.$la[$p['type']].'">'.$p['name'].'</span>';
+    $out .= 'title="'.$plk_la[$p['type']].'">'.$p['name'].'</span>';
     if($p['dropdown']) { 
       //make json string
       if( is_array($p['dropdown']) ) { $p['dropdown'] = json_encode($p['dropdown']); }
@@ -53,65 +53,65 @@ function create_menu($p) {
 } 
 
 //also ajax
-function ajax_navigator($here) {
-  menu_navigator($here);
+function ajax_navigator($plk_here) {
+  menu_navigator($plk_here);
 }
-function menu_navigator($here) {
-  global $la, $you;
+function menu_navigator($plk_here) {
+  global $plk_la, $plk_you;
 
   $path=NULL;
   //Pfad
-  if($you -> name != NULL) {
+  if($plk_you -> name != NULL) {
     //type, id, name, dropdown [array], showall [1/0]
-    $path[0]=create_menu('type=user&name='. $you -> name .'&id'. $you -> id .'&dropdown=["settings","import","export","hr","logout"]');
+    $path[0]=create_menu('type=user&name='. $plk_you -> name .'&id'. $plk_you -> id .'&dropdown=["settings","import","export","hr","logout"]');
   }
   
-  if($here['registerid']!=NULL) { 
-    $path[1]=create_menu('type=register&id='.$here['registerid'].'&dropdown=["rename","options","delete","hr","list"]');
+  if($plk_here['registerid']!=NULL) { 
+    $path[1]=create_menu('type=register&id='.$plk_here['registerid'].'&dropdown=["rename","options","delete","hr","list"]');
   }
 
-  if($here['groupid']!=NULL) { 
-    if(is_numeric($here['groupid'])) {
-      $groupname = $la['group'].' '.$here['groupid'];
-    } else { $groupname = $la[ $here['groupid'] ]; }
-    $path[2]=create_menu('type=group&id='.$here['groupid'].'&name='.$groupname.'&dropdown=["list","all"]&showall=1');
+  if($plk_here['groupid']!=NULL) { 
+    if(is_numeric($plk_here['groupid'])) {
+      $groupname = $plk_la['group'].' '.$plk_here['groupid'];
+    } else { $groupname = $plk_la[ $plk_here['groupid'] ]; }
+    $path[2]=create_menu('type=group&id='.$plk_here['groupid'].'&name='.$groupname.'&dropdown=["list","all"]&showall=1');
   }
 
-  if($here['saveid']!=NULL) { 
-    $path[]=create_menu('type=save&id='.$here['saveid'].'&dropdown=["delete","hr","list","without","all"]&showall=1');
+  if($plk_here['saveid']!=NULL) { 
+    $path[]=create_menu('type=save&id='.$plk_here['saveid'].'&dropdown=["delete","hr","list","without","all"]&showall=1');
   }
 
-  if($here['tagid']!=NULL) { 
-    $path[]=create_menu('type=tag&id='.$here['tagid'].'&dropdown=["list","without","all","taglist"]&showall=1');
+  if($plk_here['tagid']!=NULL) { 
+    $path[]=create_menu('type=tag&id='.$plk_here['tagid'].'&dropdown=["list","without","all","taglist"]&showall=1');
   } 
 
-  if($here['wordclassid']!=NULL) { 
-    $path[]=create_menu('type=wordclass&id='.$here['wordclassid'].'&name='.$la['classname'][$here['wordclassid']].'&dropdown=["list","all"]&showall=1'); 
+  if($plk_here['wordclassid']!=NULL) { 
+    $path[]=create_menu('type=wordclass&id='.$plk_here['wordclassid'].'&name='.$plk_la['classname'][$plk_here['wordclassid']].'&dropdown=["list","all"]&showall=1'); 
   }
 
-  if($here['withoutid']!=NULL) { 
-    $path[] = create_menu('type=without&id='.$here['withoutid'].'&name='. $la['without'.$here['withoutid']].'&showall=1');
+  if($plk_here['withoutid']!=NULL) { 
+    $path[] = create_menu('type=without&id='.$plk_here['withoutid'].'&name='. $plk_la['without'.$plk_here['withoutid']].'&showall=1');
   }
 
-  if($here['searchid']!=NULL) { 
-    $path[] = create_menu('type=search&id='.$here['searchid'].'&name='.$here['searchid'].'&showall=1');
+  if($plk_here['searchid']!=NULL) { 
+    $path[] = create_menu('type=search&id='.$plk_here['searchid'].'&name='.$plk_here['searchid'].'&showall=1');
   }
-  if($here['queryid']!=NULL) { 
-    $path[] = create_menu('name='.$la['query'].'&nolink=1'); 
+  if($plk_here['queryid']!=NULL) { 
+    $path[] = create_menu('name='.$plk_la['query'].'&nolink=1'); 
   }	
 
-  if($here['keyoption']=='show') { $addpath=($you->hints?'&help=show':''); } //pass force for ajax
+  if($plk_here['keyoption']=='show') { $addpath=($plk_you->hints?'&help=show':''); } //pass force for ajax
 
-  if($here['keyoption']=='verb') { 
-    $path[] = create_menu('type=keyoption&id=verb&name='. $la['verb'] .($you->hints?'&help=verb':''));
-  } elseif($here['keyoption']!=NULL) { 
-    $path[] = create_menu('type=keyoption&id='.$here['keyoption'].'&name='.urlencode($la[$here['keyoption']]).'&nolink=1'. $addpath); 
+  if($plk_here['keyoption']=='verb') { 
+    $path[] = create_menu('type=keyoption&id=verb&name='. $plk_la['verb'] .($plk_you->hints?'&help=verb':''));
+  } elseif($plk_here['keyoption']!=NULL) { 
+    $path[] = create_menu('type=keyoption&id='.$plk_here['keyoption'].'&name='.urlencode($plk_la[$plk_here['keyoption']]).'&nolink=1'. $addpath); 
   }
-  if($here['formid']!=NULL) { 
-    $path[] = create_menu('type=form&id='.$here['formid'].'&showall=1&dropdown=["list","all"]');
+  if($plk_here['formid']!=NULL) { 
+    $path[] = create_menu('type=form&id='.$plk_here['formid'].'&showall=1&dropdown=["list","all"]');
   }
-  if($here['personid']!=NULL) { 
-    $path[] = create_menu('type=person&id='.$here['personid'].'&showall=1&dropdown=["list","all"]');
+  if($plk_here['personid']!=NULL) { 
+    $path[] = create_menu('type=person&id='.$plk_here['personid'].'&showall=1&dropdown=["list","all"]');
   }
 
   if($path!=NULL) {

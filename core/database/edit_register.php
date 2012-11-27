@@ -30,7 +30,7 @@ if ( $go->good() ) {
       $name = 'Kartei ' . $arg_registerid;
     }
     //forbidden characters / Verbotene Zeichen
-    remove_forbidden( $name , array( '/', '"', '\'', '#', '+', '\\' ) );
+    plk_util_removeForbidden( $name , array( '/', '"', '\'', '#', '+', '\\' ) );
 
     //Checkname
     $num          = '';

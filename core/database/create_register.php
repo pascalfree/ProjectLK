@@ -20,7 +20,7 @@
 
 if ( $go->good() ) {
   // forbidden characters
-  remove_forbidden( $arg_newregister, array( '/', '"', '\'', '#', '+', '\\' ) );
+  plk_util_removeForbidden( $arg_newregister, array( '/', '"', '\'', '#', '+', '\\' ) );
   
   //add first to create name with id	
   $query      = "INSERT INTO lk_registers (userid) VALUES (" . $userid . ") ";

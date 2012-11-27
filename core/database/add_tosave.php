@@ -29,10 +29,10 @@ if( $go->good() ) {
 }
 
 if( $go->good() ) {
-  make_array( $arg_wordid );
+  plk_util_makeArray( $arg_wordid );
 
   if( $arg_allmarked ) { 
-    $arg_wordid = load_wordid( $go );
+    $arg_wordid = plk_util_loadWordId( $go );
   }
 
   $countid = count( $arg_wordid );

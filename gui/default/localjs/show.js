@@ -23,8 +23,10 @@
 //INITIALIZER
 //////////
 
-function initializer_add() { initializer_show(); }
-function initializer_show() {
+initializer_add = 
+initializer_show = function() {
+  //initialize elements in toolbar
+  update_toolbar( plk.here('page') );
   //initialize the checkscroll function
   checkscroll();
 }
@@ -55,7 +57,7 @@ function eventloader_overview( where ) {
   var elements = ['group','tag','save','wordclass','without'];
   for(var i=0; i<elements.length; i++) {
     //highlight now
-    where.select('.'+elements[i]+'_'+here[ elements[i]+'id' ]).each(function(item) {
+    where.select('.'+elements[i]+'_'+plk.here( elements[i]+'id' )).each(function(item) {
       item.addClassName('highlighted_element');
     })
   }
@@ -145,14 +147,14 @@ function appendwords(param, fromlim, tolim, position) {
     if( !params['parameters'] ) { //not defined yet
       var checked=$('check_allmarked'); //this checkbox will decide if all are checked
       if( checked ) {
-        params['parameters'] = Object.toJSON([parameters, checked.checked?1:0, here.registerid?0:1]); //checkboxes checked?
+        params['parameters'] = Object.toJSON([parameters, checked.checked?1:0, plk.here('registerid')?0:1]); //checkboxes checked?
       } else {
-        params['parameters'] = Object.toJSON([parameters, 0, here.registerid?0:1 ]);
+        params['parameters'] = Object.toJSON([parameters, 0, plk.here('registerid')?0:1 ]);
       }
     }
 
     //load html
-    req('get_function', params, function(i,p,s) { appendit(i.output, s) }, position);
+    plk.req('get_function', params, function(i,p,s) { appendit(i.output, s) }, position);
 
   } catch(err) {
     msg('Error[appendwords]: '+err);
@@ -240,7 +242,7 @@ function hidecolumns() {
 function checkscroll() {
   //if this is not show or add, stop.
   //will start again, when changing tab
-  if ( here.page!='show' && here.page!='add' ) {
+  if ( plk.here('page')!='show' && plk.here('page')!='add' ) {
     local.wordlist_complete=1; //so it will be restarted
     return false; //quit
   }
@@ -253,8 +255,8 @@ function checkscroll() {
     fromlim=parseFloat($('wordlist').down('tbody').childNodes.length);
 
     //notify if no words were found (only in show)
-    if( fromlim == 0 && here.page == 'show' ) { do_info( la.err_102 ); }
-    else { close_info( la.err_102 ); }
+    if( fromlim == 0 && plk.here('page') == 'show' ) { do_info( plk.la.err_102 ); }
+    else { close_info( plk.la.err_102 ); }
 
     // show/hide related elements
     $$('.with_wordlist').each(function(item) {
@@ -270,11 +272,11 @@ function checkscroll() {
     //update_information(); //20120407 - fix : this would hide the info that similar words exists
 
     // show/hide row of register
-    displaycolumn( here.registerid?0:1, 'register' );
+    displaycolumn( plk.here('registerid')?0:1, 'register' );
 
     //get those words and append them
     if( fromlim == 0 ) { do_shutter(1); } //shutter if list is empty
-    appendwords(here, fromlim, 25, 0);
+    appendwords(plk.here(), fromlim, 25, 0);
 
   } else {
     //try again in a second
@@ -290,6 +292,7 @@ function checkscroll() {
 //make link to goto somewhere knowing type and id
 link_goto_generic_search =
 link_goto_generic_overview = 
+link_goto_generic_add =
 link_goto_generic_show = function(id, type, namevalue) {
   return '<li class="link menulink" onclick="do_action(\''+ id +'\',\''+ type +'\',\'goto\')">'+namevalue+'</li>';   
 }
@@ -302,7 +305,7 @@ link_hide_group =
 link_hide_tag =
 link_hide_wordclass =
 link_hide_word = function(id, type) {
-  return '<li class="menulink link columnbutton" onclick="javascript: displaycolumn(0,\''+type+'\')">'+la['hide']+'</li>';
+  return '<li class="menulink link columnbutton" onclick="javascript: displaycolumn(0,\''+type+'\')">'+plk.la['hide']+'</li>';
 }
 
 //////////
@@ -313,24 +316,27 @@ link_hide_word = function(id, type) {
 //goto somewhere knowing type and id
 action_goto_generic_show =
 action_goto_generic_overview =
+action_goto_generic_add =
 action_goto_generic_search = function(id, type, params) {
   //shutter
   do_shutter(1);
 
   //remove wordid //mostly useless
   if( type != 'word' ) {
-    update_here({ wordid: null});
+    plk.here.set({ wordid: null});
   }
 
   //update location
   if(type != null) {
     var param = {}; 
     param[type+'id'] = id;
-    update_here( param );
+    plk.here.set( param );
   }
 
   //switch to show or search
-  if( here.searchid != null ) {
+  if( plk.here('page') == 'add' ) { //stay on add page
+    tab_switch('add',1);
+  } else if( plk.here('searchid') != null ) {
     tab_switch('search',1);
   } else if(type == 'register') {
     tab_switch('overview',1); //force reload
@@ -341,18 +347,19 @@ action_goto_generic_search = function(id, type, params) {
 
 action_goto_search_show =
 action_goto_search_overview =
+action_goto_search_add =
 action_goto_search_search = function(id) {
   //shutter
   do_shutter(1);
 
   //remove wordid
-  clear_here('wordid');
+  plk.here.clear('wordid');
   //update search
-  update_here({ searchid: id});  
+  plk.here.set({ searchid: id});  
   //also update searchtext
-  update_here({ searchtext: 'like: '+ id});
+  plk.here.set({ searchtext: 'like: '+ id});
   //load show if search is empty
-  if(here.searchid == null) {
+  if(plk.here('searchid') == null) {
     tab_switch('show',1); //force reload
   } else {
     tab_switch('search',1);
@@ -374,17 +381,17 @@ function update_show() {
   })
 
   //define if adding words or showing
-  if( here.page=='add' ) {
+  if( plk.here('page') == 'add' ) {
     var now = new Date().getTime() / 1000;
     now = Math.floor(now);
-    here.timerange = [now - 3*60*60, now, 'DESC'];
+    plk.here.set({ "timerange" : [now - 3*60*60, now, 'DESC'] });
     //local.wordlist_complete = 1; //force reload of words
   } else { //else load normal
-    here.timerange = null;
+    plk.here.clear("timerange");
   }
 
   //fill with new content
-  if( local.wordlist_complete == 1 && here.page != 'search') { //checkscroll isn't running now
+  if( local.wordlist_complete == 1 && plk.here('page') != 'search') { //checkscroll isn't running now
     local.wordlist_complete = 0;
     checkscroll();
   } else { 
@@ -405,8 +412,8 @@ function update_overview() {
       var param = { 'location': 'php/tab.php', 
                     'function': 'overview',
                     'json': 1,
-                    'parameters': Object.toJSON([ here.registerid ]) }
-      req('get_function', param, function(info) {
+                    'parameters': Object.toJSON([ plk.here('registerid') ]) }
+      plk.req('get_function', param, function(info) {
         var content = $('content_tab_overview');
         if( !content ) { throw 'could not find HTML Element with id tab_overview_content in update_overview'; }
         else {
@@ -429,7 +436,7 @@ function update_overview() {
 //search page is called
 function update_search() {
   //set searchtext
-  update_here({ searchtext: 'like: '+here.searchid });
+  plk.here.set({ searchtext: 'like: '+plk.here('searchid') });
   //update results
   get_searchresult();
 
@@ -452,7 +459,7 @@ function refresh_subcount( itype ) {
   //save time: check if at least one type is defined here
   var none = true;
   for( var i = 0; i < itypes.length; i++ ) {
-    if( here[ itypes[i] + 'id' ] != null ) {
+    if( plk.here( itypes[i] + 'id' ) != null ) {
       none = false; break;
     }
   }
@@ -469,56 +476,39 @@ function refresh_subcount( itype ) {
   //iterate
   for( var i=0; i<itypes.length; i++ ) {
     //20120407 - FIX : show correct numbers
-    //if( here[itypes[i]+'id'] == null ) { //this type is not defined
-      //first show them all with zeros
-      //TODO "disable" element
-      $$('[class*="'+itypes[i]+'_subcount_"]').each(function(item) { 
-        item.show().update('0/'); 
-      })
+    //first show them all with zeros
+    //TODO "disable" element
+    $$('[class*="'+itypes[i]+'_subcount_"]').each(function(item) { 
+      item.show().update('0/'); 
+    })
 
-      //prepare request for counting.
-      var params = Object.clone( here );
-      params[ itypes[i] + 'id' ] = null; //ignore ids from same type
-      params['type'] = itypes[i]; //pass type to postfuntion
-      params['gettags'] = 0;
+    //prepare request for counting.
+    var params = plk.here(); //already cloned
+    params[ itypes[i] + 'id' ] = null; //ignore ids from same type
+    params['type'] = itypes[i]; //pass type to postfuntion
+    params['gettags'] = 0;
 
-      //withoutid is special
-      if( itypes[i] === 'without' ) {
-        //for tags
-        //if( here.tagid == null ) {
-          var tparams = Object.clone( params );
-          tparams['tagid'] = null;
-          tparams['withoutid'] = 'tag';
-          tparams['count'] = '1'; //count them   
-          req('get_word', tparams, update_subcount); 
-        /*} else {
-          update_subcount_of('without', 'tag'); //hide subcount
-        }*/
+    //withoutid is special
+    if( itypes[i] === 'without' ) {
+      //for tags
+      var tparams = Object.clone( params );
+      tparams['tagid'] = null;
+      tparams['withoutid'] = 'tag';
+      tparams['count'] = '1'; //count them   
+      plk.req('get_word', tparams, update_subcount); 
 
-        //for save
-        //params is passed by reference before, shouldn't change it now.
-        //if( here.saveid == null ) {
-          var sparams = Object.clone( params );
-          sparams['saveid'] = null;
-          sparams['withoutid'] = 'save'; 
-          sparams['count'] = '1'; //count them  
-          req('get_word', sparams, update_subcount); 
-        /*} else {
-          update_subcount_of('without', 'save'); //hide subcount
-        }*/
-        
-      } else { //normal case
-        params['count'] = itypes[i];
-        //params['select'] = itypes[i]+'id, COUNT(*)'; //count them
-        //params['groupby'] = itypes[i]+'id';
-        req('get_word', params, update_subcount); 
-      }
+      //for save
+      //params is passed by reference before, shouldn't change it now.
+      var sparams = Object.clone( params );
+      sparams['saveid'] = null;
+      sparams['withoutid'] = 'save'; 
+      sparams['count'] = '1'; //count them  
+      plk.req('get_word', sparams, update_subcount); 
       
-    /*} else {
-      $$('[class*="'+itypes[i]+'_subcount_"]').each(function(item) { 
-        item.hide();
-      })     
-    }*/
+    } else { //normal case
+      params['count'] = itypes[i];
+      plk.req('get_word', params, update_subcount); 
+    }
   } //endfor
 }
 
@@ -565,43 +555,10 @@ function update_subcount_of(type, id, value) {
   }) 
 }
 
-//////////
-// UPDATE INFORMATION
-//////////
-
-function update_information_show() {
-  if(here.wordid != null) { 
-    do_info( la.info_singleword +' <span class="link" onclick="do_action(null,\'word\',\'goto\')">'+ la.showall +'</span>' );
-  }
-}
-
-function update_information_search() {
-  //write information when searching
-  if(here.registerid != null) { 
-    do_info( la.info_singlesearch +' <span class="link" onclick="do_action(null,\'register\',\'goto\')">'+ la.searchall +'</span>' );
-  }
-}
-
-//////////
-//TAB SWITCHER
-//////////
-
-function tab_switch( totab, force ) {
-  // quit if tab is already showing
-  if(here.page == totab && !force) { return false; }
-
-  //shutter
-  do_shutter(1);
-
-  //load elements
+function update_toolbar(totab) {
   var tab_active = $$('.tab_active')[0];
   var tab_totab = $('tab_'+totab);
-  var content = $('content');
-  //throw errors
-  var error=0;
-  if( !content ) { error= 1; throw "Warning [tab_switch]: could not switch tabs: $('content') is not an element"; }
-  //change class
-  
+
   if( tab_active ) tab_active.removeClassName('tab_active').addClassName('tab_inactive');
   if( tab_totab ) tab_totab.removeClassName('tab_inactive').addClassName('tab_active');
 
@@ -613,9 +570,46 @@ function tab_switch( totab, force ) {
   $$('[class~="intab_'+totab+'"]').each(function(item) {
     item.show();
   })
+}
+
+//////////
+// UPDATE INFORMATION
+//////////
+
+function update_information_show() {
+  if(plk.here('wordid') != null) { 
+    do_info( plk.la.info_singleword +' <span class="link" onclick="do_action(null,\'word\',\'goto\')">'+ plk.la.showall +'</span>' );
+  }
+}
+
+function update_information_search() {
+  //write information when searching
+  if(plk.here('registerid') != null) { 
+    do_info( plk.la.info_singlesearch +' <span class="link" onclick="do_action(null,\'register\',\'goto\')">'+ plk.la.searchall +'</span>' );
+  }
+}
+
+//////////
+//TAB SWITCHER
+//////////
+
+function tab_switch( totab, force ) {
+  // quit if tab is already showing
+  if(plk.here('page') == totab && !force) { return false; }
+
+  //shutter
+  do_shutter(1);
+
+  //load elements
+  var content = $('content');
+  //throw errors
+  var error=0;
+  if( !content ) { error= 1; throw "Warning [tab_switch]: could not switch tabs: $('content') is not an element"; }
+  //update toolbar
+  update_toolbar(totab);
 
   //update page
-  update_page(totab);
+  update_page(totab); //redirects to update_"totab" in the end.f
 }
 
 /////////////
@@ -650,10 +644,10 @@ function load_data_tag_word(filltype, fillwhere, loadtype) {
     var tfill = fill(loadtype, filltype); //function to call fill_<filltype>_<loadtype>
  
     //prepare params (wordid)
-    var params=Object.clone(here);
+    var params = plk.here();
     params['wordid[]'] = formfield2id('wordform', 'wordid[]');
     //load data from server
-    req('get_tag',params, function(info,p,s) {
+    plk.req('get_tag',params, function(info,p,s) {
       local.data.tag_word = info;
       window[ tfill ](s); 
     }, fillwhere);
@@ -667,8 +661,8 @@ function load_data_tag_word(filltype, fillwhere, loadtype) {
 //fills a selection input with groups
 function fill_select_group(fillwhere) {
   //write options
-  var val='<option value="1">'+la.group+' '+1+'</option>';
-  val+='<option value="af">'+la.af+'</option>';
+  var val='<option value="1">'+plk.la.group+' '+1+'</option>';
+  val+='<option value="af">'+plk.la.af+'</option>';
   //fill
   if(fillwhere) {
     fillwhere.insert({after: val}).remove();
@@ -678,13 +672,13 @@ function fill_select_group(fillwhere) {
 //fill any select
 function fill_select_generic(fillwhere, type) {
   //check if nothing found
-  if(local.data[type].count == 0) { msg(la['err_no'+type]); return false; }  
+  if(local.data[type].count == 0) { msg(plk.la['err_no'+type]); return false; }  
   //write options
   var i;
   var val = '';
   for (i=0; i<local.data[type].count; i++) {
     val += '<option value="'+local.data[type].id[i]+'"';
-    if(here[type+'id'] == local.data[type].id[i]) { val += ' selected'; } //select here
+    if(plk.here(type+'id') == local.data[type].id[i]) { val += ' selected'; } //select here
     val += '>'+local.data[type].name[i]+'</option>';
   }
   //fill
@@ -695,7 +689,7 @@ function fill_select_generic(fillwhere, type) {
 
 //catch tag list if empty
 function fill_select_tag_word(fillwhere) {
-  if(local.data.tag_word.count == 0) { msg(la['err_notag']); return false; } 
+  if(local.data.tag_word.count == 0) { msg(plk.la['err_notag']); return false; } 
   else { fill_select_generic(fillwhere, 'tag_word'); }  
 }
 
@@ -710,24 +704,24 @@ function load_data_more_options(filltype, fillwhere, loadtype) {
 
 function fill_list_more_options( fillwhere ) {
     //Delete
-    var val='<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'word\',\'multi_delete\')" ><span class="icon iconx"></span>'+la['deletewords']+'</li>';
+    var val='<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'word\',\'multi_delete\')" ><span class="icon iconx"></span>'+plk.la['deletewords']+'</li>';
     //Move
-    val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'word\',\'multi_move\',\'popup\')"><span class="icon iconarrowright"></span>'+la['movewords']+'</li>';
-    if(here.registerid != null) {
+    val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'word\',\'multi_move\',\'popup\')"><span class="icon iconarrowright"></span>'+plk.la['movewords']+'</li>';
+    if(plk.here('registerid') != null) {
       val += '<hr>';
       //Addtag
-      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'tag\',\'multi_addto\',\'popup\')"><span class="icon iconplus"></span>'+la['addtag']+'</li>';
+      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'tag\',\'multi_addto\',\'popup\')"><span class="icon iconplus"></span>'+plk.la['addtag']+'</li>';
       //Deletetag
-      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'tag\',\'multi_delete\',\'popup\')"><span class="icon iconx"></span>'+la['deletetag']+'</li>';
+      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'tag\',\'multi_delete\',\'popup\')"><span class="icon iconx"></span>'+plk.la['deletetag']+'</li>';
       val += '<hr>';
       //add new save
-      val += '<li class="menulink link icon_text" onclick="javascript: do_action(\'wordform\',\'save\',\'add\',\'popup\')"><span class="icon iconplus"></span>'+la['newsave']+'</li>';
+      val += '<li class="menulink link icon_text" onclick="javascript: do_action(\'wordform\',\'save\',\'add\',\'popup\')"><span class="icon iconplus"></span>'+plk.la['newsave']+'</li>';
       //Addtosave
-      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'save\',\'multi_addto\',\'popup\')"><span class="icon iconarrowright"></span>'+la['inserttosave']+'</li>';
+      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'save\',\'multi_addto\',\'popup\')"><span class="icon iconarrowright"></span>'+plk.la['inserttosave']+'</li>';
     }
   //Deletefromsave
-    if(here.saveid != null) {
-      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'save\',\'multi_removefrom\',\'popup\')"><span class="icon iconx"></span>'+la['removefromsave']+'</li>';
+    if(plk.here('saveid') != null) {
+      val += '<li class="menulink link icon_text" onclick="do_action(\'wordform\',\'save\',\'multi_removefrom\',\'popup\')"><span class="icon iconx"></span>'+plk.la['removefromsave']+'</li>';
     }
   //insert the list
   put_list(val, fillwhere);
@@ -744,21 +738,21 @@ function action_multi_move_word() {
     if(!id) { return false; }  
 
      
-    var fparams = new formparam('moveto','move');
+    var fparams = new plk.formObj('moveto','move');
     //create select for register with text: loading
     //fparams.addselect('movetoreg','register');
-    //fparams.select['movetoreg'].addoption({'null':la.loading});
+    //fparams.select['movetoreg'].addoption({'null':plk.la.loading});
     //create select for group with text: loading
     fparams.addselect('movetogroup','group');
-    fparams.select['movetogroup'].addoption({'null':la.loading});
+    fparams.select['movetogroup'].addoption({'null':plk.la.loading});
     //prepare request
-    rvar.create('moveto','edit_multiword',
+    var moveto = new plk.reqObj( 'edit_multiword',
       {'wordid[]':id},
       after_send, 
       {id:id,action:'multi_move',type:'word',key:0}
     );
     //show form
-    request_form('moveto',fparams);  
+    request_form( moveto, fparams );  
 
     //now load an fill the selects
     load_data('select', $('movetogroup').down(), 'group');
@@ -774,11 +768,12 @@ function action_multi_delete_word( id ) {
     if(!id) { return false; }  
 
     //prepare request
-    rvar.create('delmarked', 'delete_word', {'wordid[]':id}, after_send, {id:id,action:'multi_delete',type:'word',key:0}); 
-    //rvar.delmarked.addparams(); 
+    var delmarked = new plk.reqObj( 'delete_word', {'wordid[]':id}, after_send, {id:id,action:'multi_delete',type:'word',key:0} )
 
     //ask again
-    ask(la['askworddels'], 'rvar.delmarked.sendreq()');
+    ask(plk.la['askworddels'], function() { 
+      delmarked.send();
+    });
   } catch(err) { msg('[action_multi_delete_word]:'+err); }
 }
 
@@ -789,19 +784,18 @@ function action_multi_addto_tag( id ) {
     if(!id) { return false; }  
 
     //prepare form
-    var fparams = new formparam('addtag');
+    var fparams = new plk.formObj('addtag');
     fparams.addinput('newtag','name');
 
     //prepare request
-    rvar.create('addtag','add_tag',
-      {'registerid':here.registerid, 'wordid[]':id},
+    var addtag = new plk.reqObj( 'add_tag',
+      {'registerid':plk.here('registerid'), 'wordid[]':id},
       after_send, 
       {id:id,action:'multi_addto',type:'tag',key:0}
     );
-    //rvar.addtag.addparams({'wordid[]':id});
 
     //show form
-    request_form('addtag',fparams);    
+    request_form( addtag ,fparams );    
   } catch(err) { msg('[action_multi_addto_tag]:'+err); } 
 }
 
@@ -812,20 +806,20 @@ function action_multi_delete_tag( id ) {
     id = formfield2id('wordform','wordid[]');
     if(!id) { return false }  
   
-    var fparams = new formparam('deletetag','delete');
+    var fparams = new plk.formObj('deletetag','delete');
     //create select for tads with text: loading
     fparams.addselect('tagid','tag');
-    fparams.select['tagid'].addoption({'null':la.loading});
+    fparams.select['tagid'].addoption({'null':plk.la.loading});
 
     //prepare request
-    rvar.create('deletetag','delete_tag',
+    var deletetag = new plk.reqObj( 'delete_tag',
       {'wordid[]': id},
       after_send, 
       {id:id,action:'multi_delete',type:'tag',key:0}
     );
 
     //show form
-    request_form('deletetag', fparams);  
+    request_form( deletetag, fparams );  
 
     //now load an fill the selects
     load_data('select', $('tagid').down(), 'tag_word');
@@ -841,18 +835,18 @@ function action_add_save( id ) {
     if(!id) { return false; }  
 
     //prepare form
-    var fparams = new formparam('newsave');
+    var fparams = new plk.formObj('newsave');
     fparams.addinput('newsave','name');
 
     //prepare request
-    rvar.create('addsave','create_save',
-      {registerid:here.registerid, 'wordid[]':id},
+    var addsave = new plk.reqObj( 'create_save',
+      {registerid: plk.here('registerid') , 'wordid[]':id},
       after_send, 
       {id:id,action:'add',type:'save',key:0}
     );
 
     //show form
-    request_form('addsave',fparams);
+    request_form( addsave, fparams );
   } catch(err) { msg('[action_add_save]:'+err); }  
 }
 
@@ -864,19 +858,19 @@ function action_multi_addto_save( id ) {
 
 
     //prepare form
-    var fparams = new formparam('insertto','insert');
+    var fparams = new plk.formObj('insertto','insert');
     fparams.addselect('newsaveid','savepoint');
-    fparams.select['newsaveid'].addoption({'null':la.loading});
+    fparams.select['newsaveid'].addoption({'null':plk.la.loading});
 
     //prepare request
-    rvar.create('insertinto','add_tosave',
-      {'registerid':here.registerid, 'wordid[]': id},
+    var insertinto = new plk.reqObj( 'add_tosave',
+      {'registerid':plk.here('registerid'), 'wordid[]': id},
       after_send, 
       {id:id,action:'multi_addto',type:'save',key:0}
     );
 
     //show form
-    request_form('insertinto',fparams);    
+    request_form( insertinto ,fparams);    
 
     //load saves and update the select
     load_data('select', $('newsaveid').down(),'save');
@@ -890,13 +884,15 @@ function action_multi_removefrom_save( id ) {
     id = formfield2id('wordform','wordid[]');
     if(!id) { return false; }  
 
-    rvar.create('remfsave','delete_fromsave',
-      {'saveid':here.saveid, 'registerid':here.registerid, 'wordid[]':id},
+    var remfsave = new plk.reqObj( 'delete_fromsave',
+      {'saveid':plk.here('saveid'), 'registerid':plk.here('registerid'), 'wordid[]':id},
       after_send, 
       {id:id,action:'multi_removefrom',type:'save',key:0}
     ); 
     
-    ask(la['delwordfromsave'],'rvar.remfsave.sendreq()');
+    ask(plk.la['delwordfromsave'], function() { 
+      remfsave.send();
+    });
   } catch(err) { msg('[action_multi_addto_tag]:'+err); } 
 }
 
@@ -915,12 +911,12 @@ function after_send_multi_move_0_word(info,params) {
   for(var i=0; i<wordid.length; i++) {
     var tid=wordid[i];
     //if word isn't here anymore //params.movetoreg != here.registerid ||
-    if(here.groupid != null && params.movetogroup != here.groupid) {
+    if(plk.here('groupid') != null && params.movetogroup != plk.here('groupid')) {
       $$('[id="wordlist_tr_'+tid+'"]')[0].remove();
     //if group has changed
     } else if(params.movetogroup!=0) {
       if( params.movetogroup == 'af' || params.movetogroup == 'ar' ) {
-        var gr = la['a_'+params.movetogroup];
+        var gr = plk.la['a_'+params.movetogroup];
       } else { var gr = params.movetogroup }
       $$('[id="group_span_'+tid+'"]')[0].update( gr );
     }
@@ -928,7 +924,7 @@ function after_send_multi_move_0_word(info,params) {
 
   //notify
   if( wordid.length != 0 ) {
-    do_info( wordid.length +' '+ (wordid.length==1?la.info_word_moved:la.info_words_moved) );
+    do_info( wordid.length +' '+ (wordid.length==1?plk.la.info_word_moved:plk.la.info_words_moved) );
   }
 }
 
@@ -939,7 +935,7 @@ function after_send_multi_delete_0_word(info,params) {
 
   //notify
   if( info.count != 0 ) {
-    do_info( info.count +' '+ (info.count==1?la.info_word_deleted:la.info_words_deleted) );
+    do_info( info.count +' '+ (info.count==1?plk.la.info_word_deleted:plk.la.info_words_deleted) );
   } 
 }
 
@@ -955,25 +951,25 @@ function after_send_multi_addto_0_tag(info, params) {
       var ttagid = [];
       var ttags = [];
       //remove each tag from list, that allready is there
-      for(var j=0; j<info.tagid.length; j++) {
+      for(var j=0; j<info.id.length; j++) {
         //only copy if it doesn't exist
-         if( !$('tag_span_'+info.wordid[i]+'_'+info.tagid[j]) ) {
-          ttagid.push(info.tagid[j]);
-          ttags.push(info.tags[j]);
+         if( !$('tag_span_'+info.wordid[i]+'_'+info.id[j]) ) {
+          ttagid.push(info.id[j]);
+          ttags.push(info.name[j]);
         }
       }
-      if( info.tagid.length == 0 ) { return false; } //if nothing is left
+      if( info.id.length == 0 ) { return false; } //if nothing is left
 
       nparams['parameters'] = Object.toJSON([info.wordid[i], ttagid, ttags]); 
-      req('get_function', nparams, function(info,p,s) {
+      plk.req('get_function', nparams, function(info,p,s) {
         //append each tag
         appender(info.output, 'tag', $('tag_'+s), 'top');
       }, info.wordid[i]);
     }
 
     //notify // # tags have been added
-    if( info.tagid.length != 0 ) {
-      do_info( info.tagid.length +' '+ (info.tagid.length==1?la.info_tag_added:la.info_tags_added) );
+    if( info.id.length != 0 ) {
+      do_info( info.id.length +' '+ (info.id.length==1?plk.la.info_tag_added:plk.la.info_tags_added) );
     }
   } catch(err) { msg('[after_send_multi_addto_0_tag]:'+err); errnum=1; }
 }
@@ -990,7 +986,7 @@ function after_send_multi_delete_0_tag(info,params) {
   for(var i=0; i<id.length; i++) {
     //remove tag from list
     if( cleaner(id[i]+'_'+params.tagid, "tag") ) { //if tag removed
-      if( here.tagid == params.tagid ) { //if the tag we are showing was removed
+      if( plk.here('tagid') == params.tagid ) { //if the tag we are showing was removed
         cleaner(id[i], "word" ) //also remove the whole word from list
       }
     }
@@ -998,7 +994,7 @@ function after_send_multi_delete_0_tag(info,params) {
 
   //notify // # tags have been deleted
   if( id.length != 0 ) {
-    do_info( la.info_tag_deleted );
+    do_info( plk.la.info_tag_deleted );
   }
 }
 
@@ -1009,7 +1005,7 @@ function after_send_multi_addto_0_save(info,params) {
   //notify
   var len = params['wordid[]'].length;
   if( len != 0 ) {
-    do_info( len +' '+ (len==1?la.info_word_addedto_save:la.info_words_addedto_save) );
+    do_info( len +' '+ (len==1?plk.la.info_word_addedto_save:plk.la.info_words_addedto_save) );
   }  
 }
 
@@ -1019,7 +1015,7 @@ function after_send_add_0_save(info,params) {
   
   //notify
   if( params['wordid[]'].length != 0 ) {
-    do_info( la.info_save_created );
+    do_info( plk.la.info_save_created );
   }  
 }
 
@@ -1030,7 +1026,7 @@ function after_send_multi_removefrom_0_save(info,params) {
 
   //notify
   if( info.count != 0 ) {
-    do_info( info.count +' '+ (info.count==1?la.info_word_removedfrom_save:la.info_words_removedfrom_save) );
+    do_info( info.count +' '+ (info.count==1?plk.la.info_word_removedfrom_save:plk.la.info_words_removedfrom_save) );
   }    
 }
 
@@ -1046,22 +1042,22 @@ function checkform() {
   try {
     var addw=$('addword');
     if(addw.newwordfirst.value=='') { 
-      do_info( la.err_231 ); 
+      do_info( plk.la.err_231 ); 
       addw.newwordfirst.focus(); 
       return false; 
     } else if(addw.newwordfore.value=='') { 
-      do_info( la.err_232 ); 
+      do_info( plk.la.err_232 ); 
       addw.newwordfore.focus(); 
       return false; 
     } else {
-      var errmsga = validstr(addw.newwordfirst.value);
-      var errmsgb = validstr(addw.newwordfore.value);
+      var errmsga = plk.word.validate(addw.newwordfirst.value);
+      var errmsgb = plk.word.validate(addw.newwordfore.value);
       if(errmsga>0) { 
-        do_info(la.err_invalidsyntax+'<!-- '+errmsga+' -->');
+        do_info(plk.la.err_invalidsyntax+'<!-- '+errmsga+' -->');
         addw.newwordfirst.focus();
         return false;
       } else if(errmsgb>0) { 
-        do_info(la.err_invalidsyntax+'<!-- '+errmsgb+' -->');
+        do_info(plk.la.err_invalidsyntax+'<!-- '+errmsgb+' -->');
         addw.newwordfore.focus();
         return false;
       }
@@ -1082,7 +1078,7 @@ function action_add_word() {
     input.force = 1; //always force
     //local.current.force = 0 //reset for next call
     //call resetform then create word then call after_send_<action>_0_<type>()
-    req('create_word', input, [resetform, after_send], {id:0, type:'word', action:'add', key:0});
+    plk.req('create_word', input, [resetform, after_send], {id:0, type:'word', action:'add', key:0});
   }
 }
 
@@ -1094,7 +1090,12 @@ function after_send_add_0_word(info, params, id, type) {
     if(info['similar']==1) {
       //notify and compare
       info.similarid.unshift(info.id);
-      do_info(la.info_similar+" <span class='link' onclick='do_action("+ Object.toJSON(info.similarid) +",\"word\",\"show\")'>"+la.compare+"</span>");   
+      do_info(plk.la.info_similar+" <span class='link' id='link_compare'>"+plk.la.compare+"</span>");
+      $('link_compare').onclick = function() {
+        plk.here.clear(['tagid','wordclassid','groupid']);
+        do_action( info.similarid, "word", "show");
+        info.similarid = null; //anti-memory-leak
+      }
     } else {
       close_info();
     }
@@ -1107,14 +1108,14 @@ function after_send_add_0_word(info, params, id, type) {
     var ids = ['register','group','wordclass'];
     for(var j=0; j<ids.length; j++) {
       var param = {}; param[ ids[j] +'id'] = info[ ids[j] ];
-      update_here(param);
+      plk.here.set(param);
     }
     if(info.taglist.count) { 
-      update_here({'tagid' : info.taglist.id[0]}); //only one tag can be saved
+      plk.here.set({'tagid' : info.taglist.id[0]}); //only one tag can be saved
     }
 
     //update this location with inputs
-    update_hash();
+    plk.hash.update();
     update_navigator();
 
     //show everything
@@ -1133,7 +1134,7 @@ action_addword_generic_search = function(id, type) {
   //update location
   if(type) {
     var params = {}; params[ type+'id' ] = id;
-    update_here(params);
+    plk.here.set(params);
   }
   //load "tab"
   tab_switch('add');
@@ -1173,15 +1174,21 @@ function update_add() {
   //close the notification
   close_info();
   //remove wordid from path
-  clear_here('wordid');
+  plk.here.clear('wordid');
 
+  //insert options corresponding to current location
   var addw=$('addword');
-  var regsel = $(addw.newregister).select('option[value="'+here.registerid+'"]')[0]; //FIX: IE $(...)
+  var regsel = $(addw.newregister).select('option[value="'+plk.here('registerid')+'"]')[0]; //FIX: IE $(...)
   if( regsel ) regsel.selected = true;
-  var groupsel = $(addw.newgroup).select('option[value="'+here.groupid+'"]')[0];
+  var groupsel = $(addw.newgroup).select('option[value="'+plk.here('groupid')+'"]')[0];
   if( groupsel ) groupsel.selected = true;
-  addw.newwordclass.selectedIndex=here.wordclassid;
+  addw.newwordclass.selectedIndex = plk.here('wordclassid');
 
+  //reappend submit button (IE8 "hidden submit button" fix)
+  var submit = $('addword_submit');
+  submit.insert( {after: submit} );
+
+  //focus first input
   addw.newwordfirst.focus();  
   
   //refresh words
@@ -1201,13 +1208,13 @@ function update_searchresult_show() {
 // -> load words of results
 function update_searchresult_search() {
 
-  if( here.searchid == '' ) { 
+  if( plk.here('searchid') == '' ) { 
     tab_switch('show'); // switch back if searchstring is empty 
     return 0;
   }
 
   var limit = 50; //set limit for words to be loaded
-  var st = here.searchid; //shortcut
+  var st = plk.here('searchid'); //shortcut
   var subt = local.current.subtext;
   var result = local.current.searchresult //shortcut
 
@@ -1216,7 +1223,7 @@ function update_searchresult_search() {
   for( var i=0; i<result.length; i++ ) {
     var s = result[i]; //shortcut
     if(s[0] != 'word') { continue; } //only want words
-    if(here.registerid && local.as[ subt ]['word']['registerid'][ s[2] ] != here.registerid) { continue; } //only want local words
+    if(plk.here('registerid') && local.as[ subt ]['word']['registerid'][ s[2] ] != plk.here('registerid')) { continue; } //only want local words
     if( $( 'wordlist_tr_'+local.as[ subt ]['word']['id'][ s[2] ] ) ) { continue; } //this word is loaded
     get_wordid.push( local.as[ subt ]['word']['id'][ s[2] ] );
 
@@ -1229,8 +1236,8 @@ function update_searchresult_search() {
     param['location'] = 'php/wordtable.php';
     param['function'] = 'wordform';
     param['json'] = 1;
-    param['parameters'] = Object.toJSON([ { wordid: get_wordid }, 0, here.registerid?0:1 ]);    
-    req('get_function',param, function(info) {
+    param['parameters'] = Object.toJSON([ { wordid: get_wordid }, 0, plk.here('registerid')?0:1 ]);    
+    plk.req('get_function',param, function(info) {
       appendit(info.output); //append found words
       refresh_searchtab();
     })
@@ -1263,7 +1270,7 @@ function put_wordtable_line( element , index) {
 function refresh_searchtab() {
   try {
     var result = local.current.searchresult //shortcut
-    var st = here.searchid; //shortcut
+    var st = plk.here('searchid'); //shortcut
     var subt = local.current.subtext;
 
     //break if no search results were are saved 
@@ -1276,7 +1283,7 @@ function refresh_searchtab() {
     for( var i=0; i<result.length; i++ ) {
       var s = result[i]; //shortcut
       if(s[0] != 'word') { continue; } //only want words
-      if(here.registerid && local.as[ subt ]['word']['registerid'][ s[2] ] != here.registerid) { continue; } //only want local words
+      if(plk.here('registerid') && local.as[ subt ]['word']['registerid'][ s[2] ] != plk.here('registerid')) { continue; } //only want local words
       //get wordid;
       var id = local.as[ subt ]['word']['id'][ s[2] ];
 
@@ -1290,7 +1297,7 @@ function refresh_searchtab() {
     }
 
     //show columns register if needed
-    displaycolumn( here.registerid?0:1, 'register' );
+    displaycolumn( plk.here('registerid')?0:1, 'register' );
 
     //but show the table
     $('wordlist').show();

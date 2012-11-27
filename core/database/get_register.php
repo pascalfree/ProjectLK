@@ -43,10 +43,10 @@ if ( $arg_registerid != NULL && $arg_registerid !== '*' ) { //20120422 - fix: !=
 }
 
 if ( $arg_registername != NULL ) {
-  $query .= " AND tr.name='" . regexpencode( $arg_registername ) . "' ";
+  $query .= " AND tr.name='" . plk_util_regExpEncode( $arg_registername ) . "' ";
 }
 if ( $arg_searchtext != NULL ) {
-  $query .= " AND UCASE(tr.name) RLIKE UCASE('" . regexpencode( $arg_searchtext ) . ".*') ";
+  $query .= " AND UCASE(tr.name) RLIKE UCASE('" . plk_util_regExpEncode( $arg_searchtext ) . ".*') ";
 }
 if ( $arg_count == 1 ) { //count
   $query .= " GROUP BY tr.id ";

@@ -68,16 +68,16 @@
 
   if( $go->good() ) {
     //Wordids
-    if( $wordid == NULL ) {
+    if( $arg_wordid == NULL ) {
       $getshuffle = rand( 0,$total-$done-2 );
-      $wordid = $go->query( 
+      $arg_wordid = $go->query( 
         "SELECT wordid 
            FROM lk_active
          WHERE done = '0'
                AND id = '".$arg_queryid."'
          ORDER BY wordid
          LIMIT ".$getshuffle.",2",6 ); 
-      $wordid = $wordid['result']['wordid'];
+      $arg_wordid = $arg_wordid['result']['wordid'];
     }
   }
 
@@ -100,21 +100,17 @@
     $wrong = array( 'id' => $wrongid, 'answer' => $wronganswer );
   }
 
-  if( $go->good() && !empty($wordid) ) { //20120421 - fix : not empty wordid
+  if( $go->good() && !empty($arg_wordid) ) { //20120421 - fix : not empty wordid
     //Load word
     if( 4 == $mode ) { //Verbquery
       //querystring
       $idstring = " AND (  "; 
           
-      make_array( $wordid );
-/*--
-      if( !is_array( $wordid ) ) { 
-        $wordid = array($wordid);   //fix : make wordid an array
-      }
-*/
-      $count = count( $wordid );
+      plk_util_makeArray( $arg_wordid );
+
+      $count = count( $arg_wordid );
       for( $i = 0; $i < $count; $i++ ) { 
-        $idstring .= " t2.id = '".$wordid[$i]."' "; 
+        $idstring .= " t2.id = '".$arg_wordid[$i]."' "; 
         $idstring .= $i + 1 < $count ? " OR " : "";
       }
       $idstring .= "  )";
@@ -136,11 +132,11 @@
         $word['answer'] = $verb['kword'];
       }
     } else {  //other query
-      $count = count( $wordid );
+      $count = count( $arg_wordid );
       $tolim = 2;
       if( $count < $tolim ) $tolim = $count;
       if( $count > 0 && $mode <= 3 ) {
-        $getword = request( 'get_word',array( 'wordid' => $wordid,'tolim' => $tolim,'gettags' => 0 ) );
+        $getword = plk_request( 'get_word',array( 'wordid' => $arg_wordid,'tolim' => $tolim,'gettags' => 0 ) );
         $word['id'] = $getword['id'];
         if( $mode == 0 OR $mode == 2 ) {
           $word['question'] =  $getword['wordfirst'];

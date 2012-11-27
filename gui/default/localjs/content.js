@@ -29,10 +29,10 @@ function validate_login_form(pform) {
   if ( !form ) { return false; }
 
   if ( !form.username.value ) {
-    do_info(la.err_237); //missing username
+    do_info(plk.la.err_237); //missing username
     return false;
   } else if( !form.password.value ) {
-    do_info(la.err_234); //missing password
+    do_info(plk.la.err_234); //missing password
     return false;
   }
   
@@ -46,16 +46,16 @@ function validate_nregister_form() {
   if( !form ) { return false; }
 
   if ( !form.email.value ) {
-    do_info(la.err_238); //missing email
+    do_info(plk.la.err_238); //missing email
     return false;
   } else if( !form.passwordrepeat.value ) {
-    do_info(la.err_236); //missing password
+    do_info(plk.la.err_236); //missing password
     return false;
   } else if( form.passwordrepeat.value !== form.password.value ) {
-    do_info(la.err_password); //passwords not matching
+    do_info(plk.la.err_password); //passwords not matching
     return false;    
   } else if( !form.accept.checked ) {
-    do_info(la.err_accept); //must accept agreements
+    do_info(plk.la.err_accept); //must accept agreements
     return false;  
   }
 
@@ -69,7 +69,7 @@ function validate_forgot_form() {
   if( !form ) { return false; }
 
   if ( !form.email.value && !form.username.value ) {
-    do_info(la.err_200); //missing something
+    do_info(plk.la.err_200); //missing something
     return false;
   } 
   

@@ -58,7 +58,7 @@ if( 1 != $nomail && 0 != $found ) { //Don't change guest password
   }
 
   if($go->good()) {
-    $newpasswordhash = passgen(32); 
+    $newpasswordhash = plk_util_passGen(32); 
     $sethash = $go->query(
      "UPDATE lk_user 
         SET forgot='".$newpasswordhash."' 

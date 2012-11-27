@@ -1,6 +1,8 @@
+CHANGELOG.txt
 release/*
 config.php
 config_files/*
 upload/*
 doc/*
 !.gitignore
+*~

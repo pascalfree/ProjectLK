@@ -19,7 +19,7 @@ $go->necessary( 'verbid' );
 
 if ( $go->good() ) {
   //forbidden characters
-  remove_forbidden( $arg_newkword );
+  plk_util_removeForbidden( $arg_newkword );
   
   if ( $arg_newkword != '' && $arg_newkword != NULL ) {
     // change value

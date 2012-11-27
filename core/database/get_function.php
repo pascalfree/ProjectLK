@@ -18,7 +18,7 @@
 $go->necessary( array( 'location', 'function' ) );
 
 if ( $go->good() ) {
-  $you = new user(); //create user object
+  $plk_you = new user(); //create user object
 }
 
 if ( $go->good() ) {

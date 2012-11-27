@@ -36,7 +36,7 @@ function write_one_option($list) {
 //helper
 function ajax_write_one_register($l) { write_one_register($l); }
 function write_one_register($list) {
-  global $la;
+  global $plk_la;
   //force arrays
   if( !is_array($list['id']) ) {  $list['id']=array(  $list['id'] ); }
   if( !is_array($list['name']) ) { $list['name']=array( $list['name'] ); }
@@ -64,13 +64,13 @@ function write_one_register($list) {
         echo link_generic('action=addword&type=register&id='.$id.'&class=icon iconplus&title=add');
         //link to show words directly - if there are any
         if($cr != 0) {
-          echo ' <span class="link showlink" onclick="do_action(\''.$id.'\',\'register\',\'show\')">',$la['show'],'</span>';
+          echo ' <span class="link showlink" onclick="do_action(\''.$id.'\',\'register\',\'show\')">',$plk_la['show'],'</span>';
         }
         //link to show verblist directly  
-        $verbnum = request('get_verblist',array('select'=>'COUNT(DISTINCT t1.id)', 'registerid' => $list['id'][$i]));
+        $verbnum = plk_request('get_verblist',array('select'=>'COUNT(DISTINCT t1.id)', 'registerid' => $list['id'][$i]));
 
         if($verbnum['COUNT(DISTINCT t1.id)'][0]!=0) {
-          echo ' <span class="link showlink" onclick="do_action(\''.$id.'\',\'register\',\'verb\')">',$la['verb'],'</span>';
+          echo ' <span class="link showlink" onclick="do_action(\''.$id.'\',\'register\',\'verb\')">',$plk_la['verb'],'</span>';
         }
       echo '</span>';
     echo "</li>";
@@ -87,7 +87,7 @@ function ajax_write_one_tag($wordid, $tagid, $tagname) {
   write_one_tag($wordid, $tagid, $tagname);
 }
 function write_one_tag($wordid, $tagid, $tagname) {
-  global $la;
+  global $plk_la;
   //check if empty
   if( empty($tagid) || empty($tagname) ) { return false; }
   //if not array make array
@@ -98,10 +98,10 @@ function write_one_tag($wordid, $tagid, $tagname) {
   //else loop through and print
   $count=count($tagid);
   for($i=0; $i<$count; $i++) {
-    echo '<span id="tag_span_',$wordid,'_',$tagid[$i],'" class="link tag_',$wordid,'_',$tagid[$i],'_remove event_hidelast" title="', $la['show'] ,'">';
+    echo '<span id="tag_span_',$wordid,'_',$tagid[$i],'" class="link tag_',$wordid,'_',$tagid[$i],'_remove event_hidelast" title="', $plk_la['show'] ,'">';
     //not adding link directly, so don't have to pass a parameter (ajax)
     echo '<span onclick="do_action(\'',$tagid[$i],'\',\'tag\',\'goto\')">',$tagname[$i],'</span>';
-    echo '<span class="link iconx icon hidden" onclick="do_action([\'',$wordid,'\',\'',$tagid[$i],'\'],\'tag\',\'delete\')" title="', $la['remove'] ,'"></span>';
+    echo '<span class="link iconx icon hidden" onclick="do_action([\'',$wordid,'\',\'',$tagid[$i],'\'],\'tag\',\'delete\')" title="', $plk_la['remove'] ,'"></span>';
     echo '</span> '; 
   }
 }

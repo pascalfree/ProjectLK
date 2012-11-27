@@ -1,28 +1,28 @@
 <?php
 load_head(link_back());
 
-$options=request('get_option');
+$options=plk_request('get_option');
 
 //get available options
-$languages=getlanguages();
-$subthemes=getthemes();
-$guis=getgui();
+$languages = plk_util_getLanguages();
+$subthemes = plk_util_getThemes();
+$guis = plk_util_getGui();
 
 ?>
 <form id="settings_form" action="" onsubmit="change_settings(); return false" method="POST">
 <div class="middlebox">
 
 <?php
-echo '<b>',$la['settings'],'</b><br>';
+echo '<b>',$plk_la['settings'],'</b><br>';
 
-echo $la['username'],': ',$options['name'],'<br>';
-echo $la['email'],': <input name="newemail" type="text" value="',$options['email'],'" size="',strlen($options['email']),'"></input><br>';
-echo $la['hints'],': <select size=1 name="newhints">';
-echo '<option value="'.($options['hints']?'1':'0').'" selected>'.$la['bool'][$options['hints']].'</option>';
-echo '<option value="'.($options['hints']?'0':'1').'">'.$la['bool'][!$options['hints']].'</option>';
+echo $plk_la['username'],': ',$options['name'],'<br>';
+echo $plk_la['email'],': <input name="newemail" type="text" value="',$options['email'],'" size="',strlen($options['email']),'"></input><br>';
+echo $plk_la['hints'],': <select size=1 name="newhints">';
+echo '<option value="'.($options['hints']?'1':'0').'" selected>'.$plk_la['bool'][$options['hints']].'</option>';
+echo '<option value="'.($options['hints']?'0':'1').'">'.$plk_la['bool'][!$options['hints']].'</option>';
 echo '</select><br>';
 
-echo $la['gui'],': <select size=1 name="newgui">';
+echo $plk_la['gui'],': <select size=1 name="newgui">';
 $len=count($guis);
 for($i=0;$i<$len;$i++) {
   echo '<option ';
@@ -31,7 +31,7 @@ for($i=0;$i<$len;$i++) {
 }
 echo '</select><br>';
 
-echo $la['theme'],': <select size=1 name="newtheme">';
+echo $plk_la['theme'],': <select size=1 name="newtheme">';
 $len=count($subthemes);
 for($i=0;$i<$len;$i++) {
   echo '<option ';
@@ -40,7 +40,7 @@ for($i=0;$i<$len;$i++) {
 }
 echo '</select><br>';
 
-echo $la['language'],': <select size=1 name="newlang">';
+echo $plk_la['language'],': <select size=1 name="newlang">';
 $len=count($languages);
 for($i=0;$i<$len;$i++) {
   echo '<option ';
@@ -48,8 +48,8 @@ for($i=0;$i<$len;$i++) {
   echo '>'.$languages[$i].'</option>';
 }
 echo '</select><br>';
-echo '<input type="submit" value="'.$la['save'].'">';
-echo '<input type="reset" value="'.$la['reset'].'">';
+echo '<input type="submit" value="'.$plk_la['save'].'">';
+echo '<input type="reset" value="'.$plk_la['reset'].'">';
 
 ?>
 </div>
@@ -58,11 +58,11 @@ echo '<input type="reset" value="'.$la['reset'].'">';
 <!--Change Password-->
 <form id="password_form" action="" onsubmit="change_password(); return false" method="POST">
 <div class="middlebox">
-<b><?=$la['changepassword'] ?></b><br>
-<?=$la['oldpassword'] ?>: <input type="password" name="oldpassword"><br>
-<?=$la['newpassword'] ?>: <input type="password" name="newpassword"><br>
-<?=$la['repeat'] ?>: <input type="password" name="checkpassword"><br>
-<input type="submit" name="changepass" value="<?=$la['changepassword'] ?>"><br>
+<b><?=$plk_la['changepassword'] ?></b><br>
+<?=$plk_la['oldpassword'] ?>: <input type="password" name="oldpassword"><br>
+<?=$plk_la['newpassword'] ?>: <input type="password" name="newpassword"><br>
+<?=$plk_la['repeat'] ?>: <input type="password" name="checkpassword"><br>
+<input type="submit" name="changepass" value="<?=$plk_la['changepassword'] ?>"><br>
 </div>
 </form>
 

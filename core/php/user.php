@@ -4,7 +4,7 @@
 //////////////////////////////
 //name: user.php
 //core
-//description: Class for the $you object (current user enviroment)
+//description: Class for the $plk_you object (current user enviroment)
 //Author: David Glenck
 //Licence: GNU General Public Licence (see licence.txt in Mainfolder)
 //////////////////////////////

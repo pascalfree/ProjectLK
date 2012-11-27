@@ -45,21 +45,21 @@ function u_counter($type, $id, $fullcount, $plus='') {
 
 //generates a Pagetitle
 function u_title() {
-  global $here, $you, $la;
+  global $plk_here, $plk_you, $plk_la;
   $title[0]=P_NAME.' '.P_VERSION;
-  if($you -> id != NULL) { $title[1] = $you -> name; } 
-  if($here -> registerid!=NULL) { $title[2]=get_name('register',$here->registerid); } 
-  if($here -> groupid!=NULL) { 
-    if(is_numeric($here->groupid)) { $tfach=$la['group'].' '.$here->groupid; } else { $tfach=$la[$here->groupid]; }
+  if($plk_you -> id != NULL) { $title[1] = $plk_you -> name; } 
+  if($plk_here -> registerid!=NULL) { $title[2]=plk_util_getName('register',$plk_here->registerid); } 
+  if($plk_here -> groupid!=NULL) { 
+    if(is_numeric($plk_here->groupid)) { $tfach=$plk_la['group'].' '.$plk_here->groupid; } else { $tfach=$plk_la[$plk_here->groupid]; }
     $title[]=$tfach; 
   }  
-  if($here->saveid!=NULL) { $title[]=get_name('save', $here->saveid); }  
-  if($here->tagid!=NULL) { $title[]=get_name('tag', $here->tagid); }  
-  if($here->withoutid!=NULL) { $title[]=$la['without'.$here->withoutid]; }  
-  if($here->wordclassid!=NULL) { $title[]=$la['classname'][$here->wordclassid]; }
-  if($here->searchid!=NULL) { $title[]=$here->searchid; }
-  if($here->queryid!=NULL) { $title[]=$la['query']; }	
-  if($here->keyoption!=NULL) { $title[]=$la[$here->keyoption]; }
+  if($plk_here->saveid!=NULL) { $title[]=plk_util_getName('save', $plk_here->saveid); }  
+  if($plk_here->tagid!=NULL) { $title[]=plk_util_getName('tag', $plk_here->tagid); }  
+  if($plk_here->withoutid!=NULL) { $title[]=$plk_la['without'.$plk_here->withoutid]; }  
+  if($plk_here->wordclassid!=NULL) { $title[]=$plk_la['classname'][$plk_here->wordclassid]; }
+  if($plk_here->searchid!=NULL) { $title[]=$plk_here->searchid; }
+  if($plk_here->queryid!=NULL) { $title[]=$plk_la['query']; }	
+  if($plk_here->keyoption!=NULL) { $title[]=$plk_la[$plk_here->keyoption]; }
 
   if($title!=NULL) {
     foreach($title as &$val) { $val=urldecode($val); }

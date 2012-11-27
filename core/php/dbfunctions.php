@@ -17,12 +17,11 @@
 ////////////
 //REQUEST
 //Loads information from DB
-function request( $function, $params = NULL ) {
+function plk_request( $function, $params = NULL ) {
 
   //Parse Params
   if(is_array($params)) {
-    foreach($params as $name => $val) { 
-      //--$$name = mres($val); //TODO: remove that
+    foreach($params as $name => $val) {
       ${'arg_' . $name} = mres( $val );
     }
   }

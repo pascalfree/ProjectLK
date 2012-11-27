@@ -1,38 +1,38 @@
 <?php
-$here -> page="content";
+$plk_here -> page="content";
 //if just logged in: go to dashboard
-if($here -> login==1) { header('Location: '.URL. $you -> name); }
+if($plk_here -> login==1) { header('Location: '.URL. $plk_you -> name); }
 
 //parse xml
-$xmlload = simplexml_load_file('content/'.$you -> language.'/'.$here -> keyoption.'.xml');
+$xmlload = simplexml_load_file('content/'.$plk_you -> language.'/'.$plk_here -> keyoption.'.xml');
 
 //write toolbar
 $toolbar = '';
 foreach($xmlload -> links -> link as $link) {
   $dest = $link->attributes() -> dest;
   if($dest == 'back') { $toolbar .= link_back(); } //make backlinks possible
-  else { $toolbar .= link_out($dest, $link); }
+  else { $toolbar .= '<a href="'.URL.$dest.'/">'.$link.'</a>'; }
 }
 
 //write toolbar links for languages
-$languages = getlanguages();
+$languages = plk_util_getLanguages();
 $toolbar .= "&nbsp;&nbsp;&nbsp;&nbsp;";
 foreach( $languages as $ll ) {
-  $toolbar .= "<a href='".$here -> path()."lang/". $ll ."'>". $ll ."</a>";
+  $toolbar .= "<a href='".$plk_here -> path()."lang/". $ll ."'>". $ll ."</a>";
 }
 
 //write error messages
 $error = '';
-if($here -> login === 0) {
-  $error = $la['err_login'];
+if($plk_here -> login === 0) {
+  $error = $plk_la['err_login'];
 }
 
-if($here -> nregerr != 0) {
-  $error = $la['err_'.$here -> nregerr];
+if($plk_here -> nregerr != 0) {
+  $error = $plk_la['err_'.$plk_here -> nregerr];
 }
-if($here -> forgot != 0) { 
-  if($here -> forgot==1) { $error = $la['forgot_sentmsg']; }
-  else { $error=$la['err_'.$here -> forgot]; }
+if($plk_here -> forgot != 0) { 
+  if($plk_here -> forgot==1) { $error = $plk_la['forgot_sentmsg']; }
+  else { $error=$plk_la['err_'.$plk_here -> forgot]; }
 }
 
 //write head
@@ -42,7 +42,7 @@ load_head($toolbar, $tabs, $error);
 foreach($xmlload->body->section as $section) {
   echo '<div class="middlebox">';
     foreach($section as $type=>$input) {
-      $input=addglobals($input); //replace keywords //<<keyword>>
+      $input = plk_util_addGlobals($input); //replace keywords //<<keyword>>
       if($type=='title') {
         echo '<span class="title">'.$input.'</span>';
       } elseif($type=='text') {

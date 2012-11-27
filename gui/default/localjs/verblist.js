@@ -30,16 +30,16 @@ function action_query_verb() {
   //serialize the form
   var param = $('verbqueryform').serialize(true);
   //validate form
-  if( !param.allverb && !param['verbid[]'] ) { msg(la.err_210); return 0; }
-  if( !param.allform && !param['formid[]'] ) { msg(la.err_207); return 0; }
-  if( !param.allperson && !param['personid[]'] ) { msg(la.err_208); return 0; }
+  if( !param.allverb && !param['verbid[]'] ) { msg(plk.la.err_210); return 0; }
+  if( !param.allform && !param['formid[]'] ) { msg(plk.la.err_207); return 0; }
+  if( !param.allperson && !param['personid[]'] ) { msg(plk.la.err_208); return 0; }
 
   //add registerid to param
-  param['registerid'] = here.registerid;
+  param['registerid'] = plk.here('registerid');
 
-  req('create_active_verb', param, function(info) {
-    if( info.count == 0 ) { msg(la.err_250); return 0; }
-    document.location.href = path(2,{ queryid: info.savedid });
+  plk.req('create_active_verb', param, function(info) {
+    if( info.count == 0 ) { msg(plk.la.err_250); return 0; }
+    document.location.href = plk.here.path(2,{ queryid: info.savedid });
   });
 }
 
@@ -105,6 +105,6 @@ function update_order() {
   for(i=0;i<prsnlst.length;i++) {
     var perid=Element.identify(prsnlst[i]);
     var perid=perid.replace('person_','');
-    req('edit_person',{personid:perid,neworder:i});
+    plk.req('edit_person',{personid:perid,neworder:i});
   }
 }

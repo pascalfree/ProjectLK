@@ -83,7 +83,7 @@ if ( $go->good() ) {
 }
 
 if ( $go->good() ) {
-  $importing = getimport( $importfile, 1 );
+  $importing = plk_util_getImport( $importfile, 1 );
   //unset( $erraff );
   unset( $idreplace[ 'register' ] );
   
@@ -93,7 +93,7 @@ if ( $go->good() ) {
     if ( count( $arg_registerlist ) > 0 ) { //If any register is selected.
       foreach ( $importing[ 'registerlist' ] as $t ) {
         if ( in_array( $t[ 'id' ], $arg_registerlist ) ) {
-          $regadd = request( 'create_register', array(
+          $regadd = plk_request( 'create_register', array(
             'newregister' => $t[ 'name' ],
             'groupcount' => $t[ 'groupcount' ],
             'grouplock' => $t[ 'grouplock' ],
@@ -135,8 +135,8 @@ if ( $go->good() ) {
       $tregid = NULL;
     }
     if ( $tregid != NULL ) { //register must exist
-      if ( ( $wordtags[ $tword[ 'id' ] ] == NULL && in_array( $tword[ 'registerid' ], $arg_withouttag ) ) || array_match( $wordtags[ $tword[ 'id' ] ], $arg_taglist ) ) { //tags must be selected
-        if ( ( $wordsaves[ $tword[ 'id' ] ] == NULL && in_array( $tword[ 'registerid' ], $arg_withoutsave ) ) || array_match( $wordsaves[ $tword[ 'id' ] ], $arg_savelist ) ) { //save must be selected
+      if ( ( $wordtags[ $tword[ 'id' ] ] == NULL && in_array( $tword[ 'registerid' ], $arg_withouttag ) ) || plk_util_matchArray( $wordtags[ $tword[ 'id' ] ], $arg_taglist ) ) { //tags must be selected
+        if ( ( $wordsaves[ $tword[ 'id' ] ] == NULL && in_array( $tword[ 'registerid' ], $arg_withoutsave ) ) || plk_util_matchArray( $wordsaves[ $tword[ 'id' ] ], $arg_savelist ) ) { //save must be selected
           $tags = tagtonames( $wordtags[ $tword[ 'id' ] ], $importing[ 'taglist' ] );
           if ( $tags != NULL ) {
             $tags = implode( ', ', $tags );
@@ -152,7 +152,7 @@ if ( $go->good() ) {
             'time_created' => $tword[ 'time' ],
             'force' => 1 
           );
-          $wordadd = request( 'create_word', $params );
+          $wordadd = plk_request( 'create_word', $params );
           
           if ( $wordadd[ 'errnum' ] != 0 ) {
             $go->error( 400, $wordadd[ 'errnum' ] . ': ' . $wordadd[ 'errname' ] );
@@ -187,7 +187,7 @@ if ( $go->good() ) {
           } else {
             $tregid = $idreplace[ 'register' ][ $tsave[ 'registerid' ] ];
           }
-          $saveadd = request( 'create_save', array(
+          $saveadd = plk_request( 'create_save', array(
              'newsave' => $tsave[ 'name' ],
             'registerid' => $tregid,
             'wordid' => $nwordid,
@@ -220,7 +220,7 @@ if ( $go->good() ) {
           $tregid = NULL;
         }
         if ( $tregid != NULL ) { //Register exists?
-          $formadd = request( 'create_form', array(
+          $formadd = plk_request( 'create_form', array(
              'newform' => $tform[ 'name' ],
             'registerid' => $tregid,
             'newinfo' => $tform[ 'info' ] 
@@ -255,7 +255,7 @@ if ( $go->good() ) {
           $tregid = NULL;
         }
         if ( $tregid != NULL ) { //Register exists?
-          $personadd = request( 'create_person', array(
+          $personadd = plk_request( 'create_person', array(
              'newperson' => $tperson[ 'name' ],
             'registerid' => $tregid,
             'neworder' => $tperson[ 'order' ] 
@@ -290,7 +290,7 @@ if ( $go->good() ) {
               'newregular' => $tverb[ 'regular' ],
               'time_created' => $tverb[ 'time' ] 
             );
-            $verbadd = request( 'create_verb', $params );
+            $verbadd = plk_request( 'create_verb', $params );
             
             if ( $verbadd[ 'errnum' ] != 0 ) {
               $go->error( 400, $verbadd[ 'errnum' ] . ': ' . $verbadd[ 'errname' ] );

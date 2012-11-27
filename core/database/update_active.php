@@ -110,7 +110,7 @@ if ( NULL != $arg_nextid ) { //want the next word
   if ( $go->good() ) {
     if ( 4 == $mode ) { //verbquery
       $idstring = " AND (  ";
-      make_array( $wordid );
+      plk_util_makeArray( $wordid );
       $count = count( $wordid );
       for ( $i = 0; $i < $count; $i++ ) {
         $idstring .= " t2.id = '" . $wordid[ $i ] . "' ";
@@ -133,7 +133,7 @@ if ( NULL != $arg_nextid ) { //want the next word
         $word[ 'answer' ] = $verb[ 'kword' ];
       }
     } else { //otherquery
-      $word = request( 'get_word', array(
+      $word = plk_request( 'get_word', array(
                                    'tolim' => 1,
                                    'gettags' => 0,
                                    'wordid' => $wordid 

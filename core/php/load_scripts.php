@@ -14,15 +14,14 @@
 //////////
 
 //Loads scripts
-//This Function is called in the header of the html file in the gui.
-function scripts() {
-  global $here, $you, $la, $time;
+//This Function is called in the header (or footer) of the html file in the gui.
+function plk_scripts() {
+  global $plk_here, $plk_you, $plk_la, $time;
 
   if( RELEASE==1 ) {
     $ret="<script src='".URL."core/javascript/core.js'></script>\n";
   } else {
     //Prototype library
-    //$ret="<script type='text/javascript' src='".URL."core/javascript/library/prototype-1.6.0.3.js'></script>\n";
     $ret="<script src='".URL."core/javascript/library/prototype.js'></script>\n";
     //JS-functions
     $ret.="<script src='".URL."core/javascript/functions.js'></script>\n";
@@ -34,13 +33,13 @@ function scripts() {
     $ret .= "<script src='".URL."language/".LANG.".js'></script>\n";
   } else {
     $ret .= "<script>
-      la=".json_encode($la).";
+      plk.la = ".json_encode($plk_la).";
     </script>\n";
   }
   //global variables
   $ret.="<script>
-    var here = ".json_encode($here).";
-    var you = ".json_encode($you).";
+    plk.here.set( ".json_encode($plk_here)." );
+    plk.you = ".json_encode($plk_you).";
     time = ".$time."; 
     var URL = '".URL."';
     var DEBUG = '".DEBUG."';

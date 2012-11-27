@@ -17,7 +17,7 @@
 $go->necessary( 'formid' );
 
 if ( $go->good() ) {
-  remove_forbidden( $arg_newform );
+  plk_util_removeForbidden( $arg_newform );
   
   //update / überarbeiten
   $edits = NULL;

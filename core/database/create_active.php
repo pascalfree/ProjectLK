@@ -26,11 +26,11 @@ $go->necessary( 'registerid', array(
 //get words
 if ( $go->good() ) {
   if ( $arg_allmarked == 1 ) {
-    $arg_wordid              = NULL; //Reset $arg_wordid, so getglobal wont take this.
-    $params              = getglobal('arg_');
+    $arg_wordid          = NULL; //Reset $arg_wordid, so plk_util_getGlobal wont take this.
+    $params              = plk_util_getGlobal('arg_');
     $params[ 'nolimit' ] = 1;
     $params[ 'select' ]  = 'tword.id'; //Fix: otherwise id is ambigous
-    $getwordid           = request( 'get_word', $params );
+    $getwordid           = plk_request( 'get_word', $params );
     if ( $getwordid[ 'errnum' ] != 0 ) {
       $go->error( 400, $getwordid[ 'errnum' ] . ': ' . $getwordid[ 'errname' ] . ' - ' . $getwordid[ 'lastquery' ] );
     }

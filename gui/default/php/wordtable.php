@@ -24,7 +24,7 @@ function ajax_wt_entry($i,$v,$t,$a=NULL,$ad='',$d=array('edit')) {
   wt_entry($i,$v,$t,$a,$ad,$d);
 }
 function wt_entry($id, $value, $type, $alt=NULL, $addtdclass='',$dropdown=array('edit'), $title='') {
-  global $la;
+  global $plk_la;
   //default
   if($alt==NULL) { $alt=$id; }
   
@@ -48,18 +48,18 @@ function wt_entry($id, $value, $type, $alt=NULL, $addtdclass='',$dropdown=array(
 
 //calling directly via ajax
 function ajax_wordform($params, $checked=0, $register=0) {
-  $wordlist = request('get_word',(array) $params);
+  $wordlist = plk_request('get_word',(array) $params);
   wt_line($wordlist, $checked, $register);
 }
 //writes some lines of the wordform
 //checked: on/off
 //register: show/hide
 function wt_line($wordlist, $checked=0, $register=0) {
-  global $la;
+  global $plk_la;
   
   //Load registernames if necessary
   if($register==1) {
-    $get_reg=request('get_register');
+    $get_reg=plk_request('get_register');
     for($i=0;$i<$get_reg['count'];$i++) {
       $regname[$get_reg['id'][$i]]=$get_reg['name'][$i];
     }
@@ -86,11 +86,11 @@ function wt_line($wordlist, $checked=0, $register=0) {
     //some entries
     //group: special for ar and af
     if( !is_numeric($wordlist['groupid'][$i]) ) { 
-      $name = $la['a_'.$wordlist['groupid'][$i]]; 
-      $title = $la[$wordlist['groupid'][$i]]; 
+      $name = $plk_la['a_'.$wordlist['groupid'][$i]]; 
+      $title = $plk_la[$wordlist['groupid'][$i]]; 
     } else {
       $name = $wordlist['groupid'][$i]; 
-      $title = $la['group'].' '.$wordlist['groupid'][$i];
+      $title = $plk_la['group'].' '.$wordlist['groupid'][$i];
     }
     wt_entry($tid, $name, 'group',array($tid,$wordlist['groupid'][$i]),'',array('show','edit'), $title);
 
@@ -104,11 +104,11 @@ function wt_line($wordlist, $checked=0, $register=0) {
       //print each tag
       write_one_tag($tid,$wordlist['tagslist'][$i]['id'],$wordlist['tagslist'][$i]['name']);
       //plusbutton
-      echo'<span onclick="do_action(\'',$tid,'\',\'tag\',\'add\',this)" class="link iconplus icon hidden" title="'.$la['add'].'"></span>';
+      echo'<span onclick="do_action(\'',$tid,'\',\'tag\',\'add\',this)" class="link iconplus icon hidden" title="'.$plk_la['add'].'"></span>';
     echo '</td>';
 
     //worclass
-    wt_entry($tid, $la['classname'][$wordlist['wordclassid'][$i]], 'wordclass',array($tid, $wordlist['wordclassid'][$i]),'',array('list_edit','hr','show','edit'));
+    wt_entry($tid, $plk_la['classname'][$wordlist['wordclassid'][$i]], 'wordclass',array($tid, $wordlist['wordclassid'][$i]),'',array('list_edit','hr','show','edit'));
 
     //option dropdown
     echo '<td id="options_'.$tid.'" class="opts">';
@@ -126,7 +126,7 @@ function wt_line($wordlist, $checked=0, $register=0) {
 
 //Write a form and table of words
 function wt_form($wordlist) {
-  global $here, $la;
+  global $plk_here, $plk_la;
 
   //the form is still usefull to serialize the checkboxes ?>
   <form id="wordform" name="wordform" action="#" onsubmit="javascript: return false"> 
@@ -138,14 +138,14 @@ function wt_form($wordlist) {
 
         echo '<th><input type="checkbox" id="check_allmarked" name="allmarked" value="1" onclick="javascript: checkbox_checkall(this.checked)"></th>'; // }
         // with register ?
-        echo '<th id="register_head" class="event_hidelast" ', $here->registerid!=NULL?'style="display: none':'' ,'"><span id="register_span_head">',$la['register'],'</span>',link_column(0, 'register'),'</th>';
+        echo '<th id="register_head" class="event_hidelast" ', $plk_here->registerid!=NULL?'style="display: none':'' ,'"><span id="register_span_head">',$plk_la['register'],'</span>',link_column(0, 'register'),'</th>';
         // titles
-        echo '<th id="group_head" class="event_hidelast"><span id="group_span_head">',$la['group'],'</span>',drop_button(0, 'group', array('list','all','hr','hide')),'</th>';
-        echo '<th id="wordfirst_head" class="event_hidelast"><span id="wordfirst_span_head">',$la['word'],'</span>',link_column(0, 'wordfirst'),'</th>';
-        echo '<th id="wordfore_head" class="event_hidelast"><span id="wordfore_span_head">',$la['fore'],'</span>',link_column(0, 'wordfore'),'</th>';
-        echo '<th id="sentence_head" class="event_hidelast"><span id="sentence_span_head">',$la['phrase'],'</span>',link_column(0, 'sentence'),'</th>';
-        echo '<th id="tag_head" class="event_hidelast"><span id="tag_span_head">',$la['tags'],'</span>',drop_button(0, 'tag', array('list','without','all','hr','hide')),'</th>';
-        echo '<th id="wordclass_head" class="event_hidelast"><span id="wordclass_span_head">',$la['wordclass'],'</span>',drop_button(0, 'wordclass', array('list','all','hr','hide')),'</th>';
+        echo '<th id="group_head" class="event_hidelast"><span id="group_span_head">',$plk_la['group'],'</span>',drop_button(0, 'group', array('list','all','hr','hide')),'</th>';
+        echo '<th id="wordfirst_head" class="event_hidelast"><span id="wordfirst_span_head">',$plk_la['word'],'</span>',link_column(0, 'wordfirst'),'</th>';
+        echo '<th id="wordfore_head" class="event_hidelast"><span id="wordfore_span_head">',$plk_la['fore'],'</span>',link_column(0, 'wordfore'),'</th>';
+        echo '<th id="sentence_head" class="event_hidelast"><span id="sentence_span_head">',$plk_la['phrase'],'</span>',link_column(0, 'sentence'),'</th>';
+        echo '<th id="tag_head" class="event_hidelast"><span id="tag_span_head">',$plk_la['tags'],'</span>',drop_button(0, 'tag', array('list','without','all','hr','hide')),'</th>';
+        echo '<th id="wordclass_head" class="event_hidelast"><span id="wordclass_span_head">',$plk_la['wordclass'],'</span>',drop_button(0, 'wordclass', array('list','all','hr','hide')),'</th>';
         // Dropdown
         echo '<th><span id="column_drop" class="icon icondrop hidden link" onclick="g_dropdown(\'column\', 0, [\'list\'])"></span></th>';
         echo '</tr>';

@@ -49,6 +49,7 @@
 //////////
 
 //Store Information
+var local = {};
 local.mouseisdown=0; //1 if mouse is clicked and hold
 //local cache
 local.current = {};
@@ -67,7 +68,7 @@ function mouseposition(e) {
 //////////
 function initializer() {
   //initialize the hash change detector  
-  onHashChange();
+  plk.hash.onChange();
 
   //show the loading time
   showtime(time);
@@ -86,11 +87,11 @@ function initializer() {
   $('close_info').onclick = function() { close_info(); };
 
   //call specific initializer for the page
-  var func = switcher( 'initializer', here.page );
+  var func = switcher( 'initializer', plk.here('page') );
   if(func) { window[func](); }
 
   //call specific function to initialize info
-  var func2 = switcher( 'update_information', here.page );
+  var func2 = switcher( 'update_information', plk.here('page') );
   if(func2) { window[func2](); }
 
   //close shutter when finished
@@ -118,7 +119,7 @@ function eventloader(where) {
   } );
 
   //hover effect for browser that doesn't support .class:hover
-  if( you.browser !== 'gc' ) {
+  if( plk.you.browser !== 'gc' ) {
     where.select('.link').each( function(item) {
       item.observe('mouseover', function() { Element.addClassName(this, 'highlighted_element'); });
       item.observe('mouseout', function() { Element.removeClassName(this, 'highlighted_element'); }); 
@@ -126,7 +127,7 @@ function eventloader(where) {
   }
 
   //call specific eventloader for the page
-  var func = switcher( 'eventloader', here.page );
+  var func = switcher( 'eventloader', plk.here('page') );
   if(func) { window[func]( where ); }
 
   return where;
@@ -177,8 +178,8 @@ function gui_request_error(info) {
   }
   //basic debug error
   var out = 'DEBUG ERROR ';
-  if( la['err_'+info.errnum] ) { out += la['err_'+info.errnum]; }
-  else { out += la.err_unknown; }
+  if( plk.la['err_'+info.errnum] ) { out += plk.la['err_'+info.errnum]; }
+  else { out += plk.la.err_unknown; }
   out += ' - '+info.errnum+': '+info.errname+' @ '+info.errloc+' - '+info.lastquery;
   msg(out);
 }
@@ -189,7 +190,7 @@ function gui_load_hash() {
   clear_data();
 
   //switch tab //force
-  tab_switch( here.page, 1 );
+  tab_switch( plk.here('page'), 1 );
 }
 
 //when 'here' is changed, this is called
@@ -206,16 +207,20 @@ function gui_refresh_here(entry) {
 
 //Loads a simple message on screen
 function msg(msge) {
-  var input='<div class="popup_inner">'+msge+'</div><form action="javascript: return false"><input id="ok_button" type="button" value="'+la.ok+'" onclick="close_popup()"></form>';
+  var input='<div class="popup_inner">'+msge+'</div><form action="javascript: return false"><input id="ok_button" type="button" value="'+plk.la.ok+'" onclick="close_popup()"></form>';
   $('popup').update( input );
   do_popup();
   $('ok_button').focus();
 }
 
 //Loads a dialog before function
-function ask(msg,action) {
-  input=msg+"<form action='javascript: return false' name='popup_form' id='popup_form'><input type='button' onclick='close_popup(); "+action+"' id='popup_yes' value='"+la[1]+"'><input type='button' onclick='close_popup()' id='popup_no' value='"+la[0]+"'></form>";
+// string msg : message to be displayed
+// function action : function to be called when "yes" is clicked
+function ask(msg, action) {
+  input=msg+"<form action='javascript: return false' name='popup_form' id='popup_form'><input type='button' id='popup_yes' value='"+plk.la[1]+"'><input type='button' id='popup_no' value='"+plk.la[0]+"'></form>";
   $('popup').update( input );
+  $('popup_yes').onclick = function() { close_popup(); action(); return false; }
+  $('popup_no').onclick = close_popup;
   do_popup(); 
   $('popup_yes').focus();
 }
@@ -239,7 +244,7 @@ function formfield2id(formid, field) {
   //serialize data from form if it exists
   var id = f.serialize(true)[field];
   //if no word is selected quit -> return false
-  if(id === undefined)  { msg(la.err_209); return null; }     
+  if(id === undefined)  { msg(plk.la.err_209); return null; }     
   else { return id; }
 }
 
@@ -272,17 +277,6 @@ function getposition(obj) {
   return [rleft, rtop];
 }
 
-//return only non-empty values of here
-function get_here() {
-  var ret = {};
-  for(var i in here) {
-    if( here[i] ) {
-      ret[i] = here[i];
-    } 
-  }
-  return ret;
-}
-
 //////////
 //GENERIC EVENTS
 //////////
@@ -293,15 +287,16 @@ function get_here() {
 //helper: switcher switches between specific and generic functions
 function switcher(funcbase,type) {
   try {
+    var hpage = plk.here('page');
     //typespecific + pagespecific
-    if( typeof window[funcbase+'_'+type+'_'+here.page] === 'function') { 
-      return funcbase+'_'+type+'_'+here.page;
+    if( typeof window[funcbase+'_'+type+'_'+hpage] === 'function') { 
+      return funcbase+'_'+type+'_'+hpage;
     //typespecific
     } else if( typeof window[funcbase+'_'+type] === 'function') { 
       return funcbase+'_'+type;
     //page specific
-    } else if( typeof window[funcbase+'_generic_'+here.page] === 'function') { 
-      return funcbase+'_generic_'+here.page;
+    } else if( typeof window[funcbase+'_generic_'+hpage] === 'function') { 
+      return funcbase+'_generic_'+hpage;
     //generic
     } else if( typeof window[funcbase+'_generic'] === 'function') {
       return funcbase+'_generic';
@@ -446,7 +441,7 @@ function cleaner(id, type) {
     for( var i=0; i<nid.length; i++ ) {
 
       //this location was deleted: reload!
-      if(here[type+'id'] == nid[i]) { location.reload(); break; }
+      if(plk.here(type+'id') == nid[i]) { location.reload(); break; }
 
       //remove elements that contain deleted elements
       var remove = $$('.'+type+'_'+nid[i]+'_remove');
@@ -468,8 +463,8 @@ function cleaner(id, type) {
 function appender(input, type, where, dlocate) {
   try {
     //check for missing params
-    if( !Object.isElement(where) ) { debug.warning('"where" is not defined (correctly). should be a html element.');  }
-    if( !type ) { debug.warning('"type" is not defined.'); }
+    if( !Object.isElement(where) ) { plk.debug.warning('"where" is not defined (correctly). should be a html element.');  }
+    if( !type ) { plk.debug.warning('"type" is not defined.'); }
     //some optional params
     //if(dwhere != null) { var where = dwhere; }
     //else { var where = local.current.where; }
@@ -501,10 +496,6 @@ function appender(input, type, where, dlocate) {
 //HTML Class! type_id will be edited. type_id_remove will be removed when deleted
 function g_dropdown(type, id, cont, where, atelement) {
   try {
-    //--save this to local
-    //--local.current.type=type;
-    //--local.current.id=id;
-    //--local.current.where=where;
     //print links
     var li='';
     var list=0;
@@ -513,7 +504,7 @@ function g_dropdown(type, id, cont, where, atelement) {
         li+= '<hr>';
       } else if(cont[i]=='list') { //make a list
         //holder to set in list later
-        li += '<li id="dropdown_list_loading">'+la.loading+'</li>'; 
+        li += '<li id="dropdown_list_loading">'+plk.la.loading+'</li>'; 
         list=1; 
       } else { //link or action
         var func=switcher('link_'+cont[i], type);
@@ -547,13 +538,6 @@ function do_action(id, type, action, where) {
     hide_dropdown(0);
     //call the destructor of this action for cleanup
     close_action(action, type);
-    //save this to local
-    //--if( type !== false ) { local.current.type=type; }
-    //--if( id !== false ) { local.current.id=id; }
-    //--local.current.action=action;
-    //--if( where !== undefined) { //this may already be defined before. only change if wanted
-    //--  local.current.where=where;
-    //--}
     //find right function
     var func = switcher('action_'+action, type);
     if( !func ) { throw '[0] no function found for: '+action; }
@@ -580,18 +564,18 @@ function load_data_generic(filltype, fillwhere, type) {
     var tfill = fill(type, filltype); //function to call fill_<filltype>_<type>
     if(tfill) { 
       if(!local.data[type]) { 
-        var params=Object.clone( get_here() );
+        var params = plk.here();
         params.count = 1;
         params[type+'id'] = null;
         //load data from server
-        req('get_'+type,params, function(i,p,s) { 
+        plk.req('get_'+type,params, function(i,p,s) { 
             local.data[ s[1] ]=i; //save local
             window[ s[2] ]( s[0], s[1] ); //call fill_..(loadtype);
         }, [fillwhere, type, tfill] ); 
       } else { window[ tfill ](fillwhere, type); } //use local data
     } else { 
       //If no function was found for this
-      fillwhere.update(la.err_102);
+      fillwhere.update(plk.la.err_102);
     }
   } catch(err) { msg('[load_data_generic]:'+err); }
 }
@@ -601,7 +585,7 @@ function load_data_group(filltype, fillwhere) {
   try{
     var tfill = fill('group', filltype); //function to fill the data
     if(!local.data.group) { 
-      req('get_reg_info', here, function(i,p,s) {
+      plk.req('get_reg_info', plk.here(), function(i,p,s) {
         local.data.group=i;
         window[ s[0] ](s[1], 'group');
       }, [tfill, fillwhere]);
@@ -622,9 +606,9 @@ function load_data_column(filltype, fillwhere) { window[ fill('column',filltype)
 //generic link for an action in dropdown
 function dropdown_action_generic(action, id, type, where) {
   try {  
-    if( !Object.isElement(where) ) { debug.warning('where is not defined as an Element'); }
+    if( !Object.isElement(where) ) { plk.debug.warning('where is not defined as an Element'); }
     var w = $(where).identify();
-    return '<li class="link menulink action_'+action+'" onclick="do_action(\''+id+'\',\''+type+'\',\''+action+'\',$(\''+w+'\'));">'+la[action]+'</li>';
+    return '<li class="link menulink action_'+action+'" onclick="do_action(\''+id+'\',\''+type+'\',\''+action+'\',$(\''+w+'\'));">'+plk.la[action]+'</li>';
   } catch(err) { msg('[dropdown_action_generic]:'+err); errnum=1; }
 }
 
@@ -649,10 +633,10 @@ function fill_list_group(fillwhere) {
   var val='';
   var func = switcher('link_goto', 'group')
   for(var i=1;i<=local.data.group.groupcount;i++) {
-	  val+= window[ func ](i, 'group', la['group']+" "+i);
+	  val+= window[ func ](i, 'group', plk.la['group']+" "+i);
   }
-  val+= window[ func ]('af', 'group', la['af']);
-  val+= window[ func ]('ar', 'group', la['ar']);
+  val+= window[ func ]('af', 'group', plk.la['af']);
+  val+= window[ func ]('ar', 'group', plk.la['ar']);
   //insert the list
   put_list( val, fillwhere );
   position_dropdown();
@@ -664,7 +648,7 @@ function fill_list_column(fillwhere) {
   $$('th[id$="_head"]').each( function(item) {
     if( item.getStyle('display') == 'none' ) {
       var column = item.identify().slice(0, -5);
-      if(column!='register' || here.registerid==null ) {
+      if(column!='register' || plk.here('registerid')==null ) {
         val+="<li class='menulink link' onclick='displaycolumn(1,\""+column+"\")'>"+$(column+'_span_head').innerHTML+"</li>"; 
       }
     }
@@ -682,7 +666,7 @@ function fill_list_column(fillwhere) {
 function fill_list_wordclass(fillwhere, wordid) {
   var val='';
   for(var j=0;j<6; j++) {
-    val += "<li class='menulink link' onclick='do_action(\""+j+"\",\"wordclass\",\"goto\")'>"+la.classname[j]+"</li>";
+    val += "<li class='menulink link' onclick='do_action(\""+j+"\",\"wordclass\",\"goto\")'>"+plk.la.classname[j]+"</li>";
   } 
 
   put_list( val, fillwhere );
@@ -701,11 +685,11 @@ function action_goto_generic(id, type, params) {
   do_shutter(1);
   //remove wordid //usually useless
   if( type != 'word' ) {
-    clear_here('wordid');
+    plk.here.clear('wordid');
   }
   //remove taglist
   if( type == 'tag' ) {
-    clear_here('keyoption');
+    plk.here.clear('keyoption');
   }
 
   //goto location
@@ -713,7 +697,7 @@ function action_goto_generic(id, type, params) {
     var params = {};
     params[type+'id'] = id;
   }
-  location.href = path(params);
+  location.href = plk.here.path( params );
 }
 
 
@@ -726,17 +710,18 @@ action_goto_keyoption = function( id ) {
 
   //different with verb
   if(id == 'verb') {
-    clear_here(['formid','personid','wordid']);
+    plk.here.clear(['formid','personid','wordid']);
   } 
   var param = {keyoption: id};
 
   //load page
-  location.href=path(param);
+  location.href = plk.here.path( param );
 }
 
 function action_goto_word(id) { //remove verblist from path
-  update_here({keyoption: 'show'}); //load show
-  clear_here(['formid', 'personid', 'wordclassid', 'tagid', 'groupid', 'withoutid', 'searchid', 'saveid']); //20120408 - fix : compare similar words from whole register
+  //load show
+  plk.here.set( {keyoption: 'show'} );
+  plk.here.clear(['formid', 'personid', 'wordclassid', 'tagid', 'groupid', 'withoutid', 'searchid', 'saveid']); //20120408 - fix : compare similar words from whole register
   action_goto_generic(id, 'word');
 }
 
@@ -745,7 +730,7 @@ function action_goto_verb( id, type) {
   do_shutter(1);
 
   //clear other ids
-  clear_here(['wordid','personid','formid']);
+  plk.here.clear( ['wordid','personid','formid'] );
 
   //set new id and keyoption to verb
   type = type=='verb' ? 'word': type;
@@ -753,7 +738,7 @@ function action_goto_verb( id, type) {
   params[type+'id'] = id;
 
   //load
-  location.href = path(params);
+  location.href = plk.here.path( params );
 }
 
 function action_goto_person(id) { action_goto_verb( id, 'person'); }
@@ -761,9 +746,9 @@ function action_goto_form(id) { action_goto_verb( id, 'form'); }
 
 function action_goto_search( id ) {
   //clear useless
-  clear_here(['queryid','keyoption']);
+  plk.here.clear(['queryid','keyoption']);
   //also update searchtext
-  update_here({ searchtext: 'like: '+id});
+  plk.here.set({ searchtext: 'like: '+id});
   action_goto_generic(id, 'search');
 }
 
@@ -774,14 +759,14 @@ function action_force_goto_generic(id, type) {
 
   var params= {};
   params[type+'id'] = id;
-  location.href=path(1,params); //remove all except register
+  location.href = plk.here.path( 1, params ); //remove all except register
 }
 
 function action_force_goto_user() {
   //shutter
   do_shutter(1);
 
-  location.href = path(0);
+  location.href = plk.here.path( 0 );
 }
 
 //--------
@@ -795,25 +780,29 @@ function action_delete_generic(id, type) {
   try {
     var params= { currenttype: type}; //pass it because async
     params[type+'id'] = firstelement(id);
-    rvar.create('deletesomething','delete_'+type, params, function(info,params) {
+    var deletesomething = new plk.reqObj( 'delete_'+type, params, function(info,params) {
       //clean
       cleaner(params[params.currenttype+'id'], params.currenttype);
       //notify
-      if(la['info_'+params.currenttype+'_deleted']) {
-        do_info( la['info_'+params.currenttype+'_deleted'] );
+      if(plk.la['info_'+params.currenttype+'_deleted']) {
+        do_info( plk.la['info_'+params.currenttype+'_deleted'] );
       }
     }); 
-    ask(la['ask'+type+'del'],'rvar.deletesomething.sendreq()');  
+    ask(plk.la['ask'+type+'del'], function() { 
+      deletesomething.send();
+    });  
   } catch(err) { msg('[action_delete_generic]:'+err); errnum=1; }
 }
 
 //remove tag from word
 function action_delete_tag(id) {
   try {  
-    rvar.create('deltag','delete_tag',{wordid:id[0], tagid:id[1]},function(i,params) {
+    var deltag = new plk.reqObj( 'delete_tag', {wordid:id[0], tagid:id[1]}, function(i,params) {
       cleaner(params.wordid+'_'+params.tagid, 'tag');
     });
-    ask(la['asktagdel'],'rvar.deltag.sendreq()');
+    ask(plk.la['asktagdel'], function() {
+      deltag.send();
+    });
   } catch(err) { msg('[action_removefrom_tag]:'+err); errnum=1; }
 }
 
@@ -823,8 +812,8 @@ function action_delete_tag(id) {
 //edit_generic
 action_rename_generic =
 action_edit_generic = function(id, type, where, input, content) { //input and content are optional
-  if( !id ) { debug.warning('id is not defined in action_edit_generic'); }
-  if( !type ) { debug.warning('type is not defined in action_edit_generic'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_edit_generic'); }
+  if( !type ) { plk.debug.warning('type is not defined in action_edit_generic'); }
   hide_dropdown(); //hide that
   //get current content
   if( !input ) {
@@ -832,15 +821,15 @@ action_edit_generic = function(id, type, where, input, content) { //input and co
     input='<input id="input_edit" class="close_edit input_'+type+'" onkeyup="input_keyup(['+id+'], \''+type+'\', \'edit\', event)" onkeydown="input_keydown(['+id+'], \''+type+'\', \'edit\', event)" onblur="close_action(\'edit\',\''+type+'\',200)" type="text" name="new'+type+'" value="'+content+'"/>'; //fix: not </input>
   }
   //hide element and show input instead and focus it
-  if( !Object.isElement(where) ) { debug.warning('where is not defined as an Element in action_edit_generic'); }
+  if( !Object.isElement(where) ) { plk.debug.warning('where is not defined as an Element in action_edit_generic'); }
   Element.hide(where).insert({before: input});
   $$('#input_edit')[0].focus();
 }
 
 //edit a verb in the verbtable
 function action_edit_kword(id, type, where) {
-  if( !id ) { debug.warning('id is not defined in action_edit_kword'); }
-  if( !type ) { debug.warning('type is not defined in action_edit_kword'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_edit_kword'); }
+  if( !type ) { plk.debug.warning('type is not defined in action_edit_kword'); }
   var content= $$('.'+type+'_v'+id[0]+'_p'+id[1]+'_f'+id[2])[0].innerHTML;
   action_edit_generic(id, type, where, false,content);
 }
@@ -855,8 +844,8 @@ function action_edit_wordclass(id, type, where) {
   //when changing value it will simulate pressing enter
   for(var i=0; i<6; i++) {
     input += '<option value='+i+' '; 
-    if(la.classname[i]==content) { input += 'selected' }
-    input += '>'+la.classname[i]+'</option>';
+    if(plk.la.classname[i]==content) { input += 'selected' }
+    input += '>'+plk.la.classname[i]+'</option>';
   }
   input += '</select></span>';
   action_edit_generic(id, type, where, input);
@@ -864,20 +853,20 @@ function action_edit_wordclass(id, type, where) {
 
 //edit group
 function action_edit_group(id, type, where) {
-  if( !id ) { debug.warning('id is not defined in action_edit_group'); }
-  if( !type ) { debug.warning('type is not defined in action_edit_group'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_edit_group'); }
+  if( !type ) { plk.debug.warning('type is not defined in action_edit_group'); }
   //get current content
   var content = $($$('.'+type+'_'+firstelement(id))[0]).innerHTML; //FIX: var
   //create select
   var input='<span class="close_edit"><select id="input_edit" name="newgroup" size=1 onkeyup="input_keyup(\''+id+'\', \'group\', \'edit\', event)" onkeydown="input_keydown(\''+id+'\', \'group\', \'edit\', event)" onblur="close_action(\'edit\',\''+type+'\',200)" onchange="send_input(\''+id+'\',\'group\',\'edit\',13)">';
   //af and ar are special
-  if(content != la.a_ar && content != la.a_af) {
+  if(content != plk.la.a_ar && content != plk.la.a_af) {
     input+='<option value="'+content+'" selected>'+content+'</option>';
   }
   //if archive
-  if(content==la.a_ar) { input+='<option value="ar">'+la.a_ar+'</option>'; }
+  if(content==plk.la.a_ar) { input+='<option value="ar">'+plk.la.a_ar+'</option>'; }
   //give option af
-  input+='<option value="af">'+la.a_af+'</option>';
+  input+='<option value="af">'+plk.la.a_af+'</option>';
   //give option group 1
   if(content!=1) { input+='<option value="1">1</option>'; }
 
@@ -887,11 +876,11 @@ function action_edit_group(id, type, where) {
 
 //edit wordclass directly with a dropdown
 function action_speededit_wordclass(id, type, value) {
-  if( !id ) { debug.warning('id is not defined in action_speededit_wordclass'); }
-  if( !type ) { debug.warning('type is not defined in action_speededit_wordclass'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_speededit_wordclass'); }
+  if( !type ) { plk.debug.warning('type is not defined in action_speededit_wordclass'); }
   hide_dropdown();
   //send request and update
-  req('edit_word',{wordid:firstelement(id), newwordclass:value}, after_send, {id:id,action:'edit',type:'wordclass',key:13});
+  plk.req('edit_word',{wordid:firstelement(id), newwordclass:value}, after_send, {id:id,action:'edit',type:'wordclass',key:13});
 }
 
 //--------
@@ -899,18 +888,18 @@ function action_speededit_wordclass(id, type, value) {
 
 //add: opens input to add or create something
 function action_add_generic(id, type, where) {
-  if( !id ) { debug.warning('id is not defined in action_add_generic'); }
-  if( !type ) { debug.warning('type is not defined in action_add_generic'); }
-  if( !where ) { debug.warning('where is not defined in action_add_generic'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_add_generic'); }
+  if( !type ) { plk.debug.warning('type is not defined in action_add_generic'); }
+  if( !where ) { plk.debug.warning('where is not defined in action_add_generic'); }
   hide_dropdown(); //hide that
   //if where is popup make a popup with the input
   if(where == 'popup') {
-    var params = new formparam('new'+type);  //new form with title
+    var params = new plk.formObj('new'+type);  //new form with title
     params.addinput('new'+type,'name','',0);  //input field
     //prepare request - with registerid
-    rvar.create('addsomething','create_'+type,{registerid: here.registerid}, after_send, {action:'add',id:id, type:type});
+    var addsomething = new plk.reqObj( 'create_'+type,{registerid: plk.here('registerid')}, after_send, {action:'add',id:id, type:type} );
     //make and show a form
-    request_form('addsomething',params);
+    request_form( addsomething,params);
 
   } else {  //else create a input at where
     input='<input class="close_add" id="input_add" onkeyup="input_keyup(\''+id+'\', \''+type+'\', \'add\', event)" onkeydown="input_keydown(\''+id+'\', \''+type+'\', \'add\', event)" onblur="close_action(\'add\',\''+type+'\',200)" type="text" name="new'+type+'"></input>';
@@ -925,14 +914,14 @@ function action_add_generic(id, type, where) {
 
 //add one group to register
 function action_more_group( id, type, inc ) {
-  if( !id ) { debug.warning('id is not defined in action_more_group'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_more_group'); }
   if( !inc ) { inc = '++'; } // 05.04.2012 - fix : inc may be "".
-  req('edit_register',{registerid: id, newgroupcount:inc}, function(info,params) {
+  plk.req('edit_register',{registerid: id, newgroupcount:inc}, function(info,params) {
     var param = { location:'php/list.php',
                   'function': 'list_group',
                   'json': 1,
                   'parameters': Object.toJSON([params.registerid]) };
-    req('get_function',param,function(info) {
+    plk.req('get_function',param,function(info) {
       var groupc = $('group_content');
       if ( !groupc ) { throw 'HTML Element with id group_content not found.'; }
       else {
@@ -954,7 +943,7 @@ function action_less_group(i, t) {
 
 //directly to show page
 function action_show_generic(i, t) {
-  update_here( { page:'show' } );
+  plk.here.set( { page:'show' } );
   // fix: otherwise would call action_goto_generic_show
   //do_action(i, t, 'goto');
   action_goto_generic(i, t)
@@ -962,7 +951,7 @@ function action_show_generic(i, t) {
 
 //directly to verb page
 function action_verb_generic(i, t) {
-  update_here( { page:'verb' } );
+  plk.here.set( { page:'verb' } );
   action_goto_generic(i, t);
 }
 
@@ -971,21 +960,21 @@ function action_verb_generic(i, t) {
 
 //make a query here
 function action_query_generic(id, type) {
-  if( !id ) { debug.warning('id is not defined in action_query_generic'); }
-  if( !type ) { debug.warning('type is not defined in action_query_generic'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_query_generic'); }
+  if( !type ) { plk.debug.warning('type is not defined in action_query_generic'); }
   do_shutter(1);
 
   //if id is 'wordform'
   //this will update id with wordids of form if id is 'wordform'
   //it will show an error and return 0 if no word is selected
   //it will return false and nothing else if id isn't 'wordform'
-  if(here.page == 'show' || here.page == 'add') { id = 'wordform'; } // fix - 04.04.2012
+  if(plk.here('page') == 'show' || plk.here('page') == 'add') { id = 'wordform'; } // fix - 04.04.2012
   var iswordform = formfield2id(id , 'wordid[]');
   if( iswordform === false ) { //no wordform: just query here
     var params = {allmarked: 1};
     params[type+'id'] = firstelement(id);
     if( type == 'register' ) { // 20120422 - Fix : starting query from dashboard
-      here.registerid = id; //update_here() may mess up
+      plk.here.set( { 'registerid' : id } );
     }
   } else if( iswordform === null ) { return false; }  //wordform is empty 
   else {                                          //wordform has checked words
@@ -998,24 +987,24 @@ function action_query_generic(id, type) {
   }
 
   //prepare request
-  rvar.create('cract','create_active', here, function(info) {
-    document.location.href = path(2, { queryid: info.savedid });
+  var cract = new plk.reqObj( 'create_active', plk.here(), function(info) {
+    document.location.href = plk.here.path( 2, { queryid: info.savedid } );
   }); 
   //append params from above and send
-  rvar.cract.sendreq(params);
+  cract.send( params );
 }
 
 //load location to add a word
 function action_addword_generic(id, type) {
-  if( !id ) { debug.warning('id is not defined in action_addword_generic'); }
-  if( !type ) { debug.warning('type is not defined in action_addword_generic'); }
+  if( !id ) { plk.debug.warning('id is not defined in action_addword_generic'); }
+  if( !type ) { plk.debug.warning('type is not defined in action_addword_generic'); }
   var params = {keyoption: 'add'};
   params[ type+'id' ] = id;
-  location.href=path(params);
+  location.href = plk.here.path( params );
 }
 
 function action_export_generic(id, type) {
-  location.href=path({keyoption: 'export'});
+  location.href = plk.here.path( {keyoption: 'export'} );
 }
 
 //////////
@@ -1043,7 +1032,7 @@ function send_edit_generic(id, type, key) {
       var params = {};
       params[type+'id'] = id;
       params['new'+type] = input.value;
-      req('edit_'+type,params, after_send, {id:id,type:type,key:key,action:'edit'});
+      plk.req('edit_'+type,params, after_send, {id:id,type:type,key:key,action:'edit'});
     }  
   } catch(err) { msg('[send_edit_generic]:'+err); errnum=1; }
 }
@@ -1058,30 +1047,30 @@ send_edit_wordclass = function(id, type, key) {
   if(input) {
     //validate string
     if( type == 'wordfirst' || type == 'wordfore' ) {
-      if( validstr( input.value ) ) { do_info( la.err_invalidsyntax ); return false; }
+      if( plk.word.validate( input.value ) ) { do_info( plk.la.err_invalidsyntax ); return false; }
       else { close_info(); }
     }
 
     var params = {wordid:firstelement(id)};
     params['new'+type] = input.value;
-    req('edit_word',params, after_send, {id:id, type:type, action:'edit', key:key});
+    plk.req('edit_word',params, after_send, {id:id, type:type, action:'edit', key:key});
   }
 }
 
 //edit verb (kword)
 function send_edit_kword(id, type, key) {
-  if( !id ) { debug.warning('id is not defined in send_edit_generic'); }
+  if( !id ) { plk.debug.warning('id is not defined in send_edit_generic'); }
   try {
     var input=$('input_edit'); //this field should contain the new name
     if(input) {
-      req('add_verb',{wordid:id[0], personid:id[1], formid:id[2], newkword:input.value}, after_send, {id:id,type:type,action:'edit', key:key});
+      plk.req('add_verb',{wordid:id[0], personid:id[1], formid:id[2], newkword:input.value}, after_send, {id:id,type:type,action:'edit', key:key});
     }
   } catch(err) { msg('[send_edit_kword]:'+err); errnum=1; }
 }
 
 //edit grouplock
 function send_edit_grouplock(id, type, key) {
-  if( !id ) { debug.warning('id is not defined in send_edit_grouplock'); }
+  if( !id ) { plk.debug.warning('id is not defined in send_edit_grouplock'); }
   var input=$('input_edit'); //this field should contain the new name
   if(input) {
     //define array new grouplock [null, ..., value];
@@ -1090,8 +1079,8 @@ function send_edit_grouplock(id, type, key) {
     for(var i=0; i<index; i++) { newgrouplock.push(null); }
     newgrouplock[ index ] = input.value;
     //send request
-    var params = {registerid: here.registerid, 'newgrouplock[]':newgrouplock};
-    req('edit_register',params, after_send, {id:id,type:type,action:'edit',key:key});
+    var params = {registerid: plk.here('registerid'), 'newgrouplock[]':newgrouplock};
+    plk.req('edit_register',params, after_send, {id:id,type:type,action:'edit',key:key});
   }
 }
 
@@ -1114,7 +1103,7 @@ function after_send_edit_13_generic(info, params, id, type, newname) {
 
 //wordclass
 function after_send_edit_13_wordclass(info,params,id,t) {
-  after_send_edit_13_generic(null,null,id,t,la.classname[params.newwordclass]);
+  after_send_edit_13_generic(null,null,id,t,plk.la.classname[params.newwordclass]);
 }
 
 //register is updated with enter
@@ -1163,7 +1152,7 @@ function after_send_edit_9_kword(info,params,id,type) {
 //change group (special for af and ar)
 function after_send_edit_13_group(info,params,id,type) {
   if(typeof params.newgroup != 'integer') {
-    var newname = la['a_'+params.newgroup];
+    var newname = plk.la['a_'+params.newgroup];
   } else {
     var newname = params.newgroup;
   }
@@ -1183,9 +1172,9 @@ function send_add_generic(id, type, key) {
     var input=$('input_add'); //this field should contain the new name
     if(input) {
       var params = {};
-      params['registerid'] = here.registerid; //usefull in most cases
+      params['registerid'] = plk.here('registerid'); //usefull in most cases
       params['new'+type] = input.value;
-      req('create_'+type ,params, after_send, {id:id,type:type, action:'add',key:key});
+      plk.req('create_'+type ,params, after_send, {id:id,type:type, action:'add',key:key});
     }  
   } catch(err) { msg('[send_edit_generic]:'+err); errnum=1; }
 }
@@ -1196,10 +1185,10 @@ function send_add_tag(id,type) {
     var input=$('input_add'); //this field should contain the new name
     if(input) {
       var params = {};
-      params['registerid'] = here.registerid;
+      params['registerid'] = plk.here('registerid');
       params['wordid[]'] = id;
       params['newtag'] = input.value;
-      req('add_tag',params, after_send, {id:id,type:type, action:'add', key:13});
+      plk.req('add_tag',params, after_send, {id:id,type:type, action:'add', key:13});
     }  
   } catch(err) { msg('[send_edit_generic]:'+err); errnum=1; }
 }
@@ -1225,7 +1214,7 @@ function after_send_add_13_tag(info, params, id) {
     var nparams = get_function_writeone('tag');
     nparams['json']=1;
     nparams['parameters'] = Object.toJSON([id, info.id, info['name']]); 
-    req('get_function', nparams, function(i) { appender(i.output, 'tag', $('tag_'+id), 'top') }); //append each tag
+    plk.req('get_function', nparams, function(i) { appender(i.output, 'tag', $('tag_'+id), 'top') }); //append each tag
   } catch(err) { msg('[after_send_add_13_tag]:'+err); errnum=1; }
 }
 
@@ -1244,7 +1233,7 @@ function after_send_add_13_generic(info,params, id, type, parameters) {
     } else {
       nparams['parameters[]'] = parameters;
     }
-    req('get_function', nparams, function(i,p,s) { appender(i.output, s[0], s[1], s[2]); }, [ type, $$('.'+type+'_list')[0], 'bottom'] );
+    plk.req('get_function', nparams, function(i,p,s) { appender(i.output, s[0], s[1], s[2]); }, [ type, $$('.'+type+'_list')[0], 'bottom'] );
     //hide input and restore replaced element
     close_action('add', type);
   } catch(err) { msg('[after_send_add_13_generic]:'+err); errnum=1; }
@@ -1265,7 +1254,7 @@ function after_send_add_0_person(info,params, id, type) {
   var nparams = get_function_writeone(type);
   nparams['parameters'] = Object.toJSON([{id: info.newid, 'name':info['newname'], count:info.count}]);
   nparams['json'] = 1;
-  req('get_function',nparams, function(i) { appender(i.output, type, $$('.'+type+'_list')[0], 'bottom') } );
+  plk.req('get_function',nparams, function(i) { appender(i.output, type, $$('.'+type+'_list')[0], 'bottom') } );
   //close popup
   close_popup();  
 }
@@ -1280,12 +1269,12 @@ function after_send_add_0_form(info,params, id, type) {
 
 //link to remove a filter
 function link_all_generic(id, type) {
-  return '<li class="menulink link" onclick="do_action(null,\''+ type +'\',\'goto\')">'+la['all']+'</li>';    
+  return '<li class="menulink link" onclick="do_action(null,\''+ type +'\',\'goto\')">'+plk.la['all']+'</li>';    
 }
 
 //link to show something
 function link_show_generic(id, type) {
-  return '<li class="menulink link" onclick="do_action(\''+id+'\',\''+type+'\',\'goto\')">'+la.show+'</li>'; 
+  return '<li class="menulink link" onclick="do_action(\''+id+'\',\''+type+'\',\'goto\')">'+plk.la.show+'</li>'; 
 }
 
 //link to show group
@@ -1301,27 +1290,27 @@ function link_show_group(id) {
 
 //link to the option page
 function link_options_generic(id, type) {
-  return '<li class="menulink link" onclick="update_here({'+type+'id:\''+id+'\'}); do_action(\'edit\',\'keyoption\',\'goto\')">'+la['options']+'</li>';
+  return '<li class="menulink link" onclick="plk.here.set({'+type+'id:\''+id+'\'}); do_action(\'edit\',\'keyoption\',\'goto\')">'+plk.la['options']+'</li>';
 }
 
 //link to user settings page
 function link_settings_user() {
-  return '<li class="menulink link" onclick="do_action(\'settings\',\'keyoption\',\'force_goto\')">'+la['settings']+'</li>';
+  return '<li class="menulink link" onclick="do_action(\'settings\',\'keyoption\',\'force_goto\')">'+plk.la['settings']+'</li>';
 }
 
 //logout
 function link_logout_generic() {
-  return '<li class="menulink link" onclick="do_action(\'logout\',\'keyoption\',\'force_goto\')">'+la['logout']+'</li>';
+  return '<li class="menulink link" onclick="do_action(\'logout\',\'keyoption\',\'force_goto\')">'+plk.la['logout']+'</li>';
 }
 
 //import
 function link_import_generic() {
-  return '<li class="menulink link" onclick="do_action(\'import\',\'keyoption\',\'goto\')">'+la['import']+'</li>';
+  return '<li class="menulink link" onclick="do_action(\'import\',\'keyoption\',\'goto\')">'+plk.la['import']+'</li>';
 }
 
 //create link to ad a word
 function link_addword_generic() {
-  return '<li class="link menulink link_addword" onclick="do_action(false,false,\'addword\')">'+la['addword']+'</li>';
+  return '<li class="link menulink link_addword" onclick="do_action(false,false,\'addword\')">'+plk.la['addword']+'</li>';
 }
 
 //A Link to go to the location (sounds usefull)
@@ -1331,24 +1320,24 @@ function link_goto_generic(id, type, namevalue) {
 
 //link to the taglist
 function link_taglist_tag() {
-  return '<li class="menulink link" onclick="do_action(\'taglist\',\'keyoption\',\'goto\')">'+la['taglist']+'</li>';
+  return '<li class="menulink link" onclick="do_action(\'taglist\',\'keyoption\',\'goto\')">'+plk.la['taglist']+'</li>';
 }
 
 //link to words without tag or save or whatever
 function link_without_generic(id,type) {
-  return '<li class="menulink link" onclick="do_action(\''+type+'\',\'without\',\'goto\')">'+la['without'+type]+'</li>';
+  return '<li class="menulink link" onclick="do_action(\''+type+'\',\'without\',\'goto\')">'+plk.la['without'+type]+'</li>';
 }
 
 //link to verbtable
 function link_verbtable_word(id) {
-  return '<li class="menulink link" onclick="do_action(\''+id+'\',\'verb\',\'goto\')">'+la.verb+'</li>';
+  return '<li class="menulink link" onclick="do_action(\''+id+'\',\'verb\',\'goto\')">'+plk.la.verb+'</li>';
 }
 
 //links to speededit wordclass
 function link_list_edit_wordclass(id) {
   var val='';
   for(var j=0;j<6; j++) {
-    val += "<li class='menulink link' onclick='action_speededit_wordclass(["+id+"],\"wordclass\","+j+")'>"+la.classname[j]+"</li>";
+    val += "<li class='menulink link' onclick='action_speededit_wordclass(["+id+"],\"wordclass\","+j+")'>"+plk.la.classname[j]+"</li>";
   } 
   return val;
 }
@@ -1356,7 +1345,7 @@ function link_list_edit_wordclass(id) {
 //link to help
 function link_help(anchor, force, text) {
   text = text || '';  
-  if( you.hints==1 || force==1) {
+  if( plk.you.hints==1 || force==1) {
     return '<span class="link helplink h_'+anchor+'" onmouseover="help_load(\''+anchor+'\')" onclick="help_toggle();">'+text+'</span>';
   }
 }
@@ -1415,22 +1404,22 @@ function clear_data(type) {
 //helper
 function update_information() {
   close_info();
-  var func = switcher( 'update_information', here.page );
+  var func = switcher( 'update_information', plk.here('page') );
   if(func) { window[ func ](); }
 }
 
 //update the whole page without reloading it (ajax)
 function update_page(page) {
   //update here
-  update_here({page: page});
+  plk.here.set({page: page});
 
   //don't search
-  if(here.page != 'search')  {
-    update_here( {searchid : null} );
+  if(plk.here('page') != 'search')  {
+    plk.here.set( {searchid : null} );
   }
 
   //update hash
-  update_hash();
+  plk.hash.update();
   //update navigator
   update_navigator();
 
@@ -1451,10 +1440,10 @@ function update_navigator() {
   nparams['location'] = 'php/menu.php';
   nparams['function'] = 'navigator';
   //pass here as json
-  nparams['parameters'] = '['+ Object.toJSON( here ) +']';
+  nparams['parameters'] = '['+ Object.toJSON( plk.here() ) +']';
   nparams['json'] = 1;
   //load navigator and append it
-  req('get_function', nparams, function(info) {
+  plk.req('get_function', nparams, function(info) {
     eventloader( $('headerpath').update( info.output ) );
   });
 }
@@ -1464,14 +1453,14 @@ function update_navigator() {
 //////////
 
 //Loads a form dialog before function. (more flexible)
-//reqvar: name of a prepared request in rvar
-//params: a formparam element
-function request_form(reqvar,params) {
+//reqvar: prepared request from reqObj
+//params: a plk.formObj element
+function request_form(reqvar, params) {
   var errnum=0;
-  var ret="<form id='askform' action='#' onsubmit='if(checkrform()) { return rvar."+reqvar+".sendreq($(\"askform\").serialize(true)); } else { return false; }'>";
-    ret+='<span class="titel reqformtitel">'+la[params.title]+":</span>";
+  var ret="<form id='askform' action='#'>";
+    ret+='<span class="titel reqformtitel">'+plk.la[params.title]+":</span>";
     if(params.error) {//show error on top
-      ret+='<div class="reqformerr">'+la[params.error]+"</div>";
+      ret+='<div class="reqformerr">'+plk.la[params.error]+"</div>";
     }
     ret+='<ul class="inputlist">';
       try {
@@ -1480,14 +1469,14 @@ function request_form(reqvar,params) {
           var ttype=n.type?n.type:'text';
           var tid=n.id?n.id:n.name;
           var tneed=n.needed==1?' class="form_need" ':'';
-          ret+="<li><label for='"+tid+"'>"+la[n.label]+":</label><input type='"+ttype+"' name='"+n.name+"' id='"+tid+"' value='"+n.value+"' "+tneed+"></li>";
+          ret+="<li><label for='"+tid+"'>"+plk.la[n.label]+":</label><input type='"+ttype+"' name='"+n.name+"' id='"+tid+"' value='"+n.value+"' "+tneed+"></li>";
         }
       }catch(err) { msg('[request_form_0]:'+err); errnum=1; }
       try {
         for(var l in params.select) {
           var m = params.select[l]; //shortcut
           var tid=m.id?m.id:name;
-          ret+="<li><label for='"+tid+"'>"+la[m.label]+":</label><select name='"+m.name+"' size='1' id='"+tid+"'>";
+          ret+="<li><label for='"+tid+"'>"+plk.la[m.label]+":</label><select name='"+m.name+"' size='1' id='"+tid+"'>";
           for(var j in m.option) {
             var sel=j==m.selected?"selected='selected'":"";
             ret+="<option value='"+j+"' "+sel+">"+m.option[j]+"</option>";
@@ -1496,12 +1485,18 @@ function request_form(reqvar,params) {
         }
       }catch(err) { msg('[request_form_1]:'+err); errnum=2; }
     ret+='<ul class="inputlist">';
-    ret+="<input type='submit' value='"+la[params.submittext]+"'>";
-    ret+="<input type='button' value='"+la[params.canceltext]+"' onclick='close_popup()'/>";  
+    ret+="<input type='submit' value='"+plk.la[params.submittext]+"'>";
+    ret+="<input type='button' value='"+plk.la[params.canceltext]+"' onclick='close_popup()'/>";  
   ret+='</form>';
   if(errnum==0) {
-    //show in popup div
+    //insert in popup div
     $('popup').update( ret );
+    //append onsubmit
+    $('askform').onsubmit = function() { 
+      if(checkrform()) { return reqvar.send( $('askform').serialize(true) ); } else { return false; } 
+    }
+
+    //show
     do_popup();
     //focus first input
     $('askform')[tid].focus();

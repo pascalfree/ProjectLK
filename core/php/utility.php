@@ -14,7 +14,7 @@
 //////////
 
 //Loads available languages
-function getlanguages($prefix='') {
+function plk_util_getLanguages($prefix='') {
   $tdir=opendir('./language/');
   unset($langs);
   while (($tfile = readdir($tdir)) !== false) {
@@ -31,7 +31,7 @@ function getlanguages($prefix='') {
 }
 
 //Loads available themes
-function getgui() {
+function plk_util_getGui() {
   $tdir=opendir('./gui/');
   unset($gui);
   while (($tfile = readdir($tdir)) !== false) {
@@ -43,7 +43,7 @@ function getgui() {
 }
 
 //Loads available css themes
-function getthemes() {
+function plk_util_getThemes() {
   $tdir=opendir('./'.GUI.'/theme/');
   unset($subthemes);
   while (($tfile = readdir($tdir)) !== false) {
@@ -56,7 +56,7 @@ function getthemes() {
 }
 
 //Transforms an import file into an Array
-function getimport($file,$full=0) {
+function plk_util_getImport($file,$full=0) {
   $xmlload = simplexml_load_file($file);
   if($full) { $toload=array('registerlist','wordlist','taglist','tags','savelist','saves','verblist','personlist','formlist'); }
   else { $toload=array('registerlist','taglist','savelist','personlist','formlist'); }
@@ -78,37 +78,32 @@ function getimport($file,$full=0) {
   return $ret;
 }
 
-//Links for public pages
-function link_out($option,$name) {
-  return '<a href="'.URL.$option.'/">'.$name.'</a>';
-}
-
 //Searches an expression in the language file and returns the key.
-function getlangkey($expr) {
+function plk_util_getLangKey($expr) {
   if(is_string($expr)) {
-    global $la;
-    $ret=array_search($expr,$la);
+    global $plk_la;
+    $ret=array_search($expr,$plk_la);
     if($ret===false) {
       $expr[0]=strtoupper($expr[0]);
-      $ret=array_search($expr,$la);
+      $ret=array_search($expr,$plk_la);
     }
     if($ret===false) {
       $expr[0]=strtolower($expr[0]);
-      $ret=array_search($expr,$la);
+      $ret=array_search($expr,$plk_la);
     }
     return $ret;
   } else { return false; }
 }
 
 //replaces keywords with global values to the content.xml files
-function addglobals($string) {
+function plk_util_addGlobals($string) {
   $replace=array('<<img>>','<<pname>>','<<guest>>','<<username>>','<<email>>');
   $with=array(URL.'/content/images',P_NAME,'?login=1&username=gast&password=1234',$_REQUEST['username'],$_REQUEST['email']);
   return str_replace($replace,$with,$string);
 }
 
-//gives back the key of an array matching a string
-function array_isearch($str, $array) {
+//returns the key of an array matching a string (case-insensitive)
+function plk_util_iSearchArray($str, $array) {
   if(isset($array[0]) && is_array($array)) {
     foreach($array as $k => $v) {
       if(strcasecmp($str, $v) == 0) return $k;
@@ -117,8 +112,8 @@ function array_isearch($str, $array) {
   return NULL;
 }
 
-//gives back true if any value of the first array is also in the second one
-function array_match($arraya, $arrayb) {
+//returns true if any value of the first array is also in the second one
+function plk_util_matchArray($arraya, $arrayb) {
   if($arraya[0]!==NULL && $arrayb[0]!==NULL && is_array($arraya) && is_array($arrayb)) {
     foreach($arraya as $v) {
       if(in_array($v, $arrayb)) { return true; break; }
@@ -128,11 +123,11 @@ function array_match($arraya, $arrayb) {
 }
 
 //recursive search of a string in a multidimesional array.
-function array_search_r($str, $array) {
+function plk_util_rSearchArray($str, $array) {
   if(is_array($array)) {
     $ret=0;
     foreach($array as $next) {
-      if(array_search_r($str,$next)) { 
+      if(plk_util_rSearchArray($str,$next)) { 
         $ret=1; 
         break; 
       }
@@ -144,12 +139,13 @@ function array_search_r($str, $array) {
 }
 
 //Creates a scrollbar
-function scrollbar($width, $action='') {
+function plk_util_scrollbar($width, $action='') {
   echo '<div style="width: ',$width,'px; overflow-x: scroll;" onscroll="'.$action.'"><div style="width: ',$width+100,'px; height: 0px; color: transparent; visibility:hidden; font-size:1px">x</div></div>';
 }
 
 //escapes input for MySQL
-function mres($input) {
+// makes mysql_real_escape_string  recursive and shorter
+function mres($input) { 
   if(is_array($input)) {
     foreach($input as $tin) {
       $res[] = mres($tin);
@@ -160,14 +156,14 @@ function mres($input) {
   return $res;
 }
 
-//gets the name of a type with specific id.
-function get_name($type, $id) {
-  $getname= request('get_'.$type, array($type.'id' => $id));
+// returns the name of a type with specific id.
+function plk_util_getName($type, $id) {
+  $getname= plk_request('get_'.$type, array($type.'id' => $id));
   return $getname['name'][0];
 }
 
 //load the global location parameters. creates an array like the global $here
-function getglobal( $pre = '' ) {
+function plk_util_getGlobal( $pre = '' ) {
   global  ${$pre.'registerid'},
           ${$pre.'groupid'},
           ${$pre.'saveid'},
@@ -188,14 +184,14 @@ function getglobal( $pre = '' ) {
 }
 
 //regular expression encoder for mysql
-function regexpencode($string) {
+function plk_util_regExpEncode($string) {
   $searchstr=array('\\','(',')','*');
   $replace=array('\\\\','\\(','\\)','\\*');
   return mysql_real_escape_string(str_replace($searchstr,$replace,$string));
 }
 
 //flaten Array
-function flat($array) {
+function plk_util_flat($array) {
   if(is_array($array)) {
     foreach($array as $key=>$val) {
       if(is_array($val)) { $ret[$key]=$val[0]; }
@@ -208,7 +204,7 @@ function flat($array) {
 }
 
 //Generate Password
-function passgen($len) {
+function plk_util_passGen($len) {
   $chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
   $passw='';
   for($i=0; $i<$len; $i++) {
@@ -218,27 +214,27 @@ function passgen($len) {
   return $passw;
 }
 
-//trim with parameter by reference
-function trim_ref(&$value)
+//trim with parameter by reference //for array_walk!
+function plk_util_trim(&$value)
 {
  $value = trim($value);
 }
 
 // get comma separated, trimmed values
-function comma_array( $string ) {
+function plk_util_commaArray( $string ) {
   $arr = explode(",", $string);
-  array_walk( $arr, 'trim_ref' );
+  array_walk( $arr, 'plk_util_trim' );
   return $arr;
 }
 
 // remove forbidden characters
-function remove_forbidden( &$string, $forbidden = array('\\"', '#', '+') ) {
+function plk_util_removeForbidden( &$string, $forbidden = array('\\"', '#', '+') ) {
 	$string = str_replace($forbidden, '', $string);
   return $string; //needed to walk array
 }
 
-// if parameter isn't an array make a single value array of it. return if it was array
-function make_array( &$param ) {
+// if parameter isn't an array make a single value array of it.
+function plk_util_makeArray( &$param ) {
   if ( !is_array( $param ) ) {
     $param = array(
        $param
@@ -250,12 +246,12 @@ function make_array( &$param ) {
 
 // loads wordids assuming the location is defined by $arg_.. variables
 // returns wordids as array.
-function load_wordid( &$go ) {
-  $params              = getglobal( 'arg_' );
+function plk_util_loadWordId( &$go ) {
+  $params              = plk_util_getGlobal( 'arg_' );
   $params[ 'nolimit' ] = 1;
   $params[ 'select' ]  = 'id';
   $params[ 'wordid' ]  = NULL;
-  $getwordid           = request( 'get_word', $params );
+  $getwordid           = plk_request( 'get_word', $params );
 
   if ( 0 != $getwordid[ 'errnum' ] ) {
     $go->error( 400, $getwordid[ 'errnum' ] . ': ' . $getwordid[ 'errname' ] );

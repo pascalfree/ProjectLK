@@ -26,16 +26,16 @@ $go->necessary( 'registerid', 'newtag', array(
 
 if ( $go->good() ) {
   //forbidden characters / Verbotene Zeichen
-  remove_forbidden($arg_newtag);
+  plk_util_removeForbidden($arg_newtag);
   
   //every word is marked: get them by global parameters
   if ( $arg_allmarked ) {
-    $arg_wordid = load_wordid( $go );
+    $arg_wordid = plk_util_loadWordid( $go );
   }
 }
 
 if ( $go->good() ) { //Check for every word if it belongs to the user
-  make_array( $arg_wordid );
+  plk_util_makeArray( $arg_wordid );
 
   $len = count( $arg_wordid );
   for ( $i = 0; $i < $len; $i++ ) {
@@ -55,7 +55,7 @@ if ( $go->good() ) { //Check for every word if it belongs to the user
 if ( $go->good() ) {
   ////add tags
   //build query
-  $tags_arr = comma_array( $arg_newtag );
+  $tags_arr = plk_util_commaArray( $arg_newtag );
 
   $query = "INSERT IGNORE 
                  INTO lk_tags (wordid, tagid) 

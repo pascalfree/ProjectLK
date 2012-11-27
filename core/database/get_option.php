@@ -15,5 +15,5 @@
        FROM lk_user 
      WHERE id='" . $userid . "' "
   , 1 );
-  $return = flat( $get_option['result'] );
+  $return = plk_util_flat( $get_option['result'] );
 ?>

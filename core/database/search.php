@@ -28,35 +28,35 @@
 
   //get registers
   if($go->good()) {
-    $get['register'] = request('get_register', $param );
+    $get['register'] = plk_request('get_register', $param );
   }
   //get tags
   if($go->good()) {
-    $get['tag'] = request('get_tag', $param );
+    $get['tag'] = plk_request('get_tag', $param );
   }
   //get save
   if($go->good()) {
-    $get['save'] = request('get_save', $param );
+    $get['save'] = plk_request('get_save', $param );
   }
   //get form
   if($go->good()) {
-    $get['form'] = request('get_form', $param );
+    $get['form'] = plk_request('get_form', $param );
   }
   //get person
   if($go->good()) {
-    $get['person'] = request('get_person', $param );
+    $get['person'] = plk_request('get_person', $param );
   }
   //get verb
   if($go->good()) {
     $param['struc'] = 1;
-    $get['verb'] = request('get_verb', $param );
+    $get['verb'] = plk_request('get_verb', $param );
   }
   //get words
   if($go->good()) {
     $param['gettags'] = 0; // no tags
     $param['nolimit'] = 1; // no limit
     $param['searchtext'] = 'like: '.$arg_searchtext;
-    $get['word'] = request('get_word', $param );
+    $get['word'] = plk_request('get_word', $param );
   }
 
 

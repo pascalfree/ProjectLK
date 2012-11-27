@@ -26,7 +26,7 @@ document.observe("dom:loaded", function() {
   //minimize in the beginnin:
   help_toggle();
   //load content
-  req('get_help',{ language : you.language, gettitle : 1}, help_content);
+  plk.req('get_help',{ language : plk.you.language, gettitle : 1}, help_content);
   //edit word
   $$('a.wordedit').each(function(item) { item.onmouseover=function() {help_load('wordedit');} });
 });
@@ -45,7 +45,7 @@ function help_load(ttitle) {
       help_show({titletext:local.help.title[ttitle], valuetext:local.help.value[ttitle]},ttitle);
     //else load content
     } else {
-      req('get_help',{title : ttitle, language : you.language}, function(i,p,s) { help_show(i,s) }, ttitle);
+      plk.req('get_help',{title : ttitle, language : plk.you.language}, function(i,p,s) { help_show(i,s) }, ttitle);
     }
   }
 }
@@ -56,7 +56,7 @@ function help_content(info) {
   for(var i=0; i<info.count; i++) {
     content+='<span class="link" onclick="help_load(\''+info.title[i]+'\')">'+info.titletext[i]+'</span><br>';
   }
-  help_show({titletext:la.content, valuetext:[content]},'content');
+  help_show({titletext:plk.la.content, valuetext:[content]},'content');
 }
 
 //////////
@@ -74,7 +74,7 @@ function help_show(info,ttitle) {
   var body = $('helper_body');
   var content = info.valuetext[0].replace(/\n/g,'<br>');
   if(ttitle!='content') { //append a link back to overwiev
-    content +='<br><br><span class="link" onclick="help_load(\'content\')">'+la.content+'</span><br>';
+    content +='<br><br><span class="link" onclick="help_load(\'content\')">'+plk.la.content+'</span><br>';
   }
   body.update(content);
   var helper=$('helper');

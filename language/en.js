@@ -1,4 +1,4 @@
-la =
+plk.la =
 //Author: David Glenck
 {
 //General Words
@@ -253,6 +253,7 @@ err_invalidsyntax: "The syntax of this word is incorrect. ",
 err_nosave: "There are no storages in this register. ",
 err_notag: "No tag was found. ",
 err_invalidfile: "Invalid file format. ",
+err_import: "An error occured while importing. The import is probably incomplete. Please contact the admin. ",
 err_upload: "Upload failed. ",
 err_password: "Passwords are not equal. ",
 err_wrongpass: "The password was incorrect. ",
@@ -265,7 +266,7 @@ err_103: "Nothing has been changed. ",
 err_104: "This entry already exists. ",
 err_105: "File Not Found.",
 err_106: "Passwords don't match. ",
-err_107: "You didn't give an e-mail adress to your account. please contact the admin. ",
+err_107: "You didn't give an e-mail adress to your account. Please contact the admin. ",
 err_108: "E-mail could not be sent. ",
 err_200: "Missing information. ",
 err_201: "No register has been selected. ",

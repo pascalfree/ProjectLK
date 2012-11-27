@@ -30,6 +30,6 @@ if ( $go->good() ) {
   }
 }
 if ( $go->good() ) { //result
-  $return = flat( $get_reg_info[ 'result' ] );
+  $return = plk_util_flat( $get_reg_info[ 'result' ] );
 }
 ?>

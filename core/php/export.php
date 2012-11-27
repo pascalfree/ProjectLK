@@ -10,7 +10,7 @@
 //////////////////////////////
 
 
-if($you -> id == NULL) {echo 'Export_Error: Missing userid';}
+if($plk_you -> id == NULL) {echo 'Export_Error: Missing userid';}
 else {
   @ini_set('memory_limit', '32M');  //more Memory for large exports
 
@@ -22,17 +22,17 @@ else {
   function u($str) { return rawurlencode($str); }  //shortcut
 
   //Load Data
-  $user=request('get_option');
+  $user=plk_request('get_option');
     //regarray:
     $regarray['gettime']=1;
-    if($here->registerid!=NULL) { $regarray['registerid']=$here->registerid; }
-  $register=request('get_register',$regarray);
-  $hereparam=(array) $here;
+    if($plk_here->registerid!=NULL) { $regarray['registerid']=$plk_here->registerid; }
+  $register=plk_request('get_register',$regarray);
+  $hereparam=(array) $plk_here;
   $hereparam['getsave']=1;
   $hereparam['gettags']=1;
   $hereparam['nolimit']=1;
-  $wordlist=request('get_word',$hereparam);
-  $verblist=request('get_verb',array('wordid'=>$wordlist['id'],'struc'=>1));
+  $wordlist=plk_request('get_word',$hereparam);
+  $verblist=plk_request('get_verb',array('wordid'=>$wordlist['id'],'struc'=>1));
 
   //Write XML
   echo '<xmlexport name="'.P_NAME.'" version="'.P_VERSION.'">\n';
@@ -41,7 +41,7 @@ else {
     //register
     echo '<registerlist>';
       for($i=0;$i<$register['count'];$i++) {
-        $reginfo=request('get_reg_info',array('registerid'=>$register['id'][$i]));
+        $reginfo=plk_request('get_reg_info',array('registerid'=>$register['id'][$i]));
         echo '<register id="'.$register['id'][$i].'" name="'.u($register['name'][$i]).'" groupcount="'.$reginfo['groupcount'].'" grouplock="'.$reginfo['grouplock'].'" language="'.$reginfo['language'].'" time="'.$register['time_created'][$i].'"/>';
       }
     echo '</registerlist>';
@@ -54,7 +54,7 @@ else {
     //taglist
     echo '<taglist>';
     for($i=0;$i<$register['count'];$i++) {
-      $taglist=request('get_tag',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
+      $taglist=plk_request('get_tag',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
       for($j=0;$j<$taglist['count'];$j++) {
         echo '<tag id="'.$taglist['id'][$j].'" name="'.u($taglist['name'][$j]).'" registerid="'.$register['id'][$i].'"/>';
       }
@@ -71,7 +71,7 @@ else {
     //savelist
     echo '<savelist>';
     for($i=0;$i<$register['count'];$i++) {
-      $savelist=request('get_save',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
+      $savelist=plk_request('get_save',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
       for($j=0;$j<$savelist['count'];$j++) {
         echo '<save id="'.$savelist['id'][$j].'" name="'.u($savelist['name'][$j]).'" registerid="'.$register['id'][$i].'" time="'.$savelist['time_created'][$j].'"/>';
       }
@@ -88,18 +88,18 @@ else {
     //formlist
     echo '<formlist>';
     for($i=0;$i<$register['count'];$i++) {
-      $formlist = request('get_form',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
+      $formlist = plk_request('get_form',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
       for($j=0;$j<$formlist['count'];$j++) {
-        echo '<form id="'.$formlist['formid'][$j].'" name="'.u($formlist['formname'][$j]).'" registerid="'.$register['id'][$i].'" info="'.$formlist['info'][$j].'"/>';
+        echo '<form id="'.$formlist['id'][$j].'" name="'.u($formlist['name'][$j]).'" registerid="'.$register['id'][$i].'" info="'.$formlist['info'][$j].'"/>';
       }
     }
     echo '</formlist>';
     //personlist
     echo '<personlist>';
     for($i=0;$i < $register['count'];$i++) {
-      $personlist = request('get_person',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
+      $personlist = plk_request('get_person',array('registerid'=>$register['id'][$i],'wordid'=>$wordlist['id']));
       for($j=0;$j<$personlist['count'];$j++) {
-        echo '<person id="'.$personlist['personid'][$j].'" name="'.u($personlist['personname'][$j]).'" registerid="'.$register['id'][$i].'" order="'.$personlist['order'][$j].'"/>';
+        echo '<person id="'.$personlist['id'][$j].'" name="'.u($personlist['name'][$j]).'" registerid="'.$register['id'][$i].'" order="'.$personlist['order'][$j].'"/>';
       }
     }
     echo '</personlist>';

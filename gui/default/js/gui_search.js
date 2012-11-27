@@ -13,17 +13,17 @@ local.aselect = -1;
 //a list of available types as a hash
 //for search function
 local.types = {
-register: la.register,
-group: la.group,
-tag: la.tag,
-save: la.savepoint,
-word: la.word,
-wordclass: la.wordclass,
-without: la.without,
-verb: la.sverb,
-form: la.form,
-person: la.person,
-'search': la['search']
+register: plk.la.register,
+group: plk.la.group,
+tag: plk.la.tag,
+save: plk.la.savepoint,
+word: plk.la.word,
+wordclass: plk.la.wordclass,
+without: plk.la.without,
+verb: plk.la.sverb,
+form: plk.la.form,
+person: plk.la.person,
+'search': plk.la['search']
 };
 
 //////////
@@ -124,7 +124,7 @@ function search() {
   try {
     if(!local.data.register.count) { return false; }
 
-    update_here( { searchid : null } ); //don't use this
+    plk.here.clear('searchid'); //don't use this
     var st = $('searchtext').value; //shortcut
     
     var srchfrm=$('searchform');
@@ -136,7 +136,7 @@ function search() {
       if( st.indexOf(local.types['search']+':') != 0 ) { //"search: " will force searching
         //get type if type is there
         var type = st.split(':')[0].strip()
-        type = Object.keys( local.types )[ Object.values( local.types ).indexOf( type ) ]; //get type of la[type]
+        type = Object.keys( local.types )[ Object.values( local.types ).indexOf( type ) ]; //get type of plk.la[type]
         if( type !== undefined ) { //if found type take away from searchtext
           st = st.substr( st.indexOf(':')+1 ).strip();
         }
@@ -145,7 +145,7 @@ function search() {
         var index = local.data.register['name'].indexOf( register );
         if( index != -1 ) { //found register
           //set here to this register
-          update_here( { registerid: local.data.register['id'][index] } );  
+          plk.here.set( { "registerid": local.data.register['id'][index] } );  
           //remove from rest of searchtext
           st = st.substr( st.indexOf('/')+1 ).strip();
         }
@@ -175,7 +175,7 @@ function search() {
               do { 
                 key = s[j].indexOf( st , k );
                 k = key + 1;
-              } while( h['registerid'][key] != here.registerid && key != -1 );
+              } while( h['registerid'][key] != plk.here('registerid') && key != -1 );
               
               if( key != -1 ) { //entry found
                 found = 1; 
@@ -244,7 +244,7 @@ function action_search(ev) {
     //load everything that looks like matching
     //-> get results
     else {
-      update_here( { searchid : $('searchtext').value } ); //searchtext
+      plk.here.set( { searchid : $('searchtext').value } ); //searchtext
       get_searchresult();
     }
     return keypress;
@@ -257,10 +257,10 @@ function get_searchresult() {
   try {
     //need names of registers to display:
     if( !local.data["register"] ) {
-      req('get_register',[], function(i) { local.data.register = i; });
+      plk.req('get_register',[], function(i) { local.data.register = i; });
     }
 
-    var st = here.searchid; //shortcut
+    var st = plk.here('searchid'); //shortcut
 
     //don't load results if searchstring is to small
     if(st.length < 3) { 
@@ -280,11 +280,11 @@ function get_searchresult() {
 
       //load all with names
       local.as[subt]['type'] = { count: 11, 'name': Object.values(local.types), id: Object.keys(local.types) };
-      local.as[subt]['group'] = { count:2, registerid: fill_array(here.registerid,2), 'name': [la.af, la.ar], id : [ 'af', 'ar' ] };
-      local.as[subt]['without'] = { count: 2, registerid: fill_array(here.registerid,2), 'name': [la.tag, la.savepoint], id: ['tag' , 'save'] };
-      local.as[subt]['wordclass'] = { count:6, registerid: fill_array(here.registerid,6), 'name': la.classname, id : [0,1,2,3,4,5,6] };
+      local.as[subt]['group'] = { count:2, registerid: plk.util.fillArray(plk.here('registerid'),2), 'name': [plk.la.af, plk.la.ar], id : [ 'af', 'ar' ] };
+      local.as[subt]['without'] = { count: 2, registerid: plk.util.fillArray(plk.here('registerid'),2), 'name': [plk.la.tag, plk.la.savepoint], id: ['tag' , 'save'] };
+      local.as[subt]['wordclass'] = { count:6, registerid: plk.util.fillArray(plk.here('registerid'),6), 'name': plk.la.classname, id : [0,1,2,3,4,5,6] };
 
-      req('search',{searchtext:subt}, function(info,params) { 
+      plk.req('search',{searchtext:subt}, function(info,params) { 
         Object.extend(local.as[ params.searchtext ] , info);
         proceed_searchresult();
       });
@@ -302,7 +302,7 @@ function get_searchresult() {
 //fresh means that this comes fresh from the database (no local data);
 function proceed_searchresult() {
   try {
-    var st = here.searchid; //shortcut
+    var st = plk.here('searchid'); //shortcut
     var subt = local.current.subtext;
     
     //Search in stored results
@@ -324,7 +324,7 @@ function proceed_searchresult() {
           //priority for matches in this register
           var p = 0;
           if( i != 'register' && h['registerid']) {
-            if( h['registerid'][k] != here.registerid ) {
+            if( h['registerid'][k] != plk.here('registerid') ) {
               p = 5;
             }
           }
@@ -371,17 +371,17 @@ function proceed_searchresult() {
 
 function update_searchresult() {
   try {
-    var st = here.searchid; //shortcut
+    var st = plk.here('searchid'); //shortcut
     var subt = local.current.subtext;
     var result = local.current.searchresult //shortcut
 
     //switch from show to search
-    if(here.page == 'show') {
-      update_here( {page:'search'} );
+    if(plk.here('page') == 'show') {
+      plk.here.set( {page:'search'} );
     }
 
     //update page
-    var func = switcher( 'update_searchresult', here.page );
+    var func = switcher( 'update_searchresult', plk.here('page') );
     if( func ) { window[ func ](); }
 
     //if count = 0 -> hide
@@ -406,7 +406,7 @@ function update_searchresult() {
       var s = result[j]; //shortcut : s = [type, subtype, index];
 
       //don't show words -> show words directly in table
-      if( here.page == 'search' && s[0] == 'word' ) { 
+      if( plk.here('page') == 'search' && s[0] == 'word' ) { 
         //local.current.search_word.push(s[2]);
         continue;
       }
@@ -419,7 +419,7 @@ function update_searchresult() {
       //add register as prefix if not here
       if( s[0] != 'register' && local.as[subt][s[0]]['registerid']) {
         var tregisterid = local.as[subt][s[0]]['registerid'][s[2]];
-        if( here.registerid != tregisterid ) {
+        if( plk.here('registerid') != tregisterid ) {
           prefix += get_name( 'register', tregisterid )+'/ ';
         }
       }

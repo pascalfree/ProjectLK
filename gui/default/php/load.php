@@ -16,18 +16,18 @@
 // functions should start with load_
 
 function load_head($toolbar='', $tabs=NULL, $error='') {
-  global $here, $la, $you;
+  global $plk_here, $plk_la, $plk_you;
   include_once(GUI. 'htmlheader.php');
 }
 
 function load_foot($js=NULL) {
-  global $here, $la, $you;
+  global $plk_here, $plk_la, $plk_you;
   include_once(GUI. 'htmlfooter.php');
 }
 
 function load_stylesheet($style) {
-  global $you;
-  $brows = $you -> browser;
+  global $plk_you;
+  $brows = $plk_you -> browser;
   if(file_exists(GUI .'theme/'.$style.'_'.$brows.'.css')) {
     return $style.'_'.$brows;
   } elseif( file_exists(GUI .'theme/'.$style.'.css') ) {
@@ -37,7 +37,7 @@ function load_stylesheet($style) {
 
 //scripts for the gui
 function load_gui_scripts() {
-  global $here, $you;
+  global $plk_here, $plk_you;
 
   //load gui_<..>.js
   if( RELEASE == 1 ) { //release will have a compiled js
@@ -45,14 +45,14 @@ function load_gui_scripts() {
   } else {
     echo '<script src="',URL,GUI,'js/gui_functions.js"></script>';
     echo '<script src="',URL,GUI,'js/gui_search.js"></script>';
-    if($you -> hints == 1) { //help enabled and not helppage
+    if($plk_you -> hints == 1) { //help enabled and not helppage
       echo '<script src="',URL,GUI,'js/gui_help.js"></script>';
     } 
   }
 
   //give register names
-  if($here -> registerid == NULL) {
-    $registers = request('get_register');
+  if($plk_here -> registerid == NULL) {
+    $registers = plk_request('get_register');
     for($i=0;$i<$registers['count'];$i++) {
       $regname[$registers['id'][$i]] = $registers['name'][$i];
     } //If registerid isn't set load the names, they may be needed when searching words
@@ -67,7 +67,7 @@ function load_local_scripts( $scr ) {
   if( RELEASE == 1 ) { return false; }
   if( !$scr ) { return false; }
 
-  //global $here;
+  //global $plk_here;
   if( !is_array($scr) ) { $scr = array($scr); } //make array
   foreach($scr as $script) {
     echo '<script src="', URL, GUI, 'localjs/',$script,'.js"></script>';

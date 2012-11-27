@@ -1,4 +1,4 @@
-la =
+plk.la =
 //Autor: David Glenck
 {
 //Allgemeine Begriffe,
@@ -255,6 +255,7 @@ err_duplicatesave: "Es existiert bereits ein Speicherplatz mit diesem Namen. ",
 err_invalidmail: "Die angegebene Mailadresse ist ung&uuml;ltig. ",
 err_mode: "Der Modus kann nur geändert werden wenn noch kein Wort abgefragt wurde. ",
 err_invalidsyntax: "Der Syntax des Wortes weist einen Fehler auf. ",
+err_import: "Beim Importieren ist ein Fehler aufgetreten. Der Import wurde m&ouml;glicherweise nur teilweise durchgef&uuml;hrt. Kontaktieren Sie den Admin. ",
 err_nosave: "Es existieren noch keine Speicherplätze in dieser Kartei. ",
 err_notag: "Es wurde kein Tag gefunden. ",
 err_invalidfile: "Ungültiges Dateiformat. ",
@@ -270,7 +271,7 @@ err_103: "Es wurden keine &Auml;nderungen vorgenommen. ",
 err_104: "Der Eintrag existiert bereits. ",
 err_105: "Datei Existiert nicht.",
 err_106: "Passwörter stimmen nicht überein. ",
-err_107: "Sie haben keine E-Mail-Adresse angegeben, kontaktieren sie den Admin. ",
+err_107: "Sie haben keine E-Mail-Adresse angegeben, kontaktieren Sie den Admin. ",
 err_108: "E-Mail konnte nicht gesendet werden. ",
 err_200: "Es fehlen Angaben. ",
 err_201: "Es wurde keine Kartei angegeben. ",

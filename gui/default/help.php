@@ -3,11 +3,11 @@ $toolbar=link_back();
 load_head($toolbar);
 
 //load all content from database
-$helpcontent=request('get_help',array('all' => 1, 'language' => $you -> language));
+$helpcontent = plk_request('get_help',array('all' => 1, 'language' => $plk_you -> language));
 
 //Content overview
 echo '<div class="middlebox">';
-  echo '<span class="title">',$la['content'],'</span>';
+  echo '<span class="title">',$plk_la['content'],'</span>';
   for($i=0; $i<$helpcontent['count']; $i++) {
     echo '<a href="#',$helpcontent['title'][$i],'" class="block">',$helpcontent['titletext'][$i],'</a>';
   }

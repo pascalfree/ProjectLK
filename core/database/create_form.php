@@ -20,10 +20,10 @@ $go->necessary( 'registerid', 'newform' );
 
 if ( $go->good() ) {
   //forbidden characters / Verbotene Zeichen
-  remove_forbidden( $arg_newform );
+  plk_util_removeForbidden( $arg_newform );
   
   //comma separated input
-  $newformarr = comma_array( $arg_newform );
+  $newformarr = plk_util_commaArray( $arg_newform );
   $countarr   = count( $newformarr );
   $countform  = 0;
   for ( $i = 0; $i < $countarr; ++$i ) { //add multiple entries

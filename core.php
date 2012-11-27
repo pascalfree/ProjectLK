@@ -15,8 +15,8 @@ $time=microtime(true);
 
 //////////
 //content:
-//  includes
 //  Get URL
+//  includes
 //  AJAX
 //  loading user & page
 //////////
@@ -43,6 +43,9 @@ require_once('core/php/get_language.php');  //load language
 require_once('core/php/utility.php');       //utility functions
 require_once('core/php/dbfunctions.php');   //functions for database functions
 require_once('core/php/user.php');          //user class
+
+list( $errors, $errorid, $db_lang ) = connect_database(); //connect to database
+$plk_la = get_language($url, $db_lang); //load language object
 
 //////////
 //AJAX
@@ -107,8 +110,8 @@ if( $_REQUEST['req'] == 1 ) {
 header('Content-Type: text/html; charset=UTF-8');
 //some global variables
 define("P_NAME", 'ProjectLK');
-define("P_VERSION", '1.2RC3');
-define("P_AUTHOR", 'David Glenck'); //comma separated
+define("P_VERSION", '1.2');
+define("P_AUTHOR", 'David Glenck'); //add comma separated
 
 //global content functions
 include_once('core/php/here.php');
@@ -116,18 +119,18 @@ include_once('core/php/load_scripts.php');
 include_once('core/php/query.php');
 
 //create HERE
-$here = new place($url);
+$plk_here = new place($url);
 
 //Login user
 if( $_REQUEST['login'] == 1 ) {
-  $login = request( 'user_login',
+  $login = plk_request( 'user_login',
     array('username' => $_REQUEST['username'], 
           'password'=> $_REQUEST['password'])
   );
-  $here -> login = $login['login'];
+  $plk_here -> login = $login['login'];
 //logout user
 } else if( $last == 'logout' ) {
-  request('user_logout');
+  plk_request('user_logout');
 //register new user
 } else if( $_REQUEST['nregister'] == 1 ) {
   $params=array('username' => $_REQUEST['username'], 
@@ -135,55 +138,55 @@ if( $_REQUEST['login'] == 1 ) {
                 'passwordrepeat' => $_REQUEST['passwordrepeat'],
                 'email' => $_REQUEST['email'],
                 'acceptprivacy' => $_REQUEST['accept']);
-  $nregister = request( 'user_nregister',$params );
-  $here -> login = $nregister['success'];
-  $here -> nregerr = $nregister['errnum'];
+  $nregister = plk_request( 'user_nregister',$params );
+  $plk_here -> login = $nregister['success'];
+  $plk_here -> nregerr = $nregister['errnum'];
   if($nregister['nametaken'] !== 0) {
-    $here -> nregerr = 'nametaken';
+    $plk_here -> nregerr = 'nametaken';
   }
 //forgot password
 } else if($_REQUEST['forgot'] == 1) {
-  $forgot = request( 'user_forgot',
+  $forgot = plk_request( 'user_forgot',
       array( 'username' => $_REQUEST['username'], 
              'email' => $_REQUEST['email'])
   );
 
-  if( $forgot['found'] == 0 ) { $here -> forgot = 102; } //if nothing found
-  elseif( $forgot['nomail'] == 1 ) { $here -> forgot = 107; } //no email
-  elseif( $forgot['errnum'] != 0 ) {$here -> forgot = $forgot['errnum'];} //other errors
-  elseif( $forgot['found'] == 1 ) { $here -> forgot = 1; } //if worked
+  if( $forgot['found'] == 0 ) { $plk_here -> forgot = 102; } //if nothing found
+  elseif( $forgot['nomail'] == 1 ) { $plk_here -> forgot = 107; } //no email
+  elseif( $forgot['errnum'] != 0 ) {$plk_here -> forgot = $forgot['errnum'];} //other errors
+  elseif( $forgot['found'] == 1 ) { $plk_here -> forgot = 1; } //if worked
 
   //send mail
-  if( $here -> forgot == 1 ) {
+  if( $plk_here -> forgot == 1 ) {
     $sent = mail($forgot['email'],
-      P_NAME.' '.$la['forgot_subject'], 
-      $la['username'].": ".$forgot['username']."\n".
-      $la['password'].": ".$forgot['passwordhash']."\n\n".
-      $la['forgot_text'], 
+      P_NAME.' '.$plk_la['forgot_subject'], 
+      $plk_la['username'].": ".$forgot['username']."\n".
+      $plk_la['password'].": ".$forgot['passwordhash']."\n\n".
+      $plk_la['forgot_text'], 
       "From: ".strtolower(P_NAME."@".$_SERVER['SERVER_NAME']));
 
-    if( !$sent ) { $here -> forgot = 108; } //could not send
+    if( !$sent ) { $plk_here -> forgot = 108; } //could not send
   }
 }
 
 //create user information //after login/out
-$you = new user();
-$here -> load_user($you);
+$plk_you = new user();
+$plk_here -> load_user($plk_you);
 
 //compress
 ob_start("ob_gzhandler");
 
 //Load Page from url
-$here -> getkeys();
+$plk_here -> getkeys();
 //Header
-if( $here -> getheader() ) {
-  require_once( $here -> getheader() );
+if( $plk_here -> getheader() ) {
+  require_once( $plk_here -> getheader() );
 }
 //Mainpage
-require_once( $here -> loadpage() );
+require_once( $plk_here -> loadpage() );
 //Footer
-if( $here -> getfooter() ) {
-  require_once( $here -> getfooter() );
+if( $plk_here -> getfooter() ) {
+  require_once( $plk_here -> getfooter() );
 }
 
 $ntime = microtime(true);

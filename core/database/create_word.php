@@ -41,13 +41,13 @@ if( $go->good() ) {
   //forbidden characters
   $todecode = array('newwordfirst', 'newwordfore', 'newsentence', 'newtags');
   foreach($todecode as $val) { 
-    remove_forbidden( $$val );
+    plk_util_removeForbidden( $$val );
     //$$val = str_replace($forbidden, '', $$val);
   }
 
   //similar words
   $similar = 0;
-  $swordid = request('get_word', array(
+  $swordid = plk_request('get_word', array(
       'registerid' => $arg_registerid, 
       'select' => 'tword.id',
       'searchtext' => array($arg_newwordfirst, $arg_newwordfore),
@@ -60,7 +60,7 @@ if( $go->good() ) {
   //}
 }
 
-if( 0 == $similar || 1 == $force ) {
+if( 0 == $similar || 1 == $arg_force ) {
 
   // add word
   if($go->good()) {
@@ -95,7 +95,7 @@ if( 0 == $similar || 1 == $force ) {
 
   // add tags
   if($go->good()) {
-    $add_tag = request('add_tag', array(
+    $add_tag = plk_request('add_tag', array(
       'registerid' => $arg_registerid,
       'newtag' => $arg_newtags,
       'wordid' => $wordid,

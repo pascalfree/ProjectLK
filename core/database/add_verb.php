@@ -22,7 +22,7 @@ $go->necessary( 'wordid', 'formid', 'personid' );
 
 if ( $go->good() ) {
   //forbidden characters / Verbotene Zeichen
-  remove_forbidden( $arg_newkword );
+  plk_util_removeForbidden( $arg_newkword );
   
   //Check User
   $checkuser = $go->query( 
@@ -52,7 +52,7 @@ if ( $go->good() ) {
     $tid    = $get_verb[ 'result' ][ 'id' ][ 0 ]; //ID of this verb.
     $exists = true;
     //Give it to the edit_verb function
-    $edit = request( 'edit_verb', array(
+    $edit = plk_request( 'edit_verb', array(
                           'verbid' => $tid,
                           'newkword' => $arg_newkword
     ) );

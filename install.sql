@@ -1,236 +1,145 @@
--- phpMyAdmin SQL Dump
--- version 3.3.7deb5build0.10.10.1
--- http://www.phpmyadmin.net
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Datenbank: `projectlk`
---
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_active`
---
-
 CREATE TABLE IF NOT EXISTS `lk_active` (
-  `id` smallint(5) unsigned NOT NULL,
-  `wordid` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL,
+  `wordid` bigint(10) unsigned NOT NULL,
   `done` tinyint(1) NOT NULL DEFAULT '0',
   `correct` tinyint(1) NOT NULL DEFAULT '0',
-  `answer` text CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+  `answer` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   KEY `id` (`id`),
   KEY `done` (`done`),
   KEY `correct` (`correct`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_activelist`
---
-
 CREATE TABLE IF NOT EXISTS `lk_activelist` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` mediumint(10) unsigned NOT NULL,
-  `registerid` mediumint(10) unsigned NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `registerid` int(10) unsigned NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `mode` tinyint(1) NOT NULL DEFAULT '0',
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=192 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_forms`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_forms` (
-  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` smallint(5) unsigned NOT NULL,
-  `registerid` tinyint(3) unsigned NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
-  `info` text CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `registerid` int(10) unsigned NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `info` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   UNIQUE KEY `id` (`id`),
   KEY `userid` (`userid`,`registerid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=246 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_help`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_help` (
-  `language` varchar(2) COLLATE utf8_unicode_ci NOT NULL,
-  `title` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
-  `titletext` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `language` varchar(2) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `title` varchar(256) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `titletext` varchar(256) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `valuetext` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `language` (`language`,`title`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_persons`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_persons` (
-  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` smallint(5) unsigned NOT NULL,
-  `registerid` tinyint(3) unsigned NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `registerid` int(10) unsigned NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `order` smallint(3) unsigned NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   UNIQUE KEY `id` (`id`),
   KEY `userid` (`userid`,`registerid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=283 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_registers`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_registers` (
-  `id` mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `groupcount` tinyint(2) unsigned NOT NULL DEFAULT '5',
-  `grouplock` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '75?150?300?600?',
+  `grouplock` varchar(255) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT '75?150?300?600?',
   `language` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`,`userid`),
   KEY `name` (`name`(3))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=236 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_save`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_save` (
-  `saveid` smallint(5) unsigned NOT NULL,
-  `wordid` int(10) unsigned NOT NULL,
+  `saveid` int(10) unsigned NOT NULL,
+  `wordid` bigint(20) unsigned NOT NULL,
   UNIQUE KEY `id_2` (`saveid`,`wordid`),
   KEY `id` (`saveid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_savelist`
---
-
 CREATE TABLE IF NOT EXISTS `lk_savelist` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` smallint(5) unsigned NOT NULL,
-  `registerid` smallint(5) unsigned NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `registerid` int(10) unsigned NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid_2` (`userid`,`registerid`,`name`),
   KEY `userid` (`userid`,`registerid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=218 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_taglist`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_taglist` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` smallint(5) unsigned NOT NULL,
-  `registerid` smallint(5) unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `registerid` int(10) unsigned NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid_2` (`userid`,`registerid`,`name`),
   KEY `userid` (`userid`,`registerid`),
   KEY `tag` (`name`(3))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1366 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_tags`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_tags` (
-  `wordid` int(10) unsigned NOT NULL,
-  `tagid` smallint(5) unsigned NOT NULL,
+  `wordid` bigint(20) unsigned NOT NULL,
+  `tagid` int(10) unsigned NOT NULL,
   UNIQUE KEY `wordid_2` (`wordid`,`tagid`),
   KEY `wordid` (`wordid`),
   KEY `tags` (`tagid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_user`
---
-
 CREATE TABLE IF NOT EXISTS `lk_user` (
-  `id` smallint(5) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `passw` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `forgot` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-  `email` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `passw` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `forgot` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '0',
+  `email` varchar(30) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
   `hints` tinyint(1) NOT NULL DEFAULT '1',
-  `gui` varchar(24) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'default',
-  `theme` varchar(24) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'modern',
-  `language` varchar(5) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'de',
+  `gui` varchar(24) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'default',
+  `theme` varchar(24) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'modern',
+  `language` varchar(5) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'de',
+  `hpic` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=43 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_verbs`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_verbs` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `wordid` int(10) unsigned NOT NULL,
-  `personid` int(5) unsigned NOT NULL,
-  `formid` int(5) unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `wordid` bigint(20) unsigned NOT NULL,
+  `personid` int(10) unsigned NOT NULL,
+  `formid` int(10) unsigned NOT NULL,
   `kword` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
   `regular` tinyint(1) NOT NULL DEFAULT '1',
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `person` (`personid`,`formid`),
   KEY `wordid` (`wordid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1063 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `lk_words`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `lk_words` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` smallint(5) unsigned NOT NULL,
-  `registerid` tinyint(3) unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `registerid` int(10) unsigned NOT NULL,
   `wordfirst` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `wordfore` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `groupid` char(2) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -240,13 +149,7 @@ CREATE TABLE IF NOT EXISTS `lk_words` (
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `regid` (`userid`,`registerid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=60098 ;
-
-
-
---
--- Daten für Tabelle `lk_help`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `lk_help` (`language`, `title`, `titletext`, `valuetext`, `id`) VALUES
 ('de', 'menu', 'Menu', 'Das Menu ist der Navigationspunkt der Seite. Sie befindet sich ganz oben. An ihr kann man ablesen, wo man sich gerade befindet. Falls man eingeloggt findet man an erster Stelle stets den Benutzernamen, darauf folgt der Name der Kartei, in welcher man sich befindet usw. Jeder dieser Menüpunkte läst sich anklicken, wodurch man eine oder mehrere Ebenen nach oben gelangt. mit den Pfeilen neben den Einträgen kann man schnell zu anderen Karteien/Tags/Fächern navigieren. Zudem sind einige Optionen über diese Drop-Downs erreichbar. So auch die Benutzereinstellungen.\r\nDas Menu bietet zudem die Möglichkeit, über Eingaben zu navigieren. Wenn man links neben dem letzten Schrägstrich klickt erscheint ein Eingabefeld. Über dieses Feld kann man einerseits nach Einträgen suchen, oder auch direkt zu Tags, Karteien usw. navigieren.', 1),
@@ -267,11 +170,6 @@ INSERT INTO `lk_help` (`language`, `title`, `titletext`, `valuetext`, `id`) VALU
 ('en', 'tag', 'Tags', 'tags are usefull to organise words. Words that belong together in some kind should have the same tag.\r\nMultiple tags can be added comma separated.', 17),
 ('en', 'verb', 'Verb tables', 'A verb table contains conjugations of verbs. Every register has it''s own persons and forms.\r\nEvery wird declared as a verb can have a table.\r\n\r\n<b>Persons</b> can be added via the toolbar. Multiple persons can be added at once, separated by commas.\r\ne.g. I, you, he, we, you, they\r\n\r\nThe <b>Form</b> can be added similar to the person.\r\ne.g. Present, Past\r\n\r\nAfter that the conjugated verbs can be <b>added</b>, by clicking on the edit button. later they can be edited the same way or by <b>doubleclicking</b>.\r\nTo add multiple verbs faster, you can navigate the fields with the <b>tabulator</b> and the <b>arrow keys</b> (up and down).\r\nWith <b>Esc</b> the changes will be canceled.', 18),
 ('en', 'wordedit', 'Edit words', 'There are two ways to edit a word. The fastest is to <b>doubleclick</b> on it. You can edit words like that mostly everywhere (even during a query).\r\nAlso other entries can be edited like this.\r\nWith the <b>Enter key</b> the changes will be saved.\r\nAn other way to edit words is via the <b>edit button</b> next to it.', 19);
-
-
---
--- Daten für Tabelle `lk_user`
---
 
 INSERT INTO `lk_user` (`id`, `name`, `passw`, `forgot`, `email`, `hints`, `gui`, `theme`, `language`) VALUES
 (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', '0', 'admin@projectlk.ch', 1, '', '', ''),

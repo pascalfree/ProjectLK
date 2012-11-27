@@ -21,7 +21,7 @@ $go->necessary( 'registerid', 'newperson' );
 
 if ( $go->good() ) {
   //forbidden characters / Verbotene Zeichen
-  remove_forbidden( $arg_newperson );
+  plk_util_removeForbidden( $arg_newperson );
   
   //increment order
   if ( $arg_neworder == NULL ) {
@@ -36,7 +36,7 @@ if ( $go->good() ) {
 }
 if ( $go->good() ) {
   //comma separated input
-  $newpersonarr = comma_array( $arg_newperson );
+  $newpersonarr = plk_util_commaArray( $arg_newperson );
   $countarr     = count( $newpersonarr );
   $countperson  = 0;
   for ( $i = 0; $i < $countarr; $i++ ) { //add multiple entries

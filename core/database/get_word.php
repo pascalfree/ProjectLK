@@ -152,7 +152,7 @@ if ( $go->good() ) {
   
   //word(s)
   if ( !is_array( $arg_wordid ) && NULL != $arg_wordid ) { //20120408 - fix: allow comma separation
-    $arg_wordid = comma_array( $arg_wordid );
+    $arg_wordid = plk_util_commaArray( $arg_wordid );
   }
   if ( is_array( $arg_wordid ) && 0 < count( $arg_wordid ) ) {
     $query .= "AND (";
@@ -186,12 +186,12 @@ if ( $go->good() ) {
         $searchtextexp = str_split( $tsearch );
         $len           = count( $searchtextexp );
         for ( $i = 0; $i < $len; $i++ ) {
-          $searchtextexp[ $i ] = regexpencode( $searchtextexp[ $i ] );
+          $searchtextexp[ $i ] = plk_util_regExpEncode( $searchtextexp[ $i ] );
         }
         $tsearch        = implode( '.?', $searchtextexp );
         $sarray[ $k ][] = '.*' . $tsearch . '.*';
       } else {
-        $tsearch        = regexpencode( $tsearch );
+        $tsearch        = plk_util_regExpEncode( $tsearch );
         $sarray[ $k ][] = '^' . $tsearch . '$';
         $sarray[ $k ][] = ', ?' . $tsearch . '$';
         $sarray[ $k ][] = '^' . $tsearch . ' ?,';
@@ -276,13 +276,13 @@ if ( $go->good() ) {
   if ( count( $get_words[ 'result' ][ 'id' ] ) > 0 ) {
     foreach ( $get_words[ 'result' ][ 'id' ] as $key => $wid ) {
       if ( 1 == $arg_gettags ) {
-        $return[ 'tagslist' ][ $key ] = request( 'get_tag', array(
+        $return[ 'tagslist' ][ $key ] = plk_request( 'get_tag', array(
           'registerid' => $return[ 'registerid' ][ $key ],
           'wordid' => $wid 
         ) );
       }
       if ( 1 == $arg_getsave ) {
-        $return[ 'savelist' ][ $key ] = request( 'get_save', array(
+        $return[ 'savelist' ][ $key ] = plk_request( 'get_save', array(
           'registerid' => $return[ 'registerid' ][ $key ],
           'wordid' => $wid 
         ) );

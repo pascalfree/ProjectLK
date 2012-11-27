@@ -44,7 +44,7 @@ if ( $go->good() ) {
   //wordid(s)
   if ( $arg_wordid != NULL ) {
 
-    make_array( $arg_wordid );
+    plk_util_makeArray( $arg_wordid );
 
     foreach ( $arg_wordid as $wid ) {
       $queryplus[] = " (t2.wordid='" . $wid . "') ";
