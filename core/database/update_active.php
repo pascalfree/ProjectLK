@@ -56,10 +56,6 @@ if ( $go->good() ) {
     }
     
     if ( 2 == $mode OR 3 == $mode ) { // group will change
-      $query = "SELECT `groupid` 
-                  FROM lk_words 
-                WHERE id = '" . $arg_wordid . "' 
-                      AND userid = '" . $userid . "'";
       $res = $go->query( 
         "SELECT `groupid` 
            FROM lk_words 
@@ -67,7 +63,7 @@ if ( $go->good() ) {
                AND userid = '" . $userid . "'"
       , 3 );
 
-      $save_new_group = $res[ 'result' ][ 'group' ][ 0 ];
+      $save_new_group = $res[ 'result' ][ 'groupid' ][ 0 ];
       if ( $arg_result ) {
         $nfach = '`groupid`+1';
       } else {

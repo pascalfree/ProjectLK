@@ -39,7 +39,7 @@ if ( $go->good() ) {
 if ( $go->good() ) {
   if ( ( 2 == $mode OR 3 == $mode ) AND NULL != $arg_ngroup ) {
     $arg_ngroup++;
-    $query = "UPDATE lk_words SET `group`='" . $arg_ngroup . "' WHERE `group`!='af' AND `group`!='ar' AND id='" . $arg_corrid . "' AND userid='" . $userid . "'";
+    $query = "UPDATE lk_words SET `groupid`='" . $arg_ngroup . "' WHERE `groupid`!='af' AND `groupid`!='ar' AND id='" . $arg_corrid . "' AND userid='" . $userid . "'";
     $go->query( $query, 3 );
   }
 }
